@@ -23,3 +23,7 @@ Route::get('/', function () {
 */
 
 Route::get('/', [awal::class, 'awal']);
+Route::post('/', [awal::class, 'simpanpeserta']);
+
+
+Route::get('/mediabelajar', [awal::class, 'mediabelajar']);

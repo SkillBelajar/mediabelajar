@@ -105,7 +105,7 @@ class Evaluasi extends DbTable
         $this->jawaban->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->jawaban->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
         $this->jawaban->Lookup = new Lookup('jawaban', 'evaluasi', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->jawaban->OptionCount = 5;
+        $this->jawaban->OptionCount = 6;
         $this->Fields['jawaban'] = &$this->jawaban;
     }
 

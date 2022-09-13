@@ -955,6 +955,8 @@
         <phrase id="fldtagcaption4" value="D" />
         <phrase id="fldtagvalue5" value="E" />
         <phrase id="fldtagcaption5" value="E" />
+        <phrase id="fldtagvalue6" value="Essai" />
+        <phrase id="fldtagcaption6" value="Essai" />
       </field>
     </table>
     <table id="materi">

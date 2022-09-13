@@ -15,7 +15,7 @@
     <div class="container">
         <br>
 
-        <h1>@yield('judul')</h1>
+        <h3>@yield('judul')</h3>
         {{ \Session::get('nama') }}
         <hr>
         @yield('isi')

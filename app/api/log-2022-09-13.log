@@ -55,3 +55,4 @@
 [2022-09-13T16:03:14.570168+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
 [2022-09-13T16:03:30.317461+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
 [2022-09-13T16:03:53.848874+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
+[2022-09-13T16:05:16.677415+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []

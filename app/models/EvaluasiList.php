@@ -611,6 +611,9 @@ class EvaluasiList extends Evaluasi
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -728,7 +731,7 @@ class EvaluasiList extends Evaluasi
 
         // Set up list options
         $this->setupListOptions();
-        $this->id_evaluasi->setVisibility();
+        $this->id_evaluasi->Visible = false;
         $this->id_materi->setVisibility();
         $this->soal->Visible = false;
         $this->jawaban->setVisibility();
@@ -940,6 +943,9 @@ class EvaluasiList extends Evaluasi
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
@@ -1270,7 +1276,6 @@ class EvaluasiList extends Evaluasi
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id_evaluasi); // id_evaluasi
             $this->updateSort($this->id_materi); // id_materi
             $this->updateSort($this->jawaban); // jawaban
             $this->setStartRecordNumber(1); // Reset start position
@@ -1338,25 +1343,25 @@ class EvaluasiList extends Evaluasi
         // "view"
         $item = &$this->ListOptions->add("view");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canView();
         $item->OnLeft = false;
 
         // "edit"
         $item = &$this->ListOptions->add("edit");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canEdit();
         $item->OnLeft = false;
 
         // "copy"
         $item = &$this->ListOptions->add("copy");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canAdd();
         $item->OnLeft = false;
 
         // "delete"
         $item = &$this->ListOptions->add("delete");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canDelete();
         $item->OnLeft = false;
 
         // List actions
@@ -1405,7 +1410,7 @@ class EvaluasiList extends Evaluasi
             // "view"
             $opt = $this->ListOptions["view"];
             $viewcaption = HtmlTitle($Language->phrase("ViewLink"));
-            if (true) {
+            if ($Security->canView()) {
                 $opt->Body = "<a class=\"ew-row-link ew-view\" title=\"" . $viewcaption . "\" data-caption=\"" . $viewcaption . "\" href=\"" . HtmlEncode(GetUrl($this->ViewUrl)) . "\">" . $Language->phrase("ViewLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1414,7 +1419,7 @@ class EvaluasiList extends Evaluasi
             // "edit"
             $opt = $this->ListOptions["edit"];
             $editcaption = HtmlTitle($Language->phrase("EditLink"));
-            if (true) {
+            if ($Security->canEdit()) {
                 $opt->Body = "<a class=\"ew-row-link ew-edit\" title=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("EditLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1423,7 +1428,7 @@ class EvaluasiList extends Evaluasi
             // "copy"
             $opt = $this->ListOptions["copy"];
             $copycaption = HtmlTitle($Language->phrase("CopyLink"));
-            if (true) {
+            if ($Security->canAdd()) {
                 $opt->Body = "<a class=\"ew-row-link ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("CopyLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1431,7 +1436,7 @@ class EvaluasiList extends Evaluasi
 
             // "delete"
             $opt = $this->ListOptions["delete"];
-            if (true) {
+            if ($Security->canDelete()) {
             $opt->Body = "<a class=\"ew-row-link ew-delete\"" . "" . " title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("DeleteLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1489,7 +1494,7 @@ class EvaluasiList extends Evaluasi
         $item = &$option->add("add");
         $addcaption = HtmlTitle($Language->phrase("AddLink"));
         $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
-        $item->Visible = $this->AddUrl != "";
+        $item->Visible = $this->AddUrl != "" && $Security->canAdd();
         $option = $options["action"];
 
         // Set up options default
@@ -1787,10 +1792,6 @@ class EvaluasiList extends Evaluasi
 
         // jawaban
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_evaluasi
-            $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
-            $this->id_evaluasi->ViewCustomAttributes = "";
-
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
             if ($curVal != "") {
@@ -1812,6 +1813,10 @@ class EvaluasiList extends Evaluasi
             }
             $this->id_materi->ViewCustomAttributes = "";
 
+            // soal
+            $this->soal->ViewValue = $this->soal->CurrentValue;
+            $this->soal->ViewCustomAttributes = "";
+
             // jawaban
             if (strval($this->jawaban->CurrentValue) != "") {
                 $this->jawaban->ViewValue = $this->jawaban->optionCaption($this->jawaban->CurrentValue);
@@ -1819,11 +1824,6 @@ class EvaluasiList extends Evaluasi
                 $this->jawaban->ViewValue = null;
             }
             $this->jawaban->ViewCustomAttributes = "";
-
-            // id_evaluasi
-            $this->id_evaluasi->LinkCustomAttributes = "";
-            $this->id_evaluasi->HrefValue = "";
-            $this->id_evaluasi->TooltipValue = "";
 
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";

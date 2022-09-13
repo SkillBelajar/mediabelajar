@@ -917,6 +917,9 @@
   <project>
     <phrase id="bodytitle" value="Media Belajar" />
     <phrase id="footertext" value="Dibuat Oleh Muhammad Ullil Fahri" />
+    <menu id="5">
+      <phrase id="menutext" value="live" />
+    </menu>
     <menu id="3">
       <phrase id="menutext" value="media" />
     </menu>
@@ -1001,6 +1004,25 @@
       </field>
       <field id="benar">
         <phrase id="fldcaption" value="benar" />
+      </field>
+    </table>
+    <table id="live">
+      <phrase id="tblcaption" value="live" />
+      <field id="id_live">
+        <phrase id="fldcaption" value="id live" />
+      </field>
+      <field id="aksi">
+        <phrase id="fldcaption" value="aksi" />
+        <phrase id="fldtagvalue1" value="Materi" />
+        <phrase id="fldtagcaption1" value="Materi" />
+        <phrase id="fldtagvalue2" value="Soal" />
+        <phrase id="fldtagcaption2" value="Soal" />
+      </field>
+      <field id="id_materi">
+        <phrase id="fldcaption" value="id materi" />
+      </field>
+      <field id="live_catatan">
+        <phrase id="fldcaption" value="live catatan" />
       </field>
     </table>
   </project>

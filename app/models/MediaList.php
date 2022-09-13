@@ -611,6 +611,9 @@ class MediaList extends Media
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -728,7 +731,7 @@ class MediaList extends Media
 
         // Set up list options
         $this->setupListOptions();
-        $this->id_media->setVisibility();
+        $this->id_media->Visible = false;
         $this->nama_media->setVisibility();
         $this->aktif->setVisibility();
         $this->hideFieldsForAddEdit();
@@ -938,6 +941,9 @@ class MediaList extends Media
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
@@ -1259,7 +1265,6 @@ class MediaList extends Media
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id_media); // id_media
             $this->updateSort($this->nama_media); // nama_media
             $this->updateSort($this->aktif); // aktif
             $this->setStartRecordNumber(1); // Reset start position
@@ -1326,25 +1331,25 @@ class MediaList extends Media
         // "view"
         $item = &$this->ListOptions->add("view");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canView();
         $item->OnLeft = false;
 
         // "edit"
         $item = &$this->ListOptions->add("edit");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canEdit();
         $item->OnLeft = false;
 
         // "copy"
         $item = &$this->ListOptions->add("copy");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canAdd();
         $item->OnLeft = false;
 
         // "delete"
         $item = &$this->ListOptions->add("delete");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canDelete();
         $item->OnLeft = false;
 
         // List actions
@@ -1393,7 +1398,7 @@ class MediaList extends Media
             // "view"
             $opt = $this->ListOptions["view"];
             $viewcaption = HtmlTitle($Language->phrase("ViewLink"));
-            if (true) {
+            if ($Security->canView()) {
                 $opt->Body = "<a class=\"ew-row-link ew-view\" title=\"" . $viewcaption . "\" data-caption=\"" . $viewcaption . "\" href=\"" . HtmlEncode(GetUrl($this->ViewUrl)) . "\">" . $Language->phrase("ViewLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1402,7 +1407,7 @@ class MediaList extends Media
             // "edit"
             $opt = $this->ListOptions["edit"];
             $editcaption = HtmlTitle($Language->phrase("EditLink"));
-            if (true) {
+            if ($Security->canEdit()) {
                 $opt->Body = "<a class=\"ew-row-link ew-edit\" title=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("EditLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1411,7 +1416,7 @@ class MediaList extends Media
             // "copy"
             $opt = $this->ListOptions["copy"];
             $copycaption = HtmlTitle($Language->phrase("CopyLink"));
-            if (true) {
+            if ($Security->canAdd()) {
                 $opt->Body = "<a class=\"ew-row-link ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("CopyLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1419,7 +1424,7 @@ class MediaList extends Media
 
             // "delete"
             $opt = $this->ListOptions["delete"];
-            if (true) {
+            if ($Security->canDelete()) {
             $opt->Body = "<a class=\"ew-row-link ew-delete\"" . "" . " title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("DeleteLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1477,7 +1482,7 @@ class MediaList extends Media
         $item = &$option->add("add");
         $addcaption = HtmlTitle($Language->phrase("AddLink"));
         $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
-        $item->Visible = $this->AddUrl != "";
+        $item->Visible = $this->AddUrl != "" && $Security->canAdd();
         $option = $options["action"];
 
         // Set up options default
@@ -1771,10 +1776,6 @@ class MediaList extends Media
 
         // aktif
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_media
-            $this->id_media->ViewValue = $this->id_media->CurrentValue;
-            $this->id_media->ViewCustomAttributes = "";
-
             // nama_media
             $this->nama_media->ViewValue = $this->nama_media->CurrentValue;
             $this->nama_media->ViewCustomAttributes = "";
@@ -1786,11 +1787,6 @@ class MediaList extends Media
                 $this->aktif->ViewValue = null;
             }
             $this->aktif->ViewCustomAttributes = "";
-
-            // id_media
-            $this->id_media->LinkCustomAttributes = "";
-            $this->id_media->HrefValue = "";
-            $this->id_media->TooltipValue = "";
 
             // nama_media
             $this->nama_media->LinkCustomAttributes = "";

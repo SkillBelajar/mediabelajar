@@ -56,6 +56,7 @@ loadjs.ready("head", function () {
 <?php
 $Page->renderOtherOptions();
 ?>
+<?php if ($Security->canSearch()) { ?>
 <?php if (!$Page->isExport() && !$Page->CurrentAction) { ?>
 <form name="fmaterilistsrch" id="fmaterilistsrch" class="form-inline ew-form ew-ext-search-form" action="<?= CurrentPageUrl() ?>">
 <div id="fmaterilistsrch-search-panel" class="<?= $Page->SearchPanelClass ?>">
@@ -81,6 +82,7 @@ $Page->renderOtherOptions();
     </div><!-- /.ew-extended-search -->
 </div><!-- /.ew-search-panel -->
 </form>
+<?php } ?>
 <?php } ?>
 <?php $Page->showPageHeader(); ?>
 <?php
@@ -109,9 +111,6 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->id_materi->Visible) { // id_materi ?>
-        <th data-name="id_materi" class="<?= $Page->id_materi->headerCellClass() ?>"><div id="elh_materi_id_materi" class="materi_id_materi"><?= $Page->renderSort($Page->id_materi) ?></div></th>
-<?php } ?>
 <?php if ($Page->id_media->Visible) { // id_media ?>
         <th data-name="id_media" class="<?= $Page->id_media->headerCellClass() ?>"><div id="elh_materi_id_media" class="materi_id_media"><?= $Page->renderSort($Page->id_media) ?></div></th>
 <?php } ?>
@@ -178,14 +177,6 @@ while ($Page->RecordCount < $Page->StopRecord) {
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->id_materi->Visible) { // id_materi ?>
-        <td data-name="id_materi" <?= $Page->id_materi->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_materi_id_materi">
-<span<?= $Page->id_materi->viewAttributes() ?>>
-<?= $Page->id_materi->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->id_media->Visible) { // id_media ?>
         <td data-name="id_media" <?= $Page->id_media->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_materi_id_media">

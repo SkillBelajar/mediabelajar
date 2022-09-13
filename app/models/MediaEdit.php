@@ -540,6 +540,9 @@ class MediaEdit extends Media
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -769,6 +772,9 @@ class MediaEdit extends Media
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());

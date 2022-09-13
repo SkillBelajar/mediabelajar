@@ -75,8 +75,27 @@ return function (App $app) {
         }
     );
 
+    // live
+    $app->any('/LiveList[/{id_live}]', LiveController::class . ':list')->add(PermissionMiddleware::class)->setName('LiveList-live-list'); // list
+    $app->any('/LiveView[/{id_live}]', LiveController::class . ':view')->add(PermissionMiddleware::class)->setName('LiveView-live-view'); // view
+    $app->any('/LiveEdit[/{id_live}]', LiveController::class . ':edit')->add(PermissionMiddleware::class)->setName('LiveEdit-live-edit'); // edit
+    $app->group(
+        '/live',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_live}]', LiveController::class . ':list')->add(PermissionMiddleware::class)->setName('live/list-live-list-2'); // list
+            $group->any('/view[/{id_live}]', LiveController::class . ':view')->add(PermissionMiddleware::class)->setName('live/view-live-view-2'); // view
+            $group->any('/edit[/{id_live}]', LiveController::class . ':edit')->add(PermissionMiddleware::class)->setName('live/edit-live-edit-2'); // edit
+        }
+    );
+
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
+
+    // login
+    $app->any('/login', OthersController::class . ':login')->add(PermissionMiddleware::class)->setName('login');
+
+    // logout
+    $app->any('/logout', OthersController::class . ':logout')->add(PermissionMiddleware::class)->setName('logout');
 
     // Index
     $app->any('/[index]', OthersController::class . ':index')->setName('index');

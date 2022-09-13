@@ -84,7 +84,7 @@ class Materi extends DbTable
         $this->id_media->Sortable = true; // Allow sort
         $this->id_media->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->id_media->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->id_media->Lookup = new Lookup('id_media', 'media', false, 'id_media', ["nama_media","aktif","",""], [], [], [], [], [], [], '', '');
+        $this->id_media->Lookup = new Lookup('id_media', 'media', false, 'id_media', ["nama_media","aktif","",""], [], [], [], [], [], [], '`id_media` DESC', '');
         $this->id_media->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_media'] = &$this->id_media;
 
@@ -941,9 +941,9 @@ SORTHTML;
                     $doc->exportCaption($this->judul);
                     $doc->exportCaption($this->isi);
                 } else {
-                    $doc->exportCaption($this->id_materi);
                     $doc->exportCaption($this->id_media);
                     $doc->exportCaption($this->judul);
+                    $doc->exportCaption($this->isi);
                 }
                 $doc->endExportRow();
             }
@@ -978,9 +978,9 @@ SORTHTML;
                         $doc->exportField($this->judul);
                         $doc->exportField($this->isi);
                     } else {
-                        $doc->exportField($this->id_materi);
                         $doc->exportField($this->id_media);
                         $doc->exportField($this->judul);
+                        $doc->exportField($this->isi);
                     }
                     $doc->endExportRow($rowCnt);
                 }

@@ -56,6 +56,7 @@ loadjs.ready("head", function () {
 <?php
 $Page->renderOtherOptions();
 ?>
+<?php if ($Security->canSearch()) { ?>
 <?php if (!$Page->isExport() && !$Page->CurrentAction) { ?>
 <form name="fpesertalistsrch" id="fpesertalistsrch" class="form-inline ew-form ew-ext-search-form" action="<?= CurrentPageUrl() ?>">
 <div id="fpesertalistsrch-search-panel" class="<?= $Page->SearchPanelClass ?>">
@@ -81,6 +82,7 @@ $Page->renderOtherOptions();
     </div><!-- /.ew-extended-search -->
 </div><!-- /.ew-search-panel -->
 </form>
+<?php } ?>
 <?php } ?>
 <?php $Page->showPageHeader(); ?>
 <?php
@@ -109,9 +111,6 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->id_peserta->Visible) { // id_peserta ?>
-        <th data-name="id_peserta" class="<?= $Page->id_peserta->headerCellClass() ?>"><div id="elh_peserta_id_peserta" class="peserta_id_peserta"><?= $Page->renderSort($Page->id_peserta) ?></div></th>
-<?php } ?>
 <?php if ($Page->tanggal_jam->Visible) { // tanggal_jam ?>
         <th data-name="tanggal_jam" class="<?= $Page->tanggal_jam->headerCellClass() ?>"><div id="elh_peserta_tanggal_jam" class="peserta_tanggal_jam"><?= $Page->renderSort($Page->tanggal_jam) ?></div></th>
 <?php } ?>
@@ -184,14 +183,6 @@ while ($Page->RecordCount < $Page->StopRecord) {
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->id_peserta->Visible) { // id_peserta ?>
-        <td data-name="id_peserta" <?= $Page->id_peserta->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_peserta_id_peserta">
-<span<?= $Page->id_peserta->viewAttributes() ?>>
-<?= $Page->id_peserta->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->tanggal_jam->Visible) { // tanggal_jam ?>
         <td data-name="tanggal_jam" <?= $Page->tanggal_jam->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_peserta_tanggal_jam">

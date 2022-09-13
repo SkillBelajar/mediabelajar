@@ -525,7 +525,7 @@ class MateriDelete extends Materi
     {
         global $ExportType, $CustomExportType, $ExportFileName, $UserProfile, $Language, $Security, $CurrentForm;
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_materi->setVisibility();
+        $this->id_materi->Visible = false;
         $this->id_media->setVisibility();
         $this->judul->setVisibility();
         $this->isi->Visible = false;
@@ -607,6 +607,9 @@ class MateriDelete extends Materi
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
@@ -726,10 +729,6 @@ class MateriDelete extends Materi
 
         // isi
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_materi
-            $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-            $this->id_materi->ViewCustomAttributes = "";
-
             // id_media
             $curVal = strval($this->id_media->CurrentValue);
             if ($curVal != "") {
@@ -755,10 +754,9 @@ class MateriDelete extends Materi
             $this->judul->ViewValue = $this->judul->CurrentValue;
             $this->judul->ViewCustomAttributes = "";
 
-            // id_materi
-            $this->id_materi->LinkCustomAttributes = "";
-            $this->id_materi->HrefValue = "";
-            $this->id_materi->TooltipValue = "";
+            // isi
+            $this->isi->ViewValue = $this->isi->CurrentValue;
+            $this->isi->ViewCustomAttributes = "";
 
             // id_media
             $this->id_media->LinkCustomAttributes = "";

@@ -540,6 +540,9 @@ class EvaluasiAdd extends Evaluasi
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -750,6 +753,9 @@ class EvaluasiAdd extends Evaluasi
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
 
+            // Setup login status
+            SetupLoginStatus();
+
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
 
@@ -939,10 +945,6 @@ class EvaluasiAdd extends Evaluasi
 
         // jawaban
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_evaluasi
-            $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
-            $this->id_evaluasi->ViewCustomAttributes = "";
-
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
             if ($curVal != "") {

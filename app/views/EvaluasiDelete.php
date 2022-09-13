@@ -41,9 +41,6 @@ $Page->showMessage();
 <table class="table ew-table">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->id_evaluasi->Visible) { // id_evaluasi ?>
-        <th class="<?= $Page->id_evaluasi->headerCellClass() ?>"><span id="elh_evaluasi_id_evaluasi" class="evaluasi_id_evaluasi"><?= $Page->id_evaluasi->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <th class="<?= $Page->id_materi->headerCellClass() ?>"><span id="elh_evaluasi_id_materi" class="evaluasi_id_materi"><?= $Page->id_materi->caption() ?></span></th>
 <?php } ?>
@@ -71,14 +68,6 @@ while (!$Page->Recordset->EOF) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->id_evaluasi->Visible) { // id_evaluasi ?>
-        <td <?= $Page->id_evaluasi->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_evaluasi_id_evaluasi" class="evaluasi_id_evaluasi">
-<span<?= $Page->id_evaluasi->viewAttributes() ?>>
-<?= $Page->id_evaluasi->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <td <?= $Page->id_materi->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_evaluasi_id_materi" class="evaluasi_id_materi">

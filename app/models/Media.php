@@ -72,7 +72,7 @@ class Media extends DbTable
         $this->id_media = new DbField('media', 'media', 'x_id_media', 'id_media', '`id_media`', '`id_media`', 3, 100, -1, false, '`id_media`', false, false, false, 'FORMATTED TEXT', 'NO');
         $this->id_media->IsAutoIncrement = true; // Autoincrement field
         $this->id_media->IsPrimaryKey = true; // Primary key field
-        $this->id_media->Sortable = true; // Allow sort
+        $this->id_media->Sortable = false; // Allow sort
         $this->id_media->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_media'] = &$this->id_media;
 
@@ -901,7 +901,6 @@ SORTHTML;
                     $doc->exportCaption($this->nama_media);
                     $doc->exportCaption($this->aktif);
                 } else {
-                    $doc->exportCaption($this->id_media);
                     $doc->exportCaption($this->nama_media);
                     $doc->exportCaption($this->aktif);
                 }
@@ -937,7 +936,6 @@ SORTHTML;
                         $doc->exportField($this->nama_media);
                         $doc->exportField($this->aktif);
                     } else {
-                        $doc->exportField($this->id_media);
                         $doc->exportField($this->nama_media);
                         $doc->exportField($this->aktif);
                     }

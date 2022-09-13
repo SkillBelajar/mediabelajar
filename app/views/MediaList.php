@@ -56,6 +56,7 @@ loadjs.ready("head", function () {
 <?php
 $Page->renderOtherOptions();
 ?>
+<?php if ($Security->canSearch()) { ?>
 <?php if (!$Page->isExport() && !$Page->CurrentAction) { ?>
 <form name="fmedialistsrch" id="fmedialistsrch" class="form-inline ew-form ew-ext-search-form" action="<?= CurrentPageUrl() ?>">
 <div id="fmedialistsrch-search-panel" class="<?= $Page->SearchPanelClass ?>">
@@ -81,6 +82,7 @@ $Page->renderOtherOptions();
     </div><!-- /.ew-extended-search -->
 </div><!-- /.ew-search-panel -->
 </form>
+<?php } ?>
 <?php } ?>
 <?php $Page->showPageHeader(); ?>
 <?php
@@ -109,9 +111,6 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->id_media->Visible) { // id_media ?>
-        <th data-name="id_media" class="<?= $Page->id_media->headerCellClass() ?>"><div id="elh_media_id_media" class="media_id_media"><?= $Page->renderSort($Page->id_media) ?></div></th>
-<?php } ?>
 <?php if ($Page->nama_media->Visible) { // nama_media ?>
         <th data-name="nama_media" class="<?= $Page->nama_media->headerCellClass() ?>"><div id="elh_media_nama_media" class="media_nama_media"><?= $Page->renderSort($Page->nama_media) ?></div></th>
 <?php } ?>
@@ -178,14 +177,6 @@ while ($Page->RecordCount < $Page->StopRecord) {
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->id_media->Visible) { // id_media ?>
-        <td data-name="id_media" <?= $Page->id_media->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_media_id_media">
-<span<?= $Page->id_media->viewAttributes() ?>>
-<?= $Page->id_media->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->nama_media->Visible) { // nama_media ?>
         <td data-name="nama_media" <?= $Page->nama_media->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_media_nama_media">

@@ -540,6 +540,9 @@ class MediaAdd extends Media
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -748,6 +751,9 @@ class MediaAdd extends Media
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
 
+            // Setup login status
+            SetupLoginStatus();
+
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
 
@@ -920,10 +926,6 @@ class MediaAdd extends Media
 
         // aktif
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_media
-            $this->id_media->ViewValue = $this->id_media->CurrentValue;
-            $this->id_media->ViewCustomAttributes = "";
-
             // nama_media
             $this->nama_media->ViewValue = $this->nama_media->CurrentValue;
             $this->nama_media->ViewCustomAttributes = "";

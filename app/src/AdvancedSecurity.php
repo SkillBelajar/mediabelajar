@@ -440,6 +440,37 @@ class AdvancedSecurity
             //$_SESSION[SESSION_STATUS] = "login"; // To be setup below
             $this->setCurrentUserName($usr); // Load user name
         }
+
+        // Check hard coded admin first
+        if (!$valid) {
+            $adminUserName = Config("ADMIN_USER_NAME");
+            $adminPassword = Config("ADMIN_PASSWORD");
+            if (Config("ENCRYPTION_ENABLED")) {
+                try {
+                    $adminUserName = PhpDecrypt(Config("ADMIN_USER_NAME"), Config("ENCRYPTION_KEY"));
+                    $adminPassword = PhpDecrypt(Config("ADMIN_PASSWORD"), Config("ENCRYPTION_KEY"));
+                } catch (\Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $e) {
+                    $adminUserName = Config("ADMIN_USER_NAME");
+                    $adminPassword = Config("ADMIN_PASSWORD");
+                }
+            }
+            if (Config("CASE_SENSITIVE_PASSWORD")) {
+                $valid = (!$customValid && $adminUserName === $usr && $adminPassword === $pwd) ||
+                    ($customValid && $adminUserName === $usr);
+            } else {
+                $valid = (!$customValid && SameText($adminUserName, $usr) && SameText($adminPassword, $pwd)) ||
+                    ($customValid && SameText($adminUserName, $usr));
+            }
+            if ($valid) {
+                $this->isLoggedIn = true;
+                $_SESSION[SESSION_STATUS] = "login";
+                $this->isSysAdmin = true;
+                $_SESSION[SESSION_SYS_ADMIN] = 1; // System Administrator
+                $this->setCurrentUserName($Language->phrase("UserAdministrator")); // Load user name
+                $this->setSessionUserLevelID(-1); // System Administrator
+                $this->setSessionUserID(-1); // System Administrator
+            }
+        }
         if ($customValid) {
             $row = null;
             $customValid = $this->userValidated($row) !== false;
@@ -455,9 +486,19 @@ class AdvancedSecurity
         return $valid;
 }
 
-    // No User Level security
+    // User Level security (Anonymous)
     public function setupUserLevel()
     {
+        // Load user level from user level settings
+        global $USER_LEVELS, $USER_LEVEL_PRIVS;
+        $this->UserLevel = $USER_LEVELS;
+        $this->UserLevelPriv = $USER_LEVEL_PRIVS;
+
+        // Check permissions
+        $this->checkPermissions();
+
+        // Save the User Level to Session variable
+        $this->saveUserLevel();
     }
 
     // Check import/lookup permissions

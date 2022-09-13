@@ -611,6 +611,9 @@ class PesertaList extends Peserta
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -728,7 +731,7 @@ class PesertaList extends Peserta
 
         // Set up list options
         $this->setupListOptions();
-        $this->id_peserta->setVisibility();
+        $this->id_peserta->Visible = false;
         $this->tanggal_jam->setVisibility();
         $this->nama_peserta->setVisibility();
         $this->id_evaluasi->setVisibility();
@@ -940,6 +943,9 @@ class PesertaList extends Peserta
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
@@ -1280,7 +1286,6 @@ class PesertaList extends Peserta
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id_peserta); // id_peserta
             $this->updateSort($this->tanggal_jam); // tanggal_jam
             $this->updateSort($this->nama_peserta); // nama_peserta
             $this->updateSort($this->id_evaluasi); // id_evaluasi
@@ -1351,25 +1356,25 @@ class PesertaList extends Peserta
         // "view"
         $item = &$this->ListOptions->add("view");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canView();
         $item->OnLeft = false;
 
         // "edit"
         $item = &$this->ListOptions->add("edit");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canEdit();
         $item->OnLeft = false;
 
         // "copy"
         $item = &$this->ListOptions->add("copy");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canAdd();
         $item->OnLeft = false;
 
         // "delete"
         $item = &$this->ListOptions->add("delete");
         $item->CssClass = "text-nowrap";
-        $item->Visible = true;
+        $item->Visible = $Security->canDelete();
         $item->OnLeft = false;
 
         // List actions
@@ -1418,7 +1423,7 @@ class PesertaList extends Peserta
             // "view"
             $opt = $this->ListOptions["view"];
             $viewcaption = HtmlTitle($Language->phrase("ViewLink"));
-            if (true) {
+            if ($Security->canView()) {
                 $opt->Body = "<a class=\"ew-row-link ew-view\" title=\"" . $viewcaption . "\" data-caption=\"" . $viewcaption . "\" href=\"" . HtmlEncode(GetUrl($this->ViewUrl)) . "\">" . $Language->phrase("ViewLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1427,7 +1432,7 @@ class PesertaList extends Peserta
             // "edit"
             $opt = $this->ListOptions["edit"];
             $editcaption = HtmlTitle($Language->phrase("EditLink"));
-            if (true) {
+            if ($Security->canEdit()) {
                 $opt->Body = "<a class=\"ew-row-link ew-edit\" title=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("EditLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1436,7 +1441,7 @@ class PesertaList extends Peserta
             // "copy"
             $opt = $this->ListOptions["copy"];
             $copycaption = HtmlTitle($Language->phrase("CopyLink"));
-            if (true) {
+            if ($Security->canAdd()) {
                 $opt->Body = "<a class=\"ew-row-link ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("CopyLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1444,7 +1449,7 @@ class PesertaList extends Peserta
 
             // "delete"
             $opt = $this->ListOptions["delete"];
-            if (true) {
+            if ($Security->canDelete()) {
             $opt->Body = "<a class=\"ew-row-link ew-delete\"" . "" . " title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("DeleteLink") . "</a>";
             } else {
                 $opt->Body = "";
@@ -1502,7 +1507,7 @@ class PesertaList extends Peserta
         $item = &$option->add("add");
         $addcaption = HtmlTitle($Language->phrase("AddLink"));
         $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
-        $item->Visible = $this->AddUrl != "";
+        $item->Visible = $this->AddUrl != "" && $Security->canAdd();
         $option = $options["action"];
 
         // Set up options default
@@ -1804,10 +1809,6 @@ class PesertaList extends Peserta
 
         // benar
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_peserta
-            $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
-            $this->id_peserta->ViewCustomAttributes = "";
-
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
             $this->tanggal_jam->ViewCustomAttributes = "";
@@ -1824,11 +1825,6 @@ class PesertaList extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
-
-            // id_peserta
-            $this->id_peserta->LinkCustomAttributes = "";
-            $this->id_peserta->HrefValue = "";
-            $this->id_peserta->TooltipValue = "";
 
             // tanggal_jam
             $this->tanggal_jam->LinkCustomAttributes = "";

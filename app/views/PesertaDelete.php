@@ -41,9 +41,6 @@ $Page->showMessage();
 <table class="table ew-table">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->id_peserta->Visible) { // id_peserta ?>
-        <th class="<?= $Page->id_peserta->headerCellClass() ?>"><span id="elh_peserta_id_peserta" class="peserta_id_peserta"><?= $Page->id_peserta->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->tanggal_jam->Visible) { // tanggal_jam ?>
         <th class="<?= $Page->tanggal_jam->headerCellClass() ?>"><span id="elh_peserta_tanggal_jam" class="peserta_tanggal_jam"><?= $Page->tanggal_jam->caption() ?></span></th>
 <?php } ?>
@@ -77,14 +74,6 @@ while (!$Page->Recordset->EOF) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->id_peserta->Visible) { // id_peserta ?>
-        <td <?= $Page->id_peserta->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_peserta_id_peserta" class="peserta_id_peserta">
-<span<?= $Page->id_peserta->viewAttributes() ?>>
-<?= $Page->id_peserta->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->tanggal_jam->Visible) { // tanggal_jam ?>
         <td <?= $Page->tanggal_jam->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_peserta_tanggal_jam" class="peserta_tanggal_jam">

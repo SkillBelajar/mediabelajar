@@ -525,7 +525,7 @@ class EvaluasiDelete extends Evaluasi
     {
         global $ExportType, $CustomExportType, $ExportFileName, $UserProfile, $Language, $Security, $CurrentForm;
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_evaluasi->setVisibility();
+        $this->id_evaluasi->Visible = false;
         $this->id_materi->setVisibility();
         $this->soal->Visible = false;
         $this->jawaban->setVisibility();
@@ -607,6 +607,9 @@ class EvaluasiDelete extends Evaluasi
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
@@ -726,10 +729,6 @@ class EvaluasiDelete extends Evaluasi
 
         // jawaban
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_evaluasi
-            $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
-            $this->id_evaluasi->ViewCustomAttributes = "";
-
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
             if ($curVal != "") {
@@ -751,6 +750,10 @@ class EvaluasiDelete extends Evaluasi
             }
             $this->id_materi->ViewCustomAttributes = "";
 
+            // soal
+            $this->soal->ViewValue = $this->soal->CurrentValue;
+            $this->soal->ViewCustomAttributes = "";
+
             // jawaban
             if (strval($this->jawaban->CurrentValue) != "") {
                 $this->jawaban->ViewValue = $this->jawaban->optionCaption($this->jawaban->CurrentValue);
@@ -758,11 +761,6 @@ class EvaluasiDelete extends Evaluasi
                 $this->jawaban->ViewValue = null;
             }
             $this->jawaban->ViewCustomAttributes = "";
-
-            // id_evaluasi
-            $this->id_evaluasi->LinkCustomAttributes = "";
-            $this->id_evaluasi->HrefValue = "";
-            $this->id_evaluasi->TooltipValue = "";
 
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";

@@ -41,9 +41,6 @@ $Page->showMessage();
 <table class="table ew-table">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->id_materi->Visible) { // id_materi ?>
-        <th class="<?= $Page->id_materi->headerCellClass() ?>"><span id="elh_materi_id_materi" class="materi_id_materi"><?= $Page->id_materi->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->id_media->Visible) { // id_media ?>
         <th class="<?= $Page->id_media->headerCellClass() ?>"><span id="elh_materi_id_media" class="materi_id_media"><?= $Page->id_media->caption() ?></span></th>
 <?php } ?>
@@ -71,14 +68,6 @@ while (!$Page->Recordset->EOF) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->id_materi->Visible) { // id_materi ?>
-        <td <?= $Page->id_materi->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_materi_id_materi" class="materi_id_materi">
-<span<?= $Page->id_materi->viewAttributes() ?>>
-<?= $Page->id_materi->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->id_media->Visible) { // id_media ?>
         <td <?= $Page->id_media->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_materi_id_media" class="materi_id_media">

@@ -84,7 +84,7 @@ class Evaluasi extends DbTable
         $this->id_materi->Sortable = true; // Allow sort
         $this->id_materi->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->id_materi->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->id_materi->Lookup = new Lookup('id_materi', 'materi', false, 'id_materi', ["judul","","",""], [], [], [], [], [], [], '', '');
+        $this->id_materi->Lookup = new Lookup('id_materi', 'materi', false, 'id_materi', ["judul","","",""], [], [], [], [], [], [], '`id_materi` DESC', '');
         $this->id_materi->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_materi'] = &$this->id_materi;
 
@@ -946,8 +946,8 @@ SORTHTML;
                     $doc->exportCaption($this->soal);
                     $doc->exportCaption($this->jawaban);
                 } else {
-                    $doc->exportCaption($this->id_evaluasi);
                     $doc->exportCaption($this->id_materi);
+                    $doc->exportCaption($this->soal);
                     $doc->exportCaption($this->jawaban);
                 }
                 $doc->endExportRow();
@@ -983,8 +983,8 @@ SORTHTML;
                         $doc->exportField($this->soal);
                         $doc->exportField($this->jawaban);
                     } else {
-                        $doc->exportField($this->id_evaluasi);
                         $doc->exportField($this->id_materi);
+                        $doc->exportField($this->soal);
                         $doc->exportField($this->jawaban);
                     }
                     $doc->endExportRow($rowCnt);

@@ -540,6 +540,9 @@ class MateriAdd extends Materi
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -750,6 +753,9 @@ class MateriAdd extends Materi
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
 
+            // Setup login status
+            SetupLoginStatus();
+
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
 
@@ -939,10 +945,6 @@ class MateriAdd extends Materi
 
         // isi
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_materi
-            $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-            $this->id_materi->ViewCustomAttributes = "";
-
             // id_media
             $curVal = strval($this->id_media->CurrentValue);
             if ($curVal != "") {

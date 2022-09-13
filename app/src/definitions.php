@@ -53,6 +53,7 @@ return [
     "materi" => \DI\create(Materi::class),
     "media" => \DI\create(Media::class),
     "peserta" => \DI\create(Peserta::class),
+    "live" => \DI\create(Live::class),
 
     // Detail table pages
 ];

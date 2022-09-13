@@ -525,7 +525,7 @@ class PesertaDelete extends Peserta
     {
         global $ExportType, $CustomExportType, $ExportFileName, $UserProfile, $Language, $Security, $CurrentForm;
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_peserta->setVisibility();
+        $this->id_peserta->Visible = false;
         $this->tanggal_jam->setVisibility();
         $this->nama_peserta->setVisibility();
         $this->id_evaluasi->setVisibility();
@@ -607,6 +607,9 @@ class PesertaDelete extends Peserta
         if (!IsApi() && !$this->isTerminated()) {
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
+
+            // Setup login status
+            SetupLoginStatus();
 
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
@@ -730,10 +733,6 @@ class PesertaDelete extends Peserta
 
         // benar
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_peserta
-            $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
-            $this->id_peserta->ViewCustomAttributes = "";
-
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
             $this->tanggal_jam->ViewCustomAttributes = "";
@@ -750,11 +749,6 @@ class PesertaDelete extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
-
-            // id_peserta
-            $this->id_peserta->LinkCustomAttributes = "";
-            $this->id_peserta->HrefValue = "";
-            $this->id_peserta->TooltipValue = "";
 
             // tanggal_jam
             $this->tanggal_jam->LinkCustomAttributes = "";

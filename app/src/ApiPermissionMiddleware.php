@@ -70,8 +70,42 @@ class ApiPermissionMiddleware
         $UserProfile = Container("profile");
         $Security = Container("security");
 
-        // No security
-        $authorised = true;
+        // Default no permission
+        $authorised = false;
+
+        // Actions for table
+        $apiTableActions = [
+            Config("API_LIST_ACTION"),
+            Config("API_VIEW_ACTION"),
+            Config("API_ADD_ACTION"),
+            Config("API_EDIT_ACTION"),
+            Config("API_DELETE_ACTION"),
+            Config("API_FILE_ACTION")
+        ];
+
+        // Check permission
+        if (in_array($action, array_keys($GLOBALS["API_ACTIONS"]))) { // Custom actions (deprecated)
+            $authorised = true;
+        } elseif (in_array($action, [Config("API_UPLOAD_ACTION"), Config("API_PERMISSIONS_ACTION")])) { // Upload file / Permissions
+            $authorised = true;
+        } elseif (in_array($action, $checkTokenActions)) { // Token checked
+            $authorised = true;
+        } elseif (in_array($action, $apiTableActions) && $table != "") { // Table actions
+            $Security->loadTablePermissions($table);
+            $authorised = $action == Config("API_LIST_ACTION") && $Security->canList() ||
+                $action == Config("API_VIEW_ACTION") && $Security->canView() ||
+                $action == Config("API_ADD_ACTION") && $Security->canAdd() ||
+                $action == Config("API_EDIT_ACTION") && $Security->canEdit() ||
+                $action == Config("API_DELETE_ACTION") && $Security->canDelete() ||
+                $action == Config("API_FILE_ACTION") && ($Security->canList() || $Security->canView());
+        } elseif ($action == Config("API_REGISTER_ACTION")) { // Register
+            $authorised = true;
+        } elseif ($action == Config("API_LOOKUP_ACTION")) { // Lookup
+            //$authorised = $Security->canLookup();
+            $authorised = true; // Handled by page lookup method
+        } else { // Not authorised
+            $authorised = false;
+        }
         if (!$authorised) {
             return $response->withStatus(401); // Not authorized
         }

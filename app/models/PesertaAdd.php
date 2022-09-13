@@ -540,6 +540,9 @@ class PesertaAdd extends Peserta
         if ($lookup === null) {
             return false;
         }
+        if (!$Security->isLoggedIn()) { // Logged in
+            return false;
+        }
 
         // Get lookup parameters
         $lookupType = Post("ajax", "unknown");
@@ -750,6 +753,9 @@ class PesertaAdd extends Peserta
             // Pass table and field properties to client side
             $this->toClientVar(["tableCaption"], ["caption", "Required", "IsInvalid", "Raw"]);
 
+            // Setup login status
+            SetupLoginStatus();
+
             // Pass login status to client side
             SetClientVar("login", LoginStatus());
 
@@ -956,10 +962,6 @@ class PesertaAdd extends Peserta
 
         // benar
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_peserta
-            $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
-            $this->id_peserta->ViewCustomAttributes = "";
-
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
             $this->tanggal_jam->ViewCustomAttributes = "";

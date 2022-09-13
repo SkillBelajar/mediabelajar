@@ -74,7 +74,7 @@ class Peserta extends DbTable
         $this->id_peserta = new DbField('peserta', 'peserta', 'x_id_peserta', 'id_peserta', '`id_peserta`', '`id_peserta`', 3, 100, -1, false, '`id_peserta`', false, false, false, 'FORMATTED TEXT', 'NO');
         $this->id_peserta->IsAutoIncrement = true; // Autoincrement field
         $this->id_peserta->IsPrimaryKey = true; // Primary key field
-        $this->id_peserta->Sortable = true; // Allow sort
+        $this->id_peserta->Sortable = false; // Allow sort
         $this->id_peserta->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_peserta'] = &$this->id_peserta;
 
@@ -957,7 +957,6 @@ SORTHTML;
                     $doc->exportCaption($this->id_evaluasi);
                     $doc->exportCaption($this->benar);
                 } else {
-                    $doc->exportCaption($this->id_peserta);
                     $doc->exportCaption($this->tanggal_jam);
                     $doc->exportCaption($this->nama_peserta);
                     $doc->exportCaption($this->id_evaluasi);
@@ -997,7 +996,6 @@ SORTHTML;
                         $doc->exportField($this->id_evaluasi);
                         $doc->exportField($this->benar);
                     } else {
-                        $doc->exportField($this->id_peserta);
                         $doc->exportField($this->tanggal_jam);
                         $doc->exportField($this->nama_peserta);
                         $doc->exportField($this->id_evaluasi);

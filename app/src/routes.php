@@ -60,7 +60,6 @@ return function (App $app) {
 
     // peserta
     $app->any('/PesertaList[/{id_peserta}]', PesertaController::class . ':list')->add(PermissionMiddleware::class)->setName('PesertaList-peserta-list'); // list
-    $app->any('/PesertaAdd[/{id_peserta}]', PesertaController::class . ':add')->add(PermissionMiddleware::class)->setName('PesertaAdd-peserta-add'); // add
     $app->any('/PesertaView[/{id_peserta}]', PesertaController::class . ':view')->add(PermissionMiddleware::class)->setName('PesertaView-peserta-view'); // view
     $app->any('/PesertaEdit[/{id_peserta}]', PesertaController::class . ':edit')->add(PermissionMiddleware::class)->setName('PesertaEdit-peserta-edit'); // edit
     $app->any('/PesertaDelete[/{id_peserta}]', PesertaController::class . ':delete')->add(PermissionMiddleware::class)->setName('PesertaDelete-peserta-delete'); // delete
@@ -68,7 +67,6 @@ return function (App $app) {
         '/peserta',
         function (RouteCollectorProxy $group) {
             $group->any('/list[/{id_peserta}]', PesertaController::class . ':list')->add(PermissionMiddleware::class)->setName('peserta/list-peserta-list-2'); // list
-            $group->any('/add[/{id_peserta}]', PesertaController::class . ':add')->add(PermissionMiddleware::class)->setName('peserta/add-peserta-add-2'); // add
             $group->any('/view[/{id_peserta}]', PesertaController::class . ':view')->add(PermissionMiddleware::class)->setName('peserta/view-peserta-view-2'); // view
             $group->any('/edit[/{id_peserta}]', PesertaController::class . ':edit')->add(PermissionMiddleware::class)->setName('peserta/edit-peserta-edit-2'); // edit
             $group->any('/delete[/{id_peserta}]', PesertaController::class . ':delete')->add(PermissionMiddleware::class)->setName('peserta/delete-peserta-delete-2'); // delete

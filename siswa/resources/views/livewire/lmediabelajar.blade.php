@@ -29,9 +29,9 @@
             $id_evaluasi = $soal[0]->id_evaluasi;
             $kunci = $soal[0]->jawaban;
             /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if ($jenis_soal == 'Essai') {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $jenis = $jen
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if ($jenis_soal == 'Essai') {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $jenis = $jen
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */
             ?>
             <h3>Soal : </h3>
             {!! $soal_keluar !!}
@@ -61,32 +61,80 @@
                             {{ $item->jawaban_essai }}
                         </div>
                     @endforeach
-                @else
-                    <form method="post" action="simpanabc">
-                        @csrf
-                        <select name="abc" required>
-                            <option value="">==Pilih Jawaban==</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                        </select>
-                        <br>
-                        <br>
-                        <input type="hidden" value="{{ $id_evaluasi }}" name="id_evaluasi">
-                        <input type="hidden" value="{{ \Crypt::encrypt($kunci) }}" name="jenis_soal">
-
-                        <input type="submit" class="btn btn-info" value="Simpan Jawaban">
-                    </form>
+                </div>
+            @else
+                <form method="post" action="simpanabc">
+                    @csrf
+                    <select name="abc" required>
+                        <option value="">==Pilih Jawaban==</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                    </select>
                     <br>
+                    <br>
+                    <input type="hidden" value="{{ $id_evaluasi }}" name="id_evaluasi">
+                    <input type="hidden" value="{{ \Crypt::encrypt($kunci) }}" name="jenis_soal">
+
+                    <input type="submit" class="btn btn-info" value="Simpan Jawaban">
+                </form>
+                <br>
+                <div class="well">
+                    <h4>Yang Sudah Menjawab</h4>
+                    <?php
+                    $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_evaluasi]);
+                    // dd($jb);
+                    ?>
+                    @foreach ($jb as $item)
+                        <div class="alert alert-info">
+                            {{ $item->nama_peserta }}
+                            Menjawab : <br>
+                            {{ $item->jawaban_essai }}
+                        </div>
+                    @endforeach
+                </div>
 
             @endif
-
+        @elseif($aksi == 'tampilkan_jawaban')
+            <div class="well">
+                <h4>Yang Sudah Menjawab</h4>
+                <?php
+                //ambil IDMateri
+                $materi = \DB::select('SELECT * FROM `evaluasi` WHERE `id_materi` = ? ORDER BY `evaluasi`.`id_evaluasi` DESC', [$id_materi]);
+                $id_ev = $materi[0]->id_evaluasi;
+                $soal = $materi[0]->soal;
+                //dd($id_evaluasi);
+                $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_ev]);
+                // dd($jb);
+                ?>
+                Soal : <br>
+                {!! $soal !!}
+                <hr>
+                @foreach ($jb as $item)
+                    @if ($item->benar == 'benar')
+                        <div class="alert alert-info">
+                            {{ $item->nama_peserta }}
+                            Menjawab : <br>
+                            {{ $item->jawaban_essai }}
+                        </div>
+                    @elseif($item->benar == '-')
+                        <div class="alert alert-info">
+                            {{ $item->nama_peserta }}
+                            Menjawab : <br>
+                            {{ $item->jawaban_essai }}
+                        </div>
+                    @else
+                        <div class="alert alert-danger">
+                            {{ $item->nama_peserta }}
+                            Menjawab : <br>
+                            {{ $item->jawaban_essai }}
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @endif
     </div>
-@elseif($aksi == 'tampilkan_jawaban')
-    tampilkan jawaan
-    @endif
-</div>
 
 </div>

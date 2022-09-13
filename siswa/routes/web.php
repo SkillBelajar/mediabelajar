@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\awal;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,8 +12,14 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+ Route::get('/admin', [loginx::class, 'admin']);
+
+*/
+
+Route::get('/', [awal::class, 'awal']);

@@ -27,3 +27,4 @@ Route::post('/', [awal::class, 'simpanpeserta']);
 
 
 Route::get('/mediabelajar', [awal::class, 'mediabelajar']);
+Route::post('/simpanessai', [awal::class, 'simpanessai']);

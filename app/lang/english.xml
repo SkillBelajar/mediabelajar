@@ -1028,6 +1028,8 @@
         <phrase id="fldtagcaption1" value="Materi" />
         <phrase id="fldtagvalue2" value="Soal" />
         <phrase id="fldtagcaption2" value="Soal" />
+        <phrase id="fldtagvalue3" value="tampilkan_jawaban" />
+        <phrase id="fldtagcaption3" value="tampilkan_jawaban" />
       </field>
       <field id="id_materi">
         <phrase id="fldcaption" value="id materi" />

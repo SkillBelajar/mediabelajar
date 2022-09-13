@@ -34,7 +34,37 @@ class awal extends Controller
 
     public function mediabelajar()
     {
-        //echo "ok";
+        $nama = \Session::get('nama');
+        //dd($nama);
+        if (empty($nama)) {
+            return redirect("/");
+        }
         return view("mediabelajar");
+    }
+
+    public function simpanessai(Request $request)
+    {
+        $jawaban  = $request->jawaban;
+        //echo $jawaban;
+        $id_evaluasi = $request->id_evaluasi;
+        //echo $id_evaluasi;
+        $tanggal_jam = date("d-m-Y H:i:s");
+        $nama = \Session::get('nama');
+        // echo $nama;
+        $jenis_evaluasi  = $request->jenis_soal;
+        // echo $jenis_evaluasi;
+        if ($jenis_evaluasi == "Essai") {
+            $benar = "-";
+        }
+        //simpan ke jawaban peserta
+        // if()
+        $ip = $_SERVER['REMOTE_ADDR'];
+        // dd($ip);
+
+        DB::insert("INSERT INTO `peserta` (`id_peserta`, `tanggal_jam`, `nama_peserta`, `id_evaluasi`, `benar`, `jawaban_essai`, `ip`) VALUES (NULL, ?, ?, ?, ?, ?, ?);", [
+            $tanggal_jam, $nama, $id_evaluasi, $benar, $jawaban, $ip
+        ]);
+
+        return redirect("/mediabelajar");
     }
 }

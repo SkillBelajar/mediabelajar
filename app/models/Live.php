@@ -85,7 +85,7 @@ class Live extends DbTable
         $this->aksi->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->aksi->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
         $this->aksi->Lookup = new Lookup('aksi', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->aksi->OptionCount = 2;
+        $this->aksi->OptionCount = 3;
         $this->Fields['aksi'] = &$this->aksi;
 
         // id_materi

@@ -20,6 +20,17 @@ $evaluasi = Container("evaluasi");
 </td>
         </tr>
 <?php } ?>
+<?php if ($evaluasi->soal->Visible) { // soal ?>
+        <tr id="r_soal">
+            <td class="<?= $evaluasi->TableLeftColumnClass ?>"><?= $evaluasi->soal->caption() ?></td>
+            <td <?= $evaluasi->soal->cellAttributes() ?>>
+<span id="el_evaluasi_soal">
+<span<?= $evaluasi->soal->viewAttributes() ?>>
+<?= $evaluasi->soal->getViewValue() ?></span>
+</span>
+</td>
+        </tr>
+<?php } ?>
 <?php if ($evaluasi->jawaban->Visible) { // jawaban ?>
         <tr id="r_jawaban">
             <td class="<?= $evaluasi->TableLeftColumnClass ?>"><?= $evaluasi->jawaban->caption() ?></td>

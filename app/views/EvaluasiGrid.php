@@ -20,6 +20,7 @@ loadjs.ready("head", function () {
     var fields = ew.vars.tables.evaluasi.fields;
     fevaluasigrid.addFields([
         ["id_materi", [fields.id_materi.required ? ew.Validators.required(fields.id_materi.caption) : null], fields.id_materi.isInvalid],
+        ["soal", [fields.soal.required ? ew.Validators.required(fields.soal.caption) : null], fields.soal.isInvalid],
         ["jawaban", [fields.jawaban.required ? ew.Validators.required(fields.jawaban.caption) : null], fields.jawaban.isInvalid]
     ]);
 
@@ -76,6 +77,8 @@ loadjs.ready("head", function () {
         var fobj = this.getForm();
         if (ew.valueChanged(fobj, rowIndex, "id_materi", false))
             return false;
+        if (ew.valueChanged(fobj, rowIndex, "soal", false))
+            return false;
         if (ew.valueChanged(fobj, rowIndex, "jawaban", false))
             return false;
         return true;
@@ -119,6 +122,9 @@ $Grid->ListOptions->render("header", "left");
 ?>
 <?php if ($Grid->id_materi->Visible) { // id_materi ?>
         <th data-name="id_materi" class="<?= $Grid->id_materi->headerCellClass() ?>"><div id="elh_evaluasi_id_materi" class="evaluasi_id_materi"><?= $Grid->renderSort($Grid->id_materi) ?></div></th>
+<?php } ?>
+<?php if ($Grid->soal->Visible) { // soal ?>
+        <th data-name="soal" class="<?= $Grid->soal->headerCellClass() ?>"><div id="elh_evaluasi_soal" class="evaluasi_soal"><?= $Grid->renderSort($Grid->soal) ?></div></th>
 <?php } ?>
 <?php if ($Grid->jawaban->Visible) { // jawaban ?>
         <th data-name="jawaban" class="<?= $Grid->jawaban->headerCellClass() ?>"><div id="elh_evaluasi_jawaban" class="evaluasi_jawaban"><?= $Grid->renderSort($Grid->jawaban) ?></div></th>
@@ -326,6 +332,45 @@ loadjs.ready("head", function() {
 <?php if ($Grid->RowType == ROWTYPE_EDIT || $Grid->CurrentMode == "edit") { ?>
 <input type="hidden" data-table="evaluasi" data-field="x_id_evaluasi" name="x<?= $Grid->RowIndex ?>_id_evaluasi" id="x<?= $Grid->RowIndex ?>_id_evaluasi" value="<?= HtmlEncode($Grid->id_evaluasi->CurrentValue) ?>">
 <?php } ?>
+    <?php if ($Grid->soal->Visible) { // soal ?>
+        <td data-name="soal" <?= $Grid->soal->cellAttributes() ?>>
+<?php if ($Grid->RowType == ROWTYPE_ADD) { // Add record ?>
+<span id="el<?= $Grid->RowCount ?>_evaluasi_soal" class="form-group">
+<?php $Grid->soal->EditAttrs->appendClass("editor"); ?>
+<textarea data-table="evaluasi" data-field="x_soal" name="x<?= $Grid->RowIndex ?>_soal" id="x<?= $Grid->RowIndex ?>_soal" cols="35" rows="4" placeholder="<?= HtmlEncode($Grid->soal->getPlaceHolder()) ?>"<?= $Grid->soal->editAttributes() ?>><?= $Grid->soal->EditValue ?></textarea>
+<div class="invalid-feedback"><?= $Grid->soal->getErrorMessage() ?></div>
+<script>
+loadjs.ready(["fevaluasigrid", "editor"], function() {
+	ew.createEditor("fevaluasigrid", "x<?= $Grid->RowIndex ?>_soal", 35, 4, <?= $Grid->soal->ReadOnly || false ? "true" : "false" ?>);
+});
+</script>
+</span>
+<input type="hidden" data-table="evaluasi" data-field="x_soal" name="o<?= $Grid->RowIndex ?>_soal" id="o<?= $Grid->RowIndex ?>_soal" value="<?= HtmlEncode($Grid->soal->OldValue) ?>">
+<?php } ?>
+<?php if ($Grid->RowType == ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?= $Grid->RowCount ?>_evaluasi_soal" class="form-group">
+<?php $Grid->soal->EditAttrs->appendClass("editor"); ?>
+<textarea data-table="evaluasi" data-field="x_soal" name="x<?= $Grid->RowIndex ?>_soal" id="x<?= $Grid->RowIndex ?>_soal" cols="35" rows="4" placeholder="<?= HtmlEncode($Grid->soal->getPlaceHolder()) ?>"<?= $Grid->soal->editAttributes() ?>><?= $Grid->soal->EditValue ?></textarea>
+<div class="invalid-feedback"><?= $Grid->soal->getErrorMessage() ?></div>
+<script>
+loadjs.ready(["fevaluasigrid", "editor"], function() {
+	ew.createEditor("fevaluasigrid", "x<?= $Grid->RowIndex ?>_soal", 35, 4, <?= $Grid->soal->ReadOnly || false ? "true" : "false" ?>);
+});
+</script>
+</span>
+<?php } ?>
+<?php if ($Grid->RowType == ROWTYPE_VIEW) { // View record ?>
+<span id="el<?= $Grid->RowCount ?>_evaluasi_soal">
+<span<?= $Grid->soal->viewAttributes() ?>>
+<?= $Grid->soal->getViewValue() ?></span>
+</span>
+<?php if ($Grid->isConfirm()) { ?>
+<input type="hidden" data-table="evaluasi" data-field="x_soal" name="fevaluasigrid$x<?= $Grid->RowIndex ?>_soal" id="fevaluasigrid$x<?= $Grid->RowIndex ?>_soal" value="<?= HtmlEncode($Grid->soal->FormValue) ?>">
+<input type="hidden" data-table="evaluasi" data-field="x_soal" name="fevaluasigrid$o<?= $Grid->RowIndex ?>_soal" id="fevaluasigrid$o<?= $Grid->RowIndex ?>_soal" value="<?= HtmlEncode($Grid->soal->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+    <?php } ?>
     <?php if ($Grid->jawaban->Visible) { // jawaban ?>
         <td data-name="jawaban" <?= $Grid->jawaban->cellAttributes() ?>>
 <?php if ($Grid->RowType == ROWTYPE_ADD) { // Add record ?>
@@ -483,6 +528,29 @@ loadjs.ready("head", function() {
 <input type="hidden" data-table="evaluasi" data-field="x_id_materi" name="x<?= $Grid->RowIndex ?>_id_materi" id="x<?= $Grid->RowIndex ?>_id_materi" value="<?= HtmlEncode($Grid->id_materi->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="evaluasi" data-field="x_id_materi" name="o<?= $Grid->RowIndex ?>_id_materi" id="o<?= $Grid->RowIndex ?>_id_materi" value="<?= HtmlEncode($Grid->id_materi->OldValue) ?>">
+</td>
+    <?php } ?>
+    <?php if ($Grid->soal->Visible) { // soal ?>
+        <td data-name="soal">
+<?php if (!$Grid->isConfirm()) { ?>
+<span id="el$rowindex$_evaluasi_soal" class="form-group evaluasi_soal">
+<?php $Grid->soal->EditAttrs->appendClass("editor"); ?>
+<textarea data-table="evaluasi" data-field="x_soal" name="x<?= $Grid->RowIndex ?>_soal" id="x<?= $Grid->RowIndex ?>_soal" cols="35" rows="4" placeholder="<?= HtmlEncode($Grid->soal->getPlaceHolder()) ?>"<?= $Grid->soal->editAttributes() ?>><?= $Grid->soal->EditValue ?></textarea>
+<div class="invalid-feedback"><?= $Grid->soal->getErrorMessage() ?></div>
+<script>
+loadjs.ready(["fevaluasigrid", "editor"], function() {
+	ew.createEditor("fevaluasigrid", "x<?= $Grid->RowIndex ?>_soal", 35, 4, <?= $Grid->soal->ReadOnly || false ? "true" : "false" ?>);
+});
+</script>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_evaluasi_soal" class="form-group evaluasi_soal">
+<span<?= $Grid->soal->viewAttributes() ?>>
+<?= $Grid->soal->ViewValue ?></span>
+</span>
+<input type="hidden" data-table="evaluasi" data-field="x_soal" name="x<?= $Grid->RowIndex ?>_soal" id="x<?= $Grid->RowIndex ?>_soal" value="<?= HtmlEncode($Grid->soal->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="evaluasi" data-field="x_soal" name="o<?= $Grid->RowIndex ?>_soal" id="o<?= $Grid->RowIndex ?>_soal" value="<?= HtmlEncode($Grid->soal->OldValue) ?>">
 </td>
     <?php } ?>
     <?php if ($Grid->jawaban->Visible) { // jawaban ?>

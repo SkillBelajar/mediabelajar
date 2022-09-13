@@ -44,6 +44,9 @@ $Page->showMessage();
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <th class="<?= $Page->id_materi->headerCellClass() ?>"><span id="elh_evaluasi_id_materi" class="evaluasi_id_materi"><?= $Page->id_materi->caption() ?></span></th>
 <?php } ?>
+<?php if ($Page->soal->Visible) { // soal ?>
+        <th class="<?= $Page->soal->headerCellClass() ?>"><span id="elh_evaluasi_soal" class="evaluasi_soal"><?= $Page->soal->caption() ?></span></th>
+<?php } ?>
 <?php if ($Page->jawaban->Visible) { // jawaban ?>
         <th class="<?= $Page->jawaban->headerCellClass() ?>"><span id="elh_evaluasi_jawaban" class="evaluasi_jawaban"><?= $Page->jawaban->caption() ?></span></th>
 <?php } ?>
@@ -73,6 +76,14 @@ while (!$Page->Recordset->EOF) {
 <span id="el<?= $Page->RowCount ?>_evaluasi_id_materi" class="evaluasi_id_materi">
 <span<?= $Page->id_materi->viewAttributes() ?>>
 <?= $Page->id_materi->getViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($Page->soal->Visible) { // soal ?>
+        <td <?= $Page->soal->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_evaluasi_soal" class="evaluasi_soal">
+<span<?= $Page->soal->viewAttributes() ?>>
+<?= $Page->soal->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

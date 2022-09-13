@@ -127,6 +127,9 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <th data-name="id_materi" class="<?= $Page->id_materi->headerCellClass() ?>"><div id="elh_evaluasi_id_materi" class="evaluasi_id_materi"><?= $Page->renderSort($Page->id_materi) ?></div></th>
 <?php } ?>
+<?php if ($Page->soal->Visible) { // soal ?>
+        <th data-name="soal" class="<?= $Page->soal->headerCellClass() ?>"><div id="elh_evaluasi_soal" class="evaluasi_soal"><?= $Page->renderSort($Page->soal) ?></div></th>
+<?php } ?>
 <?php if ($Page->jawaban->Visible) { // jawaban ?>
         <th data-name="jawaban" class="<?= $Page->jawaban->headerCellClass() ?>"><div id="elh_evaluasi_jawaban" class="evaluasi_jawaban"><?= $Page->renderSort($Page->jawaban) ?></div></th>
 <?php } ?>
@@ -195,6 +198,14 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowCount ?>_evaluasi_id_materi">
 <span<?= $Page->id_materi->viewAttributes() ?>>
 <?= $Page->id_materi->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->soal->Visible) { // soal ?>
+        <td data-name="soal" <?= $Page->soal->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_evaluasi_soal">
+<span<?= $Page->soal->viewAttributes() ?>>
+<?= $Page->soal->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

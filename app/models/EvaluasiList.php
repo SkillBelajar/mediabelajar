@@ -733,7 +733,7 @@ class EvaluasiList extends Evaluasi
         $this->setupListOptions();
         $this->id_evaluasi->Visible = false;
         $this->id_materi->setVisibility();
-        $this->soal->Visible = false;
+        $this->soal->setVisibility();
         $this->jawaban->setVisibility();
         $this->hideFieldsForAddEdit();
 
@@ -1300,6 +1300,7 @@ class EvaluasiList extends Evaluasi
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
             $this->updateSort($this->id_materi); // id_materi
+            $this->updateSort($this->soal); // soal
             $this->updateSort($this->jawaban); // jawaban
             $this->setStartRecordNumber(1); // Reset start position
         }
@@ -1310,10 +1311,14 @@ class EvaluasiList extends Evaluasi
     {
         $orderBy = $this->getSessionOrderBy(); // Get ORDER BY from Session
         if ($orderBy == "") {
-            $this->DefaultSort = "";
+            $this->DefaultSort = "`id_evaluasi` DESC";
             if ($this->getSqlOrderBy() != "") {
                 $useDefaultSort = true;
+                if ($this->id_evaluasi->getSort() != "") {
+                    $useDefaultSort = false;
+                }
                 if ($useDefaultSort) {
+                    $this->id_evaluasi->setSort("DESC");
                     $orderBy = $this->getSqlOrderBy();
                     $this->setSessionOrderBy($orderBy);
                 } else {
@@ -1981,6 +1986,11 @@ class EvaluasiList extends Evaluasi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
             $this->id_materi->TooltipValue = "";
+
+            // soal
+            $this->soal->LinkCustomAttributes = "";
+            $this->soal->HrefValue = "";
+            $this->soal->TooltipValue = "";
 
             // jawaban
             $this->jawaban->LinkCustomAttributes = "";

@@ -671,7 +671,7 @@ class EvaluasiGrid extends Evaluasi
         $this->setupListOptions();
         $this->id_evaluasi->Visible = false;
         $this->id_materi->setVisibility();
-        $this->soal->Visible = false;
+        $this->soal->setVisibility();
         $this->jawaban->setVisibility();
         $this->hideFieldsForAddEdit();
 
@@ -1108,6 +1108,9 @@ class EvaluasiGrid extends Evaluasi
         if ($CurrentForm->hasValue("x_id_materi") && $CurrentForm->hasValue("o_id_materi") && $this->id_materi->CurrentValue != $this->id_materi->OldValue) {
             return false;
         }
+        if ($CurrentForm->hasValue("x_soal") && $CurrentForm->hasValue("o_soal") && $this->soal->CurrentValue != $this->soal->OldValue) {
+            return false;
+        }
         if ($CurrentForm->hasValue("x_jawaban") && $CurrentForm->hasValue("o_jawaban") && $this->jawaban->CurrentValue != $this->jawaban->OldValue) {
             return false;
         }
@@ -1193,6 +1196,7 @@ class EvaluasiGrid extends Evaluasi
     public function resetFormError()
     {
         $this->id_materi->clearErrorMessage();
+        $this->soal->clearErrorMessage();
         $this->jawaban->clearErrorMessage();
     }
 
@@ -1212,10 +1216,14 @@ class EvaluasiGrid extends Evaluasi
     {
         $orderBy = $this->getSessionOrderBy(); // Get ORDER BY from Session
         if ($orderBy == "") {
-            $this->DefaultSort = "";
+            $this->DefaultSort = "`id_evaluasi` DESC";
             if ($this->getSqlOrderBy() != "") {
                 $useDefaultSort = true;
+                if ($this->id_evaluasi->getSort() != "") {
+                    $useDefaultSort = false;
+                }
                 if ($useDefaultSort) {
+                    $this->id_evaluasi->setSort("DESC");
                     $orderBy = $this->getSqlOrderBy();
                     $this->setSessionOrderBy($orderBy);
                 } else {
@@ -1507,6 +1515,19 @@ class EvaluasiGrid extends Evaluasi
             $this->id_materi->setOldValue($CurrentForm->getValue("o_id_materi"));
         }
 
+        // Check field name 'soal' first before field var 'x_soal'
+        $val = $CurrentForm->hasValue("soal") ? $CurrentForm->getValue("soal") : $CurrentForm->getValue("x_soal");
+        if (!$this->soal->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->soal->Visible = false; // Disable update for API request
+            } else {
+                $this->soal->setFormValue($val);
+            }
+        }
+        if ($CurrentForm->hasValue("o_soal")) {
+            $this->soal->setOldValue($CurrentForm->getValue("o_soal"));
+        }
+
         // Check field name 'jawaban' first before field var 'x_jawaban'
         $val = $CurrentForm->hasValue("jawaban") ? $CurrentForm->getValue("jawaban") : $CurrentForm->getValue("x_jawaban");
         if (!$this->jawaban->IsDetailKey) {
@@ -1535,6 +1556,7 @@ class EvaluasiGrid extends Evaluasi
             $this->id_evaluasi->CurrentValue = $this->id_evaluasi->FormValue;
         }
         $this->id_materi->CurrentValue = $this->id_materi->FormValue;
+        $this->soal->CurrentValue = $this->soal->FormValue;
         $this->jawaban->CurrentValue = $this->jawaban->FormValue;
     }
 
@@ -1715,6 +1737,11 @@ class EvaluasiGrid extends Evaluasi
             $this->id_materi->HrefValue = "";
             $this->id_materi->TooltipValue = "";
 
+            // soal
+            $this->soal->LinkCustomAttributes = "";
+            $this->soal->HrefValue = "";
+            $this->soal->TooltipValue = "";
+
             // jawaban
             $this->jawaban->LinkCustomAttributes = "";
             $this->jawaban->HrefValue = "";
@@ -1769,6 +1796,12 @@ class EvaluasiGrid extends Evaluasi
                 $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
             }
 
+            // soal
+            $this->soal->EditAttrs["class"] = "form-control";
+            $this->soal->EditCustomAttributes = "";
+            $this->soal->EditValue = HtmlEncode($this->soal->CurrentValue);
+            $this->soal->PlaceHolder = RemoveHtml($this->soal->caption());
+
             // jawaban
             $this->jawaban->EditAttrs["class"] = "form-control";
             $this->jawaban->EditCustomAttributes = "";
@@ -1780,6 +1813,10 @@ class EvaluasiGrid extends Evaluasi
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
+
+            // soal
+            $this->soal->LinkCustomAttributes = "";
+            $this->soal->HrefValue = "";
 
             // jawaban
             $this->jawaban->LinkCustomAttributes = "";
@@ -1834,6 +1871,12 @@ class EvaluasiGrid extends Evaluasi
                 $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
             }
 
+            // soal
+            $this->soal->EditAttrs["class"] = "form-control";
+            $this->soal->EditCustomAttributes = "";
+            $this->soal->EditValue = HtmlEncode($this->soal->CurrentValue);
+            $this->soal->PlaceHolder = RemoveHtml($this->soal->caption());
+
             // jawaban
             $this->jawaban->EditAttrs["class"] = "form-control";
             $this->jawaban->EditCustomAttributes = "";
@@ -1845,6 +1888,10 @@ class EvaluasiGrid extends Evaluasi
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
+
+            // soal
+            $this->soal->LinkCustomAttributes = "";
+            $this->soal->HrefValue = "";
 
             // jawaban
             $this->jawaban->LinkCustomAttributes = "";
@@ -1872,6 +1919,11 @@ class EvaluasiGrid extends Evaluasi
         if ($this->id_materi->Required) {
             if (!$this->id_materi->IsDetailKey && EmptyValue($this->id_materi->FormValue)) {
                 $this->id_materi->addErrorMessage(str_replace("%s", $this->id_materi->caption(), $this->id_materi->RequiredErrorMessage));
+            }
+        }
+        if ($this->soal->Required) {
+            if (!$this->soal->IsDetailKey && EmptyValue($this->soal->FormValue)) {
+                $this->soal->addErrorMessage(str_replace("%s", $this->soal->caption(), $this->soal->RequiredErrorMessage));
             }
         }
         if ($this->jawaban->Required) {
@@ -1986,6 +2038,9 @@ class EvaluasiGrid extends Evaluasi
             // id_materi
             $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, $this->id_materi->ReadOnly);
 
+            // soal
+            $this->soal->setDbValueDef($rsnew, $this->soal->CurrentValue, "", $this->soal->ReadOnly);
+
             // jawaban
             $this->jawaban->setDbValueDef($rsnew, $this->jawaban->CurrentValue, "", $this->jawaban->ReadOnly);
 
@@ -2061,6 +2116,9 @@ class EvaluasiGrid extends Evaluasi
 
         // id_materi
         $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, false);
+
+        // soal
+        $this->soal->setDbValueDef($rsnew, $this->soal->CurrentValue, "", false);
 
         // jawaban
         $this->jawaban->setDbValueDef($rsnew, $this->jawaban->CurrentValue, "", false);

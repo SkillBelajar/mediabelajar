@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 
 class awal extends Controller
 {
@@ -60,7 +61,44 @@ class awal extends Controller
         // if()
         $ip = $_SERVER['REMOTE_ADDR'];
         // dd($ip);
+        DB::delete("DELETE FROM `peserta` WHERE `nama_peserta` LIKE ? AND `id_evaluasi` = ?", [
+            $nama, $id_evaluasi
+        ]);
 
+        DB::insert("INSERT INTO `peserta` (`id_peserta`, `tanggal_jam`, `nama_peserta`, `id_evaluasi`, `benar`, `jawaban_essai`, `ip`) VALUES (NULL, ?, ?, ?, ?, ?, ?);", [
+            $tanggal_jam, $nama, $id_evaluasi, $benar, $jawaban, $ip
+        ]);
+
+        return redirect("/mediabelajar");
+    }
+
+    public function simpanabc(Request $request)
+    {
+        $jawaban  = $request->abc;
+        // dd($jawaban);
+        //echo $jawaban;
+        $id_evaluasi = $request->id_evaluasi;
+        //echo $id_evaluasi;
+        $tanggal_jam = date("d-m-Y H:i:s");
+        $nama = \Session::get('nama');
+        // echo $nama;
+        $jenis_evaluasi  = $request->jenis_soal;
+        $kunci = Crypt::decrypt($jenis_evaluasi);
+        // echo $jenis_evaluasi;
+        //dd($kunci);
+        if ($kunci == $jawaban) {
+            $benar = "benar";
+        } else {
+            $benar = "salah";
+        }
+        //simpan ke jawaban peserta
+        // if()
+        $ip = $_SERVER['REMOTE_ADDR'];
+        // dd($ip);
+        //delete data lama
+        DB::delete("DELETE FROM `peserta` WHERE `nama_peserta` LIKE ? AND `id_evaluasi` = ?", [
+            $nama, $id_evaluasi
+        ]);
         DB::insert("INSERT INTO `peserta` (`id_peserta`, `tanggal_jam`, `nama_peserta`, `id_evaluasi`, `benar`, `jawaban_essai`, `ip`) VALUES (NULL, ?, ?, ?, ?, ?, ?);", [
             $tanggal_jam, $nama, $id_evaluasi, $benar, $jawaban, $ip
         ]);

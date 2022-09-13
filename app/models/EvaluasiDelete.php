@@ -527,7 +527,7 @@ class EvaluasiDelete extends Evaluasi
         $this->CurrentAction = Param("action"); // Set up current action
         $this->id_evaluasi->Visible = false;
         $this->id_materi->setVisibility();
-        $this->soal->Visible = false;
+        $this->soal->setVisibility();
         $this->jawaban->setVisibility();
         $this->hideFieldsForAddEdit();
 
@@ -769,6 +769,11 @@ class EvaluasiDelete extends Evaluasi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
             $this->id_materi->TooltipValue = "";
+
+            // soal
+            $this->soal->LinkCustomAttributes = "";
+            $this->soal->HrefValue = "";
+            $this->soal->TooltipValue = "";
 
             // jawaban
             $this->jawaban->LinkCustomAttributes = "";

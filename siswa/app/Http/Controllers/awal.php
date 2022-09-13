@@ -25,8 +25,8 @@ class awal extends Controller
         $aksi = $live[0]->aksi;
         $id_materi = $live[0]->id_materi;
 
-        $request->session()->put("aksi", $aksi);
-        $request->session()->put("id_materi", $id_materi);
+        // $request->session()->put("aksi", $aksi);
+        // $request->session()->put("id_materi", $id_materi);
 
         //  echo "<script>window.location='" . url('/') . "/" . $aksi . "/" . $id_materi . "'</script>";
         return redirect("/mediabelajar");

@@ -16,6 +16,7 @@
         <br>
 
         <h1>@yield('judul')</h1>
+        {{ \Session::get('nama') }}
         <hr>
         @yield('isi')
     </div>

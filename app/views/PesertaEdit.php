@@ -22,7 +22,8 @@ loadjs.ready("head", function () {
         ["nama_peserta", [fields.nama_peserta.required ? ew.Validators.required(fields.nama_peserta.caption) : null], fields.nama_peserta.isInvalid],
         ["id_evaluasi", [fields.id_evaluasi.required ? ew.Validators.required(fields.id_evaluasi.caption) : null], fields.id_evaluasi.isInvalid],
         ["benar", [fields.benar.required ? ew.Validators.required(fields.benar.caption) : null], fields.benar.isInvalid],
-        ["jawaban_essai", [fields.jawaban_essai.required ? ew.Validators.required(fields.jawaban_essai.caption) : null], fields.jawaban_essai.isInvalid]
+        ["jawaban_essai", [fields.jawaban_essai.required ? ew.Validators.required(fields.jawaban_essai.caption) : null], fields.jawaban_essai.isInvalid],
+        ["ip", [fields.ip.required ? ew.Validators.required(fields.ip.caption) : null], fields.ip.isInvalid]
     ]);
 
     // Set invalid fields
@@ -190,6 +191,18 @@ $Page->showMessage();
 <textarea data-table="peserta" data-field="x_jawaban_essai" name="x_jawaban_essai" id="x_jawaban_essai" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->jawaban_essai->getPlaceHolder()) ?>"<?= $Page->jawaban_essai->editAttributes() ?> aria-describedby="x_jawaban_essai_help"><?= $Page->jawaban_essai->EditValue ?></textarea>
 <?= $Page->jawaban_essai->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->jawaban_essai->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->ip->Visible) { // ip ?>
+    <div id="r_ip" class="form-group row">
+        <label id="elh_peserta_ip" for="x_ip" class="<?= $Page->LeftColumnClass ?>"><?= $Page->ip->caption() ?><?= $Page->ip->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->ip->cellAttributes() ?>>
+<span id="el_peserta_ip">
+<input type="<?= $Page->ip->getInputTextType() ?>" data-table="peserta" data-field="x_ip" name="x_ip" id="x_ip" size="30" maxlength="100" placeholder="<?= HtmlEncode($Page->ip->getPlaceHolder()) ?>" value="<?= $Page->ip->EditValue ?>"<?= $Page->ip->editAttributes() ?> aria-describedby="x_ip_help">
+<?= $Page->ip->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->ip->getErrorMessage() ?></div>
 </span>
 </div></div>
     </div>

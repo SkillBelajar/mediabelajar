@@ -136,6 +136,9 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->benar->Visible) { // benar ?>
         <th data-name="benar" class="<?= $Page->benar->headerCellClass() ?>"><div id="elh_peserta_benar" class="peserta_benar"><?= $Page->renderSort($Page->benar) ?></div></th>
 <?php } ?>
+<?php if ($Page->ip->Visible) { // ip ?>
+        <th data-name="ip" class="<?= $Page->ip->headerCellClass() ?>"><div id="elh_peserta_ip" class="peserta_ip"><?= $Page->renderSort($Page->ip) ?></div></th>
+<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -225,6 +228,14 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowCount ?>_peserta_benar">
 <span<?= $Page->benar->viewAttributes() ?>>
 <?= $Page->benar->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->ip->Visible) { // ip ?>
+        <td data-name="ip" <?= $Page->ip->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_peserta_ip">
+<span<?= $Page->ip->viewAttributes() ?>>
+<?= $Page->ip->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

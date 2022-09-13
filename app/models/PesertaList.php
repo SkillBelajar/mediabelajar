@@ -737,6 +737,7 @@ class PesertaList extends Peserta
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
         $this->jawaban_essai->Visible = false;
+        $this->ip->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Global Page Loading event (in userfn*.php)
@@ -1062,6 +1063,7 @@ class PesertaList extends Peserta
         $filterList = Concat($filterList, $this->id_evaluasi->AdvancedSearch->toJson(), ","); // Field id_evaluasi
         $filterList = Concat($filterList, $this->benar->AdvancedSearch->toJson(), ","); // Field benar
         $filterList = Concat($filterList, $this->jawaban_essai->AdvancedSearch->toJson(), ","); // Field jawaban_essai
+        $filterList = Concat($filterList, $this->ip->AdvancedSearch->toJson(), ","); // Field ip
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1149,6 +1151,14 @@ class PesertaList extends Peserta
         $this->jawaban_essai->AdvancedSearch->SearchValue2 = @$filter["y_jawaban_essai"];
         $this->jawaban_essai->AdvancedSearch->SearchOperator2 = @$filter["w_jawaban_essai"];
         $this->jawaban_essai->AdvancedSearch->save();
+
+        // Field ip
+        $this->ip->AdvancedSearch->SearchValue = @$filter["x_ip"];
+        $this->ip->AdvancedSearch->SearchOperator = @$filter["z_ip"];
+        $this->ip->AdvancedSearch->SearchCondition = @$filter["v_ip"];
+        $this->ip->AdvancedSearch->SearchValue2 = @$filter["y_ip"];
+        $this->ip->AdvancedSearch->SearchOperator2 = @$filter["w_ip"];
+        $this->ip->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
     }
@@ -1161,6 +1171,7 @@ class PesertaList extends Peserta
         $this->buildBasicSearchSql($where, $this->nama_peserta, $arKeywords, $type);
         $this->buildBasicSearchSql($where, $this->benar, $arKeywords, $type);
         $this->buildBasicSearchSql($where, $this->jawaban_essai, $arKeywords, $type);
+        $this->buildBasicSearchSql($where, $this->ip, $arKeywords, $type);
         return $where;
     }
 
@@ -1324,6 +1335,7 @@ class PesertaList extends Peserta
             $this->updateSort($this->nama_peserta); // nama_peserta
             $this->updateSort($this->id_evaluasi); // id_evaluasi
             $this->updateSort($this->benar); // benar
+            $this->updateSort($this->ip); // ip
             $this->setStartRecordNumber(1); // Reset start position
         }
     }
@@ -1377,6 +1389,7 @@ class PesertaList extends Peserta
                 $this->id_evaluasi->setSort("");
                 $this->benar->setSort("");
                 $this->jawaban_essai->setSort("");
+                $this->ip->setSort("");
             }
 
             // Reset start position
@@ -1406,12 +1419,6 @@ class PesertaList extends Peserta
         $item = &$this->ListOptions->add("edit");
         $item->CssClass = "text-nowrap";
         $item->Visible = $Security->canEdit();
-        $item->OnLeft = false;
-
-        // "copy"
-        $item = &$this->ListOptions->add("copy");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->canAdd();
         $item->OnLeft = false;
 
         // "delete"
@@ -1481,15 +1488,6 @@ class PesertaList extends Peserta
                 $opt->Body = "";
             }
 
-            // "copy"
-            $opt = $this->ListOptions["copy"];
-            $copycaption = HtmlTitle($Language->phrase("CopyLink"));
-            if ($Security->canAdd()) {
-                $opt->Body = "<a class=\"ew-row-link ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("CopyLink") . "</a>";
-            } else {
-                $opt->Body = "";
-            }
-
             // "delete"
             $opt = $this->ListOptions["delete"];
             if ($Security->canDelete()) {
@@ -1544,13 +1542,6 @@ class PesertaList extends Peserta
     {
         global $Language, $Security;
         $options = &$this->OtherOptions;
-        $option = $options["addedit"];
-
-        // Add
-        $item = &$option->add("add");
-        $addcaption = HtmlTitle($Language->phrase("AddLink"));
-        $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
-        $item->Visible = $this->AddUrl != "" && $Security->canAdd();
         $option = $options["action"];
 
         // Set up options default
@@ -1788,6 +1779,7 @@ class PesertaList extends Peserta
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
         $this->jawaban_essai->setDbValue($row['jawaban_essai']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -1800,6 +1792,7 @@ class PesertaList extends Peserta
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
         $row['jawaban_essai'] = null;
+        $row['ip'] = null;
         return $row;
     }
 
@@ -1855,6 +1848,8 @@ class PesertaList extends Peserta
         // benar
 
         // jawaban_essai
+
+        // ip
         if ($this->RowType == ROWTYPE_VIEW) {
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
@@ -1872,6 +1867,10 @@ class PesertaList extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
+            $this->ip->ViewCustomAttributes = "";
 
             // tanggal_jam
             $this->tanggal_jam->LinkCustomAttributes = "";
@@ -1892,6 +1891,11 @@ class PesertaList extends Peserta
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
             $this->benar->TooltipValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
+            $this->ip->TooltipValue = "";
         }
 
         // Call Row Rendered event

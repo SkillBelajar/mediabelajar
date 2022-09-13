@@ -685,6 +685,7 @@ class PesertaView extends Peserta
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
         $this->jawaban_essai->setVisibility();
+        $this->ip->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -805,16 +806,6 @@ class PesertaView extends Peserta
         $options = &$this->OtherOptions;
         $option = $options["action"];
 
-        // Add
-        $item = &$option->add("add");
-        $addcaption = HtmlTitle($Language->phrase("ViewPageAddLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,url:'" . HtmlEncode(GetUrl($this->AddUrl)) . "'});\">" . $Language->phrase("ViewPageAddLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
-        }
-        $item->Visible = ($this->AddUrl != "" && $Security->canAdd());
-
         // Edit
         $item = &$option->add("edit");
         $editcaption = HtmlTitle($Language->phrase("ViewPageEditLink"));
@@ -824,16 +815,6 @@ class PesertaView extends Peserta
             $item->Body = "<a class=\"ew-action ew-edit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("ViewPageEditLink") . "</a>";
         }
         $item->Visible = ($this->EditUrl != "" && $Security->canEdit());
-
-        // Copy
-        $item = &$option->add("copy");
-        $copycaption = HtmlTitle($Language->phrase("ViewPageCopyLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,btn:'AddBtn',url:'" . HtmlEncode(GetUrl($this->CopyUrl)) . "'});\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
-        }
-        $item->Visible = ($this->CopyUrl != "" && $Security->canAdd());
 
         // Delete
         $item = &$option->add("delete");
@@ -907,6 +888,7 @@ class PesertaView extends Peserta
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
         $this->jawaban_essai->setDbValue($row['jawaban_essai']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -919,6 +901,7 @@ class PesertaView extends Peserta
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
         $row['jawaban_essai'] = null;
+        $row['ip'] = null;
         return $row;
     }
 
@@ -951,6 +934,8 @@ class PesertaView extends Peserta
         // benar
 
         // jawaban_essai
+
+        // ip
         if ($this->RowType == ROWTYPE_VIEW) {
             // id_peserta
             $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
@@ -976,6 +961,10 @@ class PesertaView extends Peserta
             // jawaban_essai
             $this->jawaban_essai->ViewValue = $this->jawaban_essai->CurrentValue;
             $this->jawaban_essai->ViewCustomAttributes = "";
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
+            $this->ip->ViewCustomAttributes = "";
 
             // id_peserta
             $this->id_peserta->LinkCustomAttributes = "";
@@ -1006,6 +995,11 @@ class PesertaView extends Peserta
             $this->jawaban_essai->LinkCustomAttributes = "";
             $this->jawaban_essai->HrefValue = "";
             $this->jawaban_essai->TooltipValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
+            $this->ip->TooltipValue = "";
         }
 
         // Call Row Rendered event

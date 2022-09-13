@@ -53,6 +53,9 @@ $Page->showMessage();
 <?php if ($Page->benar->Visible) { // benar ?>
         <th class="<?= $Page->benar->headerCellClass() ?>"><span id="elh_peserta_benar" class="peserta_benar"><?= $Page->benar->caption() ?></span></th>
 <?php } ?>
+<?php if ($Page->ip->Visible) { // ip ?>
+        <th class="<?= $Page->ip->headerCellClass() ?>"><span id="elh_peserta_ip" class="peserta_ip"><?= $Page->ip->caption() ?></span></th>
+<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -103,6 +106,14 @@ while (!$Page->Recordset->EOF) {
 <span id="el<?= $Page->RowCount ?>_peserta_benar" class="peserta_benar">
 <span<?= $Page->benar->viewAttributes() ?>>
 <?= $Page->benar->getViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($Page->ip->Visible) { // ip ?>
+        <td <?= $Page->ip->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_peserta_ip" class="peserta_ip">
+<span<?= $Page->ip->viewAttributes() ?>>
+<?= $Page->ip->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

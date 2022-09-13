@@ -22,7 +22,8 @@ loadjs.ready("head", function () {
         ["tanggal_jam", [fields.tanggal_jam.required ? ew.Validators.required(fields.tanggal_jam.caption) : null], fields.tanggal_jam.isInvalid],
         ["nama_peserta", [fields.nama_peserta.required ? ew.Validators.required(fields.nama_peserta.caption) : null], fields.nama_peserta.isInvalid],
         ["id_evaluasi", [fields.id_evaluasi.required ? ew.Validators.required(fields.id_evaluasi.caption) : null], fields.id_evaluasi.isInvalid],
-        ["benar", [fields.benar.required ? ew.Validators.required(fields.benar.caption) : null], fields.benar.isInvalid]
+        ["benar", [fields.benar.required ? ew.Validators.required(fields.benar.caption) : null], fields.benar.isInvalid],
+        ["ip", [fields.ip.required ? ew.Validators.required(fields.ip.caption) : null], fields.ip.isInvalid]
     ]);
 
     // Set invalid fields
@@ -84,6 +85,8 @@ loadjs.ready("head", function () {
             return false;
         if (ew.valueChanged(fobj, rowIndex, "benar", false))
             return false;
+        if (ew.valueChanged(fobj, rowIndex, "ip", false))
+            return false;
         return true;
     }
 
@@ -132,6 +135,9 @@ $Grid->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Grid->benar->Visible) { // benar ?>
         <th data-name="benar" class="<?= $Grid->benar->headerCellClass() ?>"><div id="elh_peserta_benar" class="peserta_benar"><?= $Grid->renderSort($Grid->benar) ?></div></th>
+<?php } ?>
+<?php if ($Grid->ip->Visible) { // ip ?>
+        <th data-name="ip" class="<?= $Grid->ip->headerCellClass() ?>"><div id="elh_peserta_ip" class="peserta_ip"><?= $Grid->renderSort($Grid->ip) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -375,6 +381,33 @@ $Grid->ListOptions->render("body", "left", $Grid->RowCount);
 <?php } ?>
 </td>
     <?php } ?>
+    <?php if ($Grid->ip->Visible) { // ip ?>
+        <td data-name="ip" <?= $Grid->ip->cellAttributes() ?>>
+<?php if ($Grid->RowType == ROWTYPE_ADD) { // Add record ?>
+<span id="el<?= $Grid->RowCount ?>_peserta_ip" class="form-group">
+<input type="<?= $Grid->ip->getInputTextType() ?>" data-table="peserta" data-field="x_ip" name="x<?= $Grid->RowIndex ?>_ip" id="x<?= $Grid->RowIndex ?>_ip" size="30" maxlength="100" placeholder="<?= HtmlEncode($Grid->ip->getPlaceHolder()) ?>" value="<?= $Grid->ip->EditValue ?>"<?= $Grid->ip->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Grid->ip->getErrorMessage() ?></div>
+</span>
+<input type="hidden" data-table="peserta" data-field="x_ip" name="o<?= $Grid->RowIndex ?>_ip" id="o<?= $Grid->RowIndex ?>_ip" value="<?= HtmlEncode($Grid->ip->OldValue) ?>">
+<?php } ?>
+<?php if ($Grid->RowType == ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?= $Grid->RowCount ?>_peserta_ip" class="form-group">
+<input type="<?= $Grid->ip->getInputTextType() ?>" data-table="peserta" data-field="x_ip" name="x<?= $Grid->RowIndex ?>_ip" id="x<?= $Grid->RowIndex ?>_ip" size="30" maxlength="100" placeholder="<?= HtmlEncode($Grid->ip->getPlaceHolder()) ?>" value="<?= $Grid->ip->EditValue ?>"<?= $Grid->ip->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Grid->ip->getErrorMessage() ?></div>
+</span>
+<?php } ?>
+<?php if ($Grid->RowType == ROWTYPE_VIEW) { // View record ?>
+<span id="el<?= $Grid->RowCount ?>_peserta_ip">
+<span<?= $Grid->ip->viewAttributes() ?>>
+<?= $Grid->ip->getViewValue() ?></span>
+</span>
+<?php if ($Grid->isConfirm()) { ?>
+<input type="hidden" data-table="peserta" data-field="x_ip" name="fpesertagrid$x<?= $Grid->RowIndex ?>_ip" id="fpesertagrid$x<?= $Grid->RowIndex ?>_ip" value="<?= HtmlEncode($Grid->ip->FormValue) ?>">
+<input type="hidden" data-table="peserta" data-field="x_ip" name="fpesertagrid$o<?= $Grid->RowIndex ?>_ip" id="fpesertagrid$o<?= $Grid->RowIndex ?>_ip" value="<?= HtmlEncode($Grid->ip->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+    <?php } ?>
 <?php
 // Render list options (body, right)
 $Grid->ListOptions->render("body", "right", $Grid->RowCount);
@@ -493,6 +526,23 @@ $Grid->ListOptions->render("body", "left", $Grid->RowIndex);
 <input type="hidden" data-table="peserta" data-field="x_benar" name="x<?= $Grid->RowIndex ?>_benar" id="x<?= $Grid->RowIndex ?>_benar" value="<?= HtmlEncode($Grid->benar->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="peserta" data-field="x_benar" name="o<?= $Grid->RowIndex ?>_benar" id="o<?= $Grid->RowIndex ?>_benar" value="<?= HtmlEncode($Grid->benar->OldValue) ?>">
+</td>
+    <?php } ?>
+    <?php if ($Grid->ip->Visible) { // ip ?>
+        <td data-name="ip">
+<?php if (!$Grid->isConfirm()) { ?>
+<span id="el$rowindex$_peserta_ip" class="form-group peserta_ip">
+<input type="<?= $Grid->ip->getInputTextType() ?>" data-table="peserta" data-field="x_ip" name="x<?= $Grid->RowIndex ?>_ip" id="x<?= $Grid->RowIndex ?>_ip" size="30" maxlength="100" placeholder="<?= HtmlEncode($Grid->ip->getPlaceHolder()) ?>" value="<?= $Grid->ip->EditValue ?>"<?= $Grid->ip->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Grid->ip->getErrorMessage() ?></div>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_peserta_ip" class="form-group peserta_ip">
+<span<?= $Grid->ip->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Grid->ip->ViewValue)) ?>"></span>
+</span>
+<input type="hidden" data-table="peserta" data-field="x_ip" name="x<?= $Grid->RowIndex ?>_ip" id="x<?= $Grid->RowIndex ?>_ip" value="<?= HtmlEncode($Grid->ip->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="peserta" data-field="x_ip" name="o<?= $Grid->RowIndex ?>_ip" id="o<?= $Grid->RowIndex ?>_ip" value="<?= HtmlEncode($Grid->ip->OldValue) ?>">
 </td>
     <?php } ?>
 <?php

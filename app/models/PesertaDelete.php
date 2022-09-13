@@ -531,6 +531,7 @@ class PesertaDelete extends Peserta
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
         $this->jawaban_essai->Visible = false;
+        $this->ip->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -702,6 +703,7 @@ class PesertaDelete extends Peserta
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
         $this->jawaban_essai->setDbValue($row['jawaban_essai']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -714,6 +716,7 @@ class PesertaDelete extends Peserta
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
         $row['jawaban_essai'] = null;
+        $row['ip'] = null;
         return $row;
     }
 
@@ -740,6 +743,8 @@ class PesertaDelete extends Peserta
         // benar
 
         // jawaban_essai
+
+        // ip
         if ($this->RowType == ROWTYPE_VIEW) {
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
@@ -757,6 +762,10 @@ class PesertaDelete extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
+            $this->ip->ViewCustomAttributes = "";
 
             // tanggal_jam
             $this->tanggal_jam->LinkCustomAttributes = "";
@@ -777,6 +786,11 @@ class PesertaDelete extends Peserta
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
             $this->benar->TooltipValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
+            $this->ip->TooltipValue = "";
         }
 
         // Call Row Rendered event

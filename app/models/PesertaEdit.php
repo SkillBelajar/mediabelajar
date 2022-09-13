@@ -627,6 +627,7 @@ class PesertaEdit extends Peserta
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
         $this->jawaban_essai->setVisibility();
+        $this->ip->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -862,6 +863,16 @@ class PesertaEdit extends Peserta
                 $this->jawaban_essai->setFormValue($val);
             }
         }
+
+        // Check field name 'ip' first before field var 'x_ip'
+        $val = $CurrentForm->hasValue("ip") ? $CurrentForm->getValue("ip") : $CurrentForm->getValue("x_ip");
+        if (!$this->ip->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->ip->Visible = false; // Disable update for API request
+            } else {
+                $this->ip->setFormValue($val);
+            }
+        }
     }
 
     // Restore form values
@@ -874,6 +885,7 @@ class PesertaEdit extends Peserta
         $this->id_evaluasi->CurrentValue = $this->id_evaluasi->FormValue;
         $this->benar->CurrentValue = $this->benar->FormValue;
         $this->jawaban_essai->CurrentValue = $this->jawaban_essai->FormValue;
+        $this->ip->CurrentValue = $this->ip->FormValue;
     }
 
     /**
@@ -929,6 +941,7 @@ class PesertaEdit extends Peserta
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
         $this->jawaban_essai->setDbValue($row['jawaban_essai']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -941,6 +954,7 @@ class PesertaEdit extends Peserta
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
         $row['jawaban_essai'] = null;
+        $row['ip'] = null;
         return $row;
     }
 
@@ -990,6 +1004,8 @@ class PesertaEdit extends Peserta
         // benar
 
         // jawaban_essai
+
+        // ip
         if ($this->RowType == ROWTYPE_VIEW) {
             // id_peserta
             $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
@@ -1015,6 +1031,10 @@ class PesertaEdit extends Peserta
             // jawaban_essai
             $this->jawaban_essai->ViewValue = $this->jawaban_essai->CurrentValue;
             $this->jawaban_essai->ViewCustomAttributes = "";
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
+            $this->ip->ViewCustomAttributes = "";
 
             // id_peserta
             $this->id_peserta->LinkCustomAttributes = "";
@@ -1045,6 +1065,11 @@ class PesertaEdit extends Peserta
             $this->jawaban_essai->LinkCustomAttributes = "";
             $this->jawaban_essai->HrefValue = "";
             $this->jawaban_essai->TooltipValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
+            $this->ip->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_EDIT) {
             // id_peserta
             $this->id_peserta->EditAttrs["class"] = "form-control";
@@ -1098,6 +1123,15 @@ class PesertaEdit extends Peserta
             $this->jawaban_essai->EditValue = HtmlEncode($this->jawaban_essai->CurrentValue);
             $this->jawaban_essai->PlaceHolder = RemoveHtml($this->jawaban_essai->caption());
 
+            // ip
+            $this->ip->EditAttrs["class"] = "form-control";
+            $this->ip->EditCustomAttributes = "";
+            if (!$this->ip->Raw) {
+                $this->ip->CurrentValue = HtmlDecode($this->ip->CurrentValue);
+            }
+            $this->ip->EditValue = HtmlEncode($this->ip->CurrentValue);
+            $this->ip->PlaceHolder = RemoveHtml($this->ip->caption());
+
             // Edit refer script
 
             // id_peserta
@@ -1123,6 +1157,10 @@ class PesertaEdit extends Peserta
             // jawaban_essai
             $this->jawaban_essai->LinkCustomAttributes = "";
             $this->jawaban_essai->HrefValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1176,6 +1214,11 @@ class PesertaEdit extends Peserta
                 $this->jawaban_essai->addErrorMessage(str_replace("%s", $this->jawaban_essai->caption(), $this->jawaban_essai->RequiredErrorMessage));
             }
         }
+        if ($this->ip->Required) {
+            if (!$this->ip->IsDetailKey && EmptyValue($this->ip->FormValue)) {
+                $this->ip->addErrorMessage(str_replace("%s", $this->ip->caption(), $this->ip->RequiredErrorMessage));
+            }
+        }
 
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
@@ -1221,6 +1264,9 @@ class PesertaEdit extends Peserta
 
             // jawaban_essai
             $this->jawaban_essai->setDbValueDef($rsnew, $this->jawaban_essai->CurrentValue, "", $this->jawaban_essai->ReadOnly);
+
+            // ip
+            $this->ip->setDbValueDef($rsnew, $this->ip->CurrentValue, "", $this->ip->ReadOnly);
 
             // Call Row Updating event
             $updateRow = $this->rowUpdating($rsold, $rsnew);

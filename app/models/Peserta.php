@@ -35,6 +35,7 @@ class Peserta extends DbTable
     public $id_evaluasi;
     public $benar;
     public $jawaban_essai;
+    public $ip;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -115,6 +116,13 @@ class Peserta extends DbTable
         $this->jawaban_essai->Required = true; // Required field
         $this->jawaban_essai->Sortable = true; // Allow sort
         $this->Fields['jawaban_essai'] = &$this->jawaban_essai;
+
+        // ip
+        $this->ip = new DbField('peserta', 'peserta', 'x_ip', 'ip', '`ip`', '`ip`', 200, 100, -1, false, '`ip`', false, false, false, 'FORMATTED TEXT', 'TEXT');
+        $this->ip->Nullable = false; // NOT NULL field
+        $this->ip->Required = true; // Required field
+        $this->ip->Sortable = true; // Allow sort
+        $this->Fields['ip'] = &$this->ip;
     }
 
     // Field Visibility
@@ -583,6 +591,7 @@ class Peserta extends DbTable
         $this->id_evaluasi->DbValue = $row['id_evaluasi'];
         $this->benar->DbValue = $row['benar'];
         $this->jawaban_essai->DbValue = $row['jawaban_essai'];
+        $this->ip->DbValue = $row['ip'];
     }
 
     // Delete uploaded files
@@ -868,6 +877,7 @@ SORTHTML;
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
         $this->jawaban_essai->setDbValue($row['jawaban_essai']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Render list row values
@@ -891,6 +901,8 @@ SORTHTML;
         // benar
 
         // jawaban_essai
+
+        // ip
 
         // id_peserta
         $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
@@ -916,6 +928,10 @@ SORTHTML;
         // jawaban_essai
         $this->jawaban_essai->ViewValue = $this->jawaban_essai->CurrentValue;
         $this->jawaban_essai->ViewCustomAttributes = "";
+
+        // ip
+        $this->ip->ViewValue = $this->ip->CurrentValue;
+        $this->ip->ViewCustomAttributes = "";
 
         // id_peserta
         $this->id_peserta->LinkCustomAttributes = "";
@@ -946,6 +962,11 @@ SORTHTML;
         $this->jawaban_essai->LinkCustomAttributes = "";
         $this->jawaban_essai->HrefValue = "";
         $this->jawaban_essai->TooltipValue = "";
+
+        // ip
+        $this->ip->LinkCustomAttributes = "";
+        $this->ip->HrefValue = "";
+        $this->ip->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1014,6 +1035,15 @@ SORTHTML;
         $this->jawaban_essai->EditValue = $this->jawaban_essai->CurrentValue;
         $this->jawaban_essai->PlaceHolder = RemoveHtml($this->jawaban_essai->caption());
 
+        // ip
+        $this->ip->EditAttrs["class"] = "form-control";
+        $this->ip->EditCustomAttributes = "";
+        if (!$this->ip->Raw) {
+            $this->ip->CurrentValue = HtmlDecode($this->ip->CurrentValue);
+        }
+        $this->ip->EditValue = $this->ip->CurrentValue;
+        $this->ip->PlaceHolder = RemoveHtml($this->ip->caption());
+
         // Call Row Rendered event
         $this->rowRendered();
     }
@@ -1048,11 +1078,13 @@ SORTHTML;
                     $doc->exportCaption($this->id_evaluasi);
                     $doc->exportCaption($this->benar);
                     $doc->exportCaption($this->jawaban_essai);
+                    $doc->exportCaption($this->ip);
                 } else {
                     $doc->exportCaption($this->tanggal_jam);
                     $doc->exportCaption($this->nama_peserta);
                     $doc->exportCaption($this->id_evaluasi);
                     $doc->exportCaption($this->benar);
+                    $doc->exportCaption($this->ip);
                 }
                 $doc->endExportRow();
             }
@@ -1088,11 +1120,13 @@ SORTHTML;
                         $doc->exportField($this->id_evaluasi);
                         $doc->exportField($this->benar);
                         $doc->exportField($this->jawaban_essai);
+                        $doc->exportField($this->ip);
                     } else {
                         $doc->exportField($this->tanggal_jam);
                         $doc->exportField($this->nama_peserta);
                         $doc->exportField($this->id_evaluasi);
                         $doc->exportField($this->benar);
+                        $doc->exportField($this->ip);
                     }
                     $doc->endExportRow($rowCnt);
                 }

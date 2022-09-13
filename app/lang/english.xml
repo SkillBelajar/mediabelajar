@@ -1011,6 +1011,9 @@
       <field id="jawaban_essai">
         <phrase id="fldcaption" value="jawaban essai" />
       </field>
+      <field id="ip">
+        <phrase id="fldcaption" value="ip" />
+      </field>
     </table>
     <table id="live">
       <phrase id="tblcaption" value="live" />

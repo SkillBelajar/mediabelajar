@@ -108,6 +108,17 @@ $Page->showMessage();
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->ip->Visible) { // ip ?>
+    <tr id="r_ip">
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_peserta_ip"><?= $Page->ip->caption() ?></span></td>
+        <td data-name="ip" <?= $Page->ip->cellAttributes() ?>>
+<span id="el_peserta_ip">
+<span<?= $Page->ip->viewAttributes() ?>>
+<?= $Page->ip->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 </table>
 </form>
 <?php

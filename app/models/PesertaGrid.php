@@ -675,6 +675,7 @@ class PesertaGrid extends Peserta
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
         $this->jawaban_essai->Visible = false;
+        $this->ip->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Global Page Loading event (in userfn*.php)
@@ -1118,6 +1119,9 @@ class PesertaGrid extends Peserta
         if ($CurrentForm->hasValue("x_benar") && $CurrentForm->hasValue("o_benar") && $this->benar->CurrentValue != $this->benar->OldValue) {
             return false;
         }
+        if ($CurrentForm->hasValue("x_ip") && $CurrentForm->hasValue("o_ip") && $this->ip->CurrentValue != $this->ip->OldValue) {
+            return false;
+        }
         return true;
     }
 
@@ -1203,6 +1207,7 @@ class PesertaGrid extends Peserta
         $this->nama_peserta->clearErrorMessage();
         $this->id_evaluasi->clearErrorMessage();
         $this->benar->clearErrorMessage();
+        $this->ip->clearErrorMessage();
     }
 
     // Set up sort parameters
@@ -1293,12 +1298,6 @@ class PesertaGrid extends Peserta
         $item->Visible = $Security->canEdit();
         $item->OnLeft = false;
 
-        // "copy"
-        $item = &$this->ListOptions->add("copy");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->canAdd();
-        $item->OnLeft = false;
-
         // "delete"
         $item = &$this->ListOptions->add("delete");
         $item->CssClass = "text-nowrap";
@@ -1386,15 +1385,6 @@ class PesertaGrid extends Peserta
                 $opt->Body = "";
             }
 
-            // "copy"
-            $opt = $this->ListOptions["copy"];
-            $copycaption = HtmlTitle($Language->phrase("CopyLink"));
-            if ($Security->canAdd()) {
-                $opt->Body = "<a class=\"ew-row-link ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("CopyLink") . "</a>";
-            } else {
-                $opt->Body = "";
-            }
-
             // "delete"
             $opt = $this->ListOptions["delete"];
             if ($Security->canDelete()) {
@@ -1434,15 +1424,6 @@ class PesertaGrid extends Peserta
         $item = &$option->add($option->GroupOptionName);
         $item->Body = "";
         $item->Visible = false;
-
-        // Add
-        if ($this->CurrentMode == "view") { // Check view mode
-            $item = &$option->add("add");
-            $addcaption = HtmlTitle($Language->phrase("AddLink"));
-            $this->AddUrl = $this->getAddUrl();
-            $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
-            $item->Visible = $this->AddUrl != "" && $Security->canAdd();
-        }
     }
 
     // Render other options
@@ -1456,7 +1437,7 @@ class PesertaGrid extends Peserta
                 $option->UseDropDownButton = false;
                 $item = &$option->add("addblankrow");
                 $item->Body = "<a class=\"ew-add-edit ew-add-blank-row\" title=\"" . HtmlTitle($Language->phrase("AddBlankRow")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("AddBlankRow")) . "\" href=\"#\" onclick=\"return ew.addGridRow(this);\">" . $Language->phrase("AddBlankRow") . "</a>";
-                $item->Visible = $Security->canAdd();
+                $item->Visible = false;
                 $this->ShowOtherOptions = $item->Visible;
             }
         }
@@ -1498,6 +1479,8 @@ class PesertaGrid extends Peserta
         $this->benar->OldValue = $this->benar->CurrentValue;
         $this->jawaban_essai->CurrentValue = null;
         $this->jawaban_essai->OldValue = $this->jawaban_essai->CurrentValue;
+        $this->ip->CurrentValue = null;
+        $this->ip->OldValue = $this->ip->CurrentValue;
     }
 
     // Load form values
@@ -1559,6 +1542,19 @@ class PesertaGrid extends Peserta
             $this->benar->setOldValue($CurrentForm->getValue("o_benar"));
         }
 
+        // Check field name 'ip' first before field var 'x_ip'
+        $val = $CurrentForm->hasValue("ip") ? $CurrentForm->getValue("ip") : $CurrentForm->getValue("x_ip");
+        if (!$this->ip->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->ip->Visible = false; // Disable update for API request
+            } else {
+                $this->ip->setFormValue($val);
+            }
+        }
+        if ($CurrentForm->hasValue("o_ip")) {
+            $this->ip->setOldValue($CurrentForm->getValue("o_ip"));
+        }
+
         // Check field name 'id_peserta' first before field var 'x_id_peserta'
         $val = $CurrentForm->hasValue("id_peserta") ? $CurrentForm->getValue("id_peserta") : $CurrentForm->getValue("x_id_peserta");
         if (!$this->id_peserta->IsDetailKey && !$this->isGridAdd() && !$this->isAdd()) {
@@ -1577,6 +1573,7 @@ class PesertaGrid extends Peserta
         $this->nama_peserta->CurrentValue = $this->nama_peserta->FormValue;
         $this->id_evaluasi->CurrentValue = $this->id_evaluasi->FormValue;
         $this->benar->CurrentValue = $this->benar->FormValue;
+        $this->ip->CurrentValue = $this->ip->FormValue;
     }
 
     // Load recordset
@@ -1653,6 +1650,7 @@ class PesertaGrid extends Peserta
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
         $this->jawaban_essai->setDbValue($row['jawaban_essai']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -1666,6 +1664,7 @@ class PesertaGrid extends Peserta
         $row['id_evaluasi'] = $this->id_evaluasi->CurrentValue;
         $row['benar'] = $this->benar->CurrentValue;
         $row['jawaban_essai'] = $this->jawaban_essai->CurrentValue;
+        $row['ip'] = $this->ip->CurrentValue;
         return $row;
     }
 
@@ -1725,6 +1724,8 @@ class PesertaGrid extends Peserta
         // benar
 
         // jawaban_essai
+
+        // ip
         if ($this->RowType == ROWTYPE_VIEW) {
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
@@ -1742,6 +1743,10 @@ class PesertaGrid extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
+            $this->ip->ViewCustomAttributes = "";
 
             // tanggal_jam
             $this->tanggal_jam->LinkCustomAttributes = "";
@@ -1762,6 +1767,11 @@ class PesertaGrid extends Peserta
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
             $this->benar->TooltipValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
+            $this->ip->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_ADD) {
             // tanggal_jam
             $this->tanggal_jam->EditAttrs["class"] = "form-control";
@@ -1804,6 +1814,15 @@ class PesertaGrid extends Peserta
             $this->benar->EditValue = HtmlEncode($this->benar->CurrentValue);
             $this->benar->PlaceHolder = RemoveHtml($this->benar->caption());
 
+            // ip
+            $this->ip->EditAttrs["class"] = "form-control";
+            $this->ip->EditCustomAttributes = "";
+            if (!$this->ip->Raw) {
+                $this->ip->CurrentValue = HtmlDecode($this->ip->CurrentValue);
+            }
+            $this->ip->EditValue = HtmlEncode($this->ip->CurrentValue);
+            $this->ip->PlaceHolder = RemoveHtml($this->ip->caption());
+
             // Add refer script
 
             // tanggal_jam
@@ -1821,6 +1840,10 @@ class PesertaGrid extends Peserta
             // benar
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
         } elseif ($this->RowType == ROWTYPE_EDIT) {
             // tanggal_jam
             $this->tanggal_jam->EditAttrs["class"] = "form-control";
@@ -1863,6 +1886,15 @@ class PesertaGrid extends Peserta
             $this->benar->EditValue = HtmlEncode($this->benar->CurrentValue);
             $this->benar->PlaceHolder = RemoveHtml($this->benar->caption());
 
+            // ip
+            $this->ip->EditAttrs["class"] = "form-control";
+            $this->ip->EditCustomAttributes = "";
+            if (!$this->ip->Raw) {
+                $this->ip->CurrentValue = HtmlDecode($this->ip->CurrentValue);
+            }
+            $this->ip->EditValue = HtmlEncode($this->ip->CurrentValue);
+            $this->ip->PlaceHolder = RemoveHtml($this->ip->caption());
+
             // Edit refer script
 
             // tanggal_jam
@@ -1880,6 +1912,10 @@ class PesertaGrid extends Peserta
             // benar
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
+
+            // ip
+            $this->ip->LinkCustomAttributes = "";
+            $this->ip->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1921,6 +1957,11 @@ class PesertaGrid extends Peserta
         if ($this->benar->Required) {
             if (!$this->benar->IsDetailKey && EmptyValue($this->benar->FormValue)) {
                 $this->benar->addErrorMessage(str_replace("%s", $this->benar->caption(), $this->benar->RequiredErrorMessage));
+            }
+        }
+        if ($this->ip->Required) {
+            if (!$this->ip->IsDetailKey && EmptyValue($this->ip->FormValue)) {
+                $this->ip->addErrorMessage(str_replace("%s", $this->ip->caption(), $this->ip->RequiredErrorMessage));
             }
         }
 
@@ -2039,6 +2080,9 @@ class PesertaGrid extends Peserta
             // benar
             $this->benar->setDbValueDef($rsnew, $this->benar->CurrentValue, "", $this->benar->ReadOnly);
 
+            // ip
+            $this->ip->setDbValueDef($rsnew, $this->ip->CurrentValue, "", $this->ip->ReadOnly);
+
             // Call Row Updating event
             $updateRow = $this->rowUpdating($rsold, $rsnew);
 
@@ -2120,6 +2164,9 @@ class PesertaGrid extends Peserta
 
         // benar
         $this->benar->setDbValueDef($rsnew, $this->benar->CurrentValue, "", false);
+
+        // ip
+        $this->ip->setDbValueDef($rsnew, $this->ip->CurrentValue, "", false);
 
         // Call Row Inserting event
         $insertRow = $this->rowInserting($rsold, $rsnew);

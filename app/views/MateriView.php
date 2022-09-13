@@ -86,7 +86,27 @@ $Page->showMessage();
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->pdf->Visible) { // pdf ?>
+    <tr id="r_pdf">
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_materi_pdf"><?= $Page->pdf->caption() ?></span></td>
+        <td data-name="pdf" <?= $Page->pdf->cellAttributes() ?>>
+<span id="el_materi_pdf">
+<span<?= $Page->pdf->viewAttributes() ?>>
+<?= GetFileViewTag($Page->pdf, $Page->pdf->getViewValue(), false) ?>
+</span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 </table>
+<?php
+    if (in_array("evaluasi", explode(",", $Page->getCurrentDetailTable())) && $evaluasi->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("evaluasi", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "EvaluasiGrid.php" ?>
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

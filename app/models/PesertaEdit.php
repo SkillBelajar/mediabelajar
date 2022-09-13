@@ -626,6 +626,7 @@ class PesertaEdit extends Peserta
         $this->nama_peserta->setVisibility();
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
+        $this->jawaban_essai->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -698,6 +699,9 @@ class PesertaEdit extends Peserta
                     $this->id_peserta->CurrentValue = null;
                 }
             }
+
+            // Set up master detail parameters
+            $this->setupMasterParms();
 
             // Load current record
             $loaded = $this->loadRow();
@@ -848,6 +852,16 @@ class PesertaEdit extends Peserta
                 $this->benar->setFormValue($val);
             }
         }
+
+        // Check field name 'jawaban_essai' first before field var 'x_jawaban_essai'
+        $val = $CurrentForm->hasValue("jawaban_essai") ? $CurrentForm->getValue("jawaban_essai") : $CurrentForm->getValue("x_jawaban_essai");
+        if (!$this->jawaban_essai->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->jawaban_essai->Visible = false; // Disable update for API request
+            } else {
+                $this->jawaban_essai->setFormValue($val);
+            }
+        }
     }
 
     // Restore form values
@@ -859,6 +873,7 @@ class PesertaEdit extends Peserta
         $this->nama_peserta->CurrentValue = $this->nama_peserta->FormValue;
         $this->id_evaluasi->CurrentValue = $this->id_evaluasi->FormValue;
         $this->benar->CurrentValue = $this->benar->FormValue;
+        $this->jawaban_essai->CurrentValue = $this->jawaban_essai->FormValue;
     }
 
     /**
@@ -913,6 +928,7 @@ class PesertaEdit extends Peserta
         $this->nama_peserta->setDbValue($row['nama_peserta']);
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
+        $this->jawaban_essai->setDbValue($row['jawaban_essai']);
     }
 
     // Return a row with default values
@@ -924,6 +940,7 @@ class PesertaEdit extends Peserta
         $row['nama_peserta'] = null;
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
+        $row['jawaban_essai'] = null;
         return $row;
     }
 
@@ -971,6 +988,8 @@ class PesertaEdit extends Peserta
         // id_evaluasi
 
         // benar
+
+        // jawaban_essai
         if ($this->RowType == ROWTYPE_VIEW) {
             // id_peserta
             $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
@@ -992,6 +1011,10 @@ class PesertaEdit extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
+
+            // jawaban_essai
+            $this->jawaban_essai->ViewValue = $this->jawaban_essai->CurrentValue;
+            $this->jawaban_essai->ViewCustomAttributes = "";
 
             // id_peserta
             $this->id_peserta->LinkCustomAttributes = "";
@@ -1017,6 +1040,11 @@ class PesertaEdit extends Peserta
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
             $this->benar->TooltipValue = "";
+
+            // jawaban_essai
+            $this->jawaban_essai->LinkCustomAttributes = "";
+            $this->jawaban_essai->HrefValue = "";
+            $this->jawaban_essai->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_EDIT) {
             // id_peserta
             $this->id_peserta->EditAttrs["class"] = "form-control";
@@ -1045,8 +1073,15 @@ class PesertaEdit extends Peserta
             // id_evaluasi
             $this->id_evaluasi->EditAttrs["class"] = "form-control";
             $this->id_evaluasi->EditCustomAttributes = "";
-            $this->id_evaluasi->EditValue = HtmlEncode($this->id_evaluasi->CurrentValue);
-            $this->id_evaluasi->PlaceHolder = RemoveHtml($this->id_evaluasi->caption());
+            if ($this->id_evaluasi->getSessionValue() != "") {
+                $this->id_evaluasi->CurrentValue = GetForeignKeyValue($this->id_evaluasi->getSessionValue());
+                $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
+                $this->id_evaluasi->ViewValue = FormatNumber($this->id_evaluasi->ViewValue, 0, -2, -2, -2);
+                $this->id_evaluasi->ViewCustomAttributes = "";
+            } else {
+                $this->id_evaluasi->EditValue = HtmlEncode($this->id_evaluasi->CurrentValue);
+                $this->id_evaluasi->PlaceHolder = RemoveHtml($this->id_evaluasi->caption());
+            }
 
             // benar
             $this->benar->EditAttrs["class"] = "form-control";
@@ -1056,6 +1091,12 @@ class PesertaEdit extends Peserta
             }
             $this->benar->EditValue = HtmlEncode($this->benar->CurrentValue);
             $this->benar->PlaceHolder = RemoveHtml($this->benar->caption());
+
+            // jawaban_essai
+            $this->jawaban_essai->EditAttrs["class"] = "form-control";
+            $this->jawaban_essai->EditCustomAttributes = "";
+            $this->jawaban_essai->EditValue = HtmlEncode($this->jawaban_essai->CurrentValue);
+            $this->jawaban_essai->PlaceHolder = RemoveHtml($this->jawaban_essai->caption());
 
             // Edit refer script
 
@@ -1078,6 +1119,10 @@ class PesertaEdit extends Peserta
             // benar
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
+
+            // jawaban_essai
+            $this->jawaban_essai->LinkCustomAttributes = "";
+            $this->jawaban_essai->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1126,6 +1171,11 @@ class PesertaEdit extends Peserta
                 $this->benar->addErrorMessage(str_replace("%s", $this->benar->caption(), $this->benar->RequiredErrorMessage));
             }
         }
+        if ($this->jawaban_essai->Required) {
+            if (!$this->jawaban_essai->IsDetailKey && EmptyValue($this->jawaban_essai->FormValue)) {
+                $this->jawaban_essai->addErrorMessage(str_replace("%s", $this->jawaban_essai->caption(), $this->jawaban_essai->RequiredErrorMessage));
+            }
+        }
 
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
@@ -1168,6 +1218,9 @@ class PesertaEdit extends Peserta
 
             // benar
             $this->benar->setDbValueDef($rsnew, $this->benar->CurrentValue, "", $this->benar->ReadOnly);
+
+            // jawaban_essai
+            $this->jawaban_essai->setDbValueDef($rsnew, $this->jawaban_essai->CurrentValue, "", $this->jawaban_essai->ReadOnly);
 
             // Call Row Updating event
             $updateRow = $this->rowUpdating($rsold, $rsnew);
@@ -1220,6 +1273,76 @@ class PesertaEdit extends Peserta
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
         return $editRow;
+    }
+
+    // Set up master/detail based on QueryString
+    protected function setupMasterParms()
+    {
+        $validMaster = false;
+        // Get the keys for master table
+        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                $validMaster = true;
+                $this->DbMasterFilter = "";
+                $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "evaluasi") {
+                $validMaster = true;
+                $masterTbl = Container("evaluasi");
+                if (($parm = Get("fk_id_evaluasi", Get("id_evaluasi"))) !== null) {
+                    $masterTbl->id_evaluasi->setQueryStringValue($parm);
+                    $this->id_evaluasi->setQueryStringValue($masterTbl->id_evaluasi->QueryStringValue);
+                    $this->id_evaluasi->setSessionValue($this->id_evaluasi->QueryStringValue);
+                    if (!is_numeric($masterTbl->id_evaluasi->QueryStringValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                    $validMaster = true;
+                    $this->DbMasterFilter = "";
+                    $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "evaluasi") {
+                $validMaster = true;
+                $masterTbl = Container("evaluasi");
+                if (($parm = Post("fk_id_evaluasi", Post("id_evaluasi"))) !== null) {
+                    $masterTbl->id_evaluasi->setFormValue($parm);
+                    $this->id_evaluasi->setFormValue($masterTbl->id_evaluasi->FormValue);
+                    $this->id_evaluasi->setSessionValue($this->id_evaluasi->FormValue);
+                    if (!is_numeric($masterTbl->id_evaluasi->FormValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        }
+        if ($validMaster) {
+            // Save current master table
+            $this->setCurrentMasterTable($masterTblVar);
+            $this->setSessionWhere($this->getDetailFilter());
+
+            // Reset start record counter (new master key)
+            if (!$this->isAddOrEdit()) {
+                $this->StartRecord = 1;
+                $this->setStartRecordNumber($this->StartRecord);
+            }
+
+            // Clear previous master key from Session
+            if ($masterTblVar != "evaluasi") {
+                if ($this->id_evaluasi->CurrentValue == "") {
+                    $this->id_evaluasi->setSessionValue("");
+                }
+            }
+        }
+        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
+        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
     }
 
     // Set up Breadcrumb

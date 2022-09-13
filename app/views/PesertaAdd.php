@@ -20,7 +20,8 @@ loadjs.ready("head", function () {
         ["tanggal_jam", [fields.tanggal_jam.required ? ew.Validators.required(fields.tanggal_jam.caption) : null], fields.tanggal_jam.isInvalid],
         ["nama_peserta", [fields.nama_peserta.required ? ew.Validators.required(fields.nama_peserta.caption) : null], fields.nama_peserta.isInvalid],
         ["id_evaluasi", [fields.id_evaluasi.required ? ew.Validators.required(fields.id_evaluasi.caption) : null], fields.id_evaluasi.isInvalid],
-        ["benar", [fields.benar.required ? ew.Validators.required(fields.benar.caption) : null], fields.benar.isInvalid]
+        ["benar", [fields.benar.required ? ew.Validators.required(fields.benar.caption) : null], fields.benar.isInvalid],
+        ["jawaban_essai", [fields.jawaban_essai.required ? ew.Validators.required(fields.jawaban_essai.caption) : null], fields.jawaban_essai.isInvalid]
     ]);
 
     // Set invalid fields
@@ -107,6 +108,10 @@ $Page->showMessage();
 <input type="hidden" name="t" value="peserta">
 <input type="hidden" name="action" id="action" value="insert">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
+<?php if ($Page->getCurrentMasterTable() == "evaluasi") { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="evaluasi">
+<input type="hidden" name="fk_id_evaluasi" value="<?= HtmlEncode($Page->id_evaluasi->getSessionValue()) ?>">
+<?php } ?>
 <div class="ew-add-div"><!-- page* -->
 <?php if ($Page->tanggal_jam->Visible) { // tanggal_jam ?>
     <div id="r_tanggal_jam" class="form-group row">
@@ -136,11 +141,19 @@ $Page->showMessage();
     <div id="r_id_evaluasi" class="form-group row">
         <label id="elh_peserta_id_evaluasi" for="x_id_evaluasi" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id_evaluasi->caption() ?><?= $Page->id_evaluasi->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->id_evaluasi->cellAttributes() ?>>
+<?php if ($Page->id_evaluasi->getSessionValue() != "") { ?>
+<span id="el_peserta_id_evaluasi">
+<span<?= $Page->id_evaluasi->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id_evaluasi->ViewValue)) ?>"></span>
+</span>
+<input type="hidden" id="x_id_evaluasi" name="x_id_evaluasi" value="<?= HtmlEncode($Page->id_evaluasi->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el_peserta_id_evaluasi">
 <input type="<?= $Page->id_evaluasi->getInputTextType() ?>" data-table="peserta" data-field="x_id_evaluasi" name="x_id_evaluasi" id="x_id_evaluasi" size="30" placeholder="<?= HtmlEncode($Page->id_evaluasi->getPlaceHolder()) ?>" value="<?= $Page->id_evaluasi->EditValue ?>"<?= $Page->id_evaluasi->editAttributes() ?> aria-describedby="x_id_evaluasi_help">
 <?= $Page->id_evaluasi->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->id_evaluasi->getErrorMessage() ?></div>
 </span>
+<?php } ?>
 </div></div>
     </div>
 <?php } ?>
@@ -152,6 +165,18 @@ $Page->showMessage();
 <input type="<?= $Page->benar->getInputTextType() ?>" data-table="peserta" data-field="x_benar" name="x_benar" id="x_benar" size="30" maxlength="100" placeholder="<?= HtmlEncode($Page->benar->getPlaceHolder()) ?>" value="<?= $Page->benar->EditValue ?>"<?= $Page->benar->editAttributes() ?> aria-describedby="x_benar_help">
 <?= $Page->benar->getCustomMessage() ?>
 <div class="invalid-feedback"><?= $Page->benar->getErrorMessage() ?></div>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->jawaban_essai->Visible) { // jawaban_essai ?>
+    <div id="r_jawaban_essai" class="form-group row">
+        <label id="elh_peserta_jawaban_essai" for="x_jawaban_essai" class="<?= $Page->LeftColumnClass ?>"><?= $Page->jawaban_essai->caption() ?><?= $Page->jawaban_essai->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->jawaban_essai->cellAttributes() ?>>
+<span id="el_peserta_jawaban_essai">
+<textarea data-table="peserta" data-field="x_jawaban_essai" name="x_jawaban_essai" id="x_jawaban_essai" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->jawaban_essai->getPlaceHolder()) ?>"<?= $Page->jawaban_essai->editAttributes() ?> aria-describedby="x_jawaban_essai_help"><?= $Page->jawaban_essai->EditValue ?></textarea>
+<?= $Page->jawaban_essai->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->jawaban_essai->getErrorMessage() ?></div>
 </span>
 </div></div>
     </div>

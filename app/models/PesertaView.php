@@ -684,6 +684,7 @@ class PesertaView extends Peserta
         $this->nama_peserta->setVisibility();
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
+        $this->jawaban_essai->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -708,6 +709,9 @@ class PesertaView extends Peserta
         $loadCurrentRecord = false;
         $returnUrl = "";
         $matchRecord = false;
+
+        // Set up master/detail parameters
+        $this->setupMasterParms();
         if ($this->isPageRequest()) { // Validate request
             if (($keyValue = Get("id_peserta") ?? Route("id_peserta")) !== null) {
                 $this->id_peserta->setQueryStringValue($keyValue);
@@ -902,6 +906,7 @@ class PesertaView extends Peserta
         $this->nama_peserta->setDbValue($row['nama_peserta']);
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
+        $this->jawaban_essai->setDbValue($row['jawaban_essai']);
     }
 
     // Return a row with default values
@@ -913,6 +918,7 @@ class PesertaView extends Peserta
         $row['nama_peserta'] = null;
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
+        $row['jawaban_essai'] = null;
         return $row;
     }
 
@@ -943,6 +949,8 @@ class PesertaView extends Peserta
         // id_evaluasi
 
         // benar
+
+        // jawaban_essai
         if ($this->RowType == ROWTYPE_VIEW) {
             // id_peserta
             $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
@@ -964,6 +972,10 @@ class PesertaView extends Peserta
             // benar
             $this->benar->ViewValue = $this->benar->CurrentValue;
             $this->benar->ViewCustomAttributes = "";
+
+            // jawaban_essai
+            $this->jawaban_essai->ViewValue = $this->jawaban_essai->CurrentValue;
+            $this->jawaban_essai->ViewCustomAttributes = "";
 
             // id_peserta
             $this->id_peserta->LinkCustomAttributes = "";
@@ -989,12 +1001,87 @@ class PesertaView extends Peserta
             $this->benar->LinkCustomAttributes = "";
             $this->benar->HrefValue = "";
             $this->benar->TooltipValue = "";
+
+            // jawaban_essai
+            $this->jawaban_essai->LinkCustomAttributes = "";
+            $this->jawaban_essai->HrefValue = "";
+            $this->jawaban_essai->TooltipValue = "";
         }
 
         // Call Row Rendered event
         if ($this->RowType != ROWTYPE_AGGREGATEINIT) {
             $this->rowRendered();
         }
+    }
+
+    // Set up master/detail based on QueryString
+    protected function setupMasterParms()
+    {
+        $validMaster = false;
+        // Get the keys for master table
+        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                $validMaster = true;
+                $this->DbMasterFilter = "";
+                $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "evaluasi") {
+                $validMaster = true;
+                $masterTbl = Container("evaluasi");
+                if (($parm = Get("fk_id_evaluasi", Get("id_evaluasi"))) !== null) {
+                    $masterTbl->id_evaluasi->setQueryStringValue($parm);
+                    $this->id_evaluasi->setQueryStringValue($masterTbl->id_evaluasi->QueryStringValue);
+                    $this->id_evaluasi->setSessionValue($this->id_evaluasi->QueryStringValue);
+                    if (!is_numeric($masterTbl->id_evaluasi->QueryStringValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                    $validMaster = true;
+                    $this->DbMasterFilter = "";
+                    $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "evaluasi") {
+                $validMaster = true;
+                $masterTbl = Container("evaluasi");
+                if (($parm = Post("fk_id_evaluasi", Post("id_evaluasi"))) !== null) {
+                    $masterTbl->id_evaluasi->setFormValue($parm);
+                    $this->id_evaluasi->setFormValue($masterTbl->id_evaluasi->FormValue);
+                    $this->id_evaluasi->setSessionValue($this->id_evaluasi->FormValue);
+                    if (!is_numeric($masterTbl->id_evaluasi->FormValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        }
+        if ($validMaster) {
+            // Save current master table
+            $this->setCurrentMasterTable($masterTblVar);
+            $this->setSessionWhere($this->getDetailFilter());
+
+            // Reset start record counter (new master key)
+            if (!$this->isAddOrEdit()) {
+                $this->StartRecord = 1;
+                $this->setStartRecordNumber($this->StartRecord);
+            }
+
+            // Clear previous master key from Session
+            if ($masterTblVar != "evaluasi") {
+                if ($this->id_evaluasi->CurrentValue == "") {
+                    $this->id_evaluasi->setSessionValue("");
+                }
+            }
+        }
+        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
+        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
     }
 
     // Set up Breadcrumb

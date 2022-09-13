@@ -971,6 +971,9 @@
       <field id="isi">
         <phrase id="fldcaption" value="isi" />
       </field>
+      <field id="pdf">
+        <phrase id="fldcaption" value="pdf" />
+      </field>
     </table>
     <table id="media">
       <phrase id="tblcaption" value="media" />
@@ -1004,6 +1007,9 @@
       </field>
       <field id="benar">
         <phrase id="fldcaption" value="benar" />
+      </field>
+      <field id="jawaban_essai">
+        <phrase id="fldcaption" value="jawaban essai" />
       </field>
     </table>
     <table id="live">

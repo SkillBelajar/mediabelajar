@@ -108,11 +108,22 @@ $Page->showMessage();
 <input type="hidden" name="t" value="evaluasi">
 <input type="hidden" name="action" id="action" value="insert">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
+<?php if ($Page->getCurrentMasterTable() == "materi") { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="materi">
+<input type="hidden" name="fk_id_materi" value="<?= HtmlEncode($Page->id_materi->getSessionValue()) ?>">
+<?php } ?>
 <div class="ew-add-div"><!-- page* -->
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
     <div id="r_id_materi" class="form-group row">
         <label id="elh_evaluasi_id_materi" for="x_id_materi" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id_materi->caption() ?><?= $Page->id_materi->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->id_materi->cellAttributes() ?>>
+<?php if ($Page->id_materi->getSessionValue() != "") { ?>
+<span id="el_evaluasi_id_materi">
+<span<?= $Page->id_materi->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id_materi->ViewValue)) ?>"></span>
+</span>
+<input type="hidden" id="x_id_materi" name="x_id_materi" value="<?= HtmlEncode($Page->id_materi->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el_evaluasi_id_materi">
     <select
         id="x_id_materi"
@@ -139,6 +150,7 @@ loadjs.ready("head", function() {
 });
 </script>
 </span>
+<?php } ?>
 </div></div>
     </div>
 <?php } ?>
@@ -194,6 +206,14 @@ loadjs.ready("head", function() {
     </div>
 <?php } ?>
 </div><!-- /page* -->
+<?php
+    if (in_array("peserta", explode(",", $Page->getCurrentDetailTable())) && $peserta->DetailAdd) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("peserta", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "PesertaGrid.php" ?>
+<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <div class="form-group row"><!-- buttons .form-group -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->

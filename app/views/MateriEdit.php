@@ -20,7 +20,8 @@ loadjs.ready("head", function () {
         ["id_materi", [fields.id_materi.required ? ew.Validators.required(fields.id_materi.caption) : null], fields.id_materi.isInvalid],
         ["id_media", [fields.id_media.required ? ew.Validators.required(fields.id_media.caption) : null], fields.id_media.isInvalid],
         ["judul", [fields.judul.required ? ew.Validators.required(fields.judul.caption) : null], fields.judul.isInvalid],
-        ["isi", [fields.isi.required ? ew.Validators.required(fields.isi.caption) : null], fields.isi.isInvalid]
+        ["isi", [fields.isi.required ? ew.Validators.required(fields.isi.caption) : null], fields.isi.isInvalid],
+        ["pdf", [fields.pdf.required ? ew.Validators.fileRequired(fields.pdf.caption) : null], fields.pdf.isInvalid]
     ]);
 
     // Set invalid fields
@@ -108,6 +109,10 @@ $Page->showMessage();
 <input type="hidden" name="t" value="materi">
 <input type="hidden" name="action" id="action" value="update">
 <input type="hidden" name="modal" value="<?= (int)$Page->IsModal ?>">
+<?php if ($Page->getCurrentMasterTable() == "media") { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="media">
+<input type="hidden" name="fk_id_media" value="<?= HtmlEncode($Page->id_media->getSessionValue()) ?>">
+<?php } ?>
 <div class="ew-edit-div"><!-- page* -->
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
     <div id="r_id_materi" class="form-group row">
@@ -125,6 +130,13 @@ $Page->showMessage();
     <div id="r_id_media" class="form-group row">
         <label id="elh_materi_id_media" for="x_id_media" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id_media->caption() ?><?= $Page->id_media->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->id_media->cellAttributes() ?>>
+<?php if ($Page->id_media->getSessionValue() != "") { ?>
+<span id="el_materi_id_media">
+<span<?= $Page->id_media->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id_media->ViewValue)) ?>"></span>
+</span>
+<input type="hidden" id="x_id_media" name="x_id_media" value="<?= HtmlEncode($Page->id_media->CurrentValue) ?>">
+<?php } else { ?>
 <span id="el_materi_id_media">
     <select
         id="x_id_media"
@@ -151,6 +163,7 @@ loadjs.ready("head", function() {
 });
 </script>
 </span>
+<?php } ?>
 </div></div>
     </div>
 <?php } ?>
@@ -184,7 +197,40 @@ loadjs.ready(["fmateriedit", "editor"], function() {
 </div></div>
     </div>
 <?php } ?>
+<?php if ($Page->pdf->Visible) { // pdf ?>
+    <div id="r_pdf" class="form-group row">
+        <label id="elh_materi_pdf" class="<?= $Page->LeftColumnClass ?>"><?= $Page->pdf->caption() ?><?= $Page->pdf->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->pdf->cellAttributes() ?>>
+<span id="el_materi_pdf">
+<div id="fd_x_pdf">
+<div class="input-group">
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" title="<?= $Page->pdf->title() ?>" data-table="materi" data-field="x_pdf" name="x_pdf" id="x_pdf" lang="<?= CurrentLanguageID() ?>"<?= $Page->pdf->editAttributes() ?><?= ($Page->pdf->ReadOnly || $Page->pdf->Disabled) ? " disabled" : "" ?> aria-describedby="x_pdf_help">
+        <label class="custom-file-label ew-file-label" for="x_pdf"><?= $Language->phrase("ChooseFile") ?></label>
+    </div>
+</div>
+<?= $Page->pdf->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->pdf->getErrorMessage() ?></div>
+<input type="hidden" name="fn_x_pdf" id= "fn_x_pdf" value="<?= $Page->pdf->Upload->FileName ?>">
+<input type="hidden" name="fa_x_pdf" id= "fa_x_pdf" value="<?= (Post("fa_x_pdf") == "0") ? "0" : "1" ?>">
+<input type="hidden" name="fs_x_pdf" id= "fs_x_pdf" value="255">
+<input type="hidden" name="fx_x_pdf" id= "fx_x_pdf" value="<?= $Page->pdf->UploadAllowedFileExt ?>">
+<input type="hidden" name="fm_x_pdf" id= "fm_x_pdf" value="<?= $Page->pdf->UploadMaxFileSize ?>">
+</div>
+<table id="ft_x_pdf" class="table table-sm float-left ew-upload-table"><tbody class="files"></tbody></table>
+</span>
+</div></div>
+    </div>
+<?php } ?>
 </div><!-- /page* -->
+<?php
+    if (in_array("evaluasi", explode(",", $Page->getCurrentDetailTable())) && $evaluasi->DetailEdit) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("evaluasi", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "EvaluasiGrid.php" ?>
+<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <div class="form-group row"><!-- buttons .form-group -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->

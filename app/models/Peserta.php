@@ -34,6 +34,7 @@ class Peserta extends DbTable
     public $nama_peserta;
     public $id_evaluasi;
     public $benar;
+    public $jawaban_essai;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -94,6 +95,7 @@ class Peserta extends DbTable
 
         // id_evaluasi
         $this->id_evaluasi = new DbField('peserta', 'peserta', 'x_id_evaluasi', 'id_evaluasi', '`id_evaluasi`', '`id_evaluasi`', 3, 100, -1, false, '`id_evaluasi`', false, false, false, 'FORMATTED TEXT', 'TEXT');
+        $this->id_evaluasi->IsForeignKey = true; // Foreign key field
         $this->id_evaluasi->Nullable = false; // NOT NULL field
         $this->id_evaluasi->Required = true; // Required field
         $this->id_evaluasi->Sortable = true; // Allow sort
@@ -106,6 +108,13 @@ class Peserta extends DbTable
         $this->benar->Required = true; // Required field
         $this->benar->Sortable = true; // Allow sort
         $this->Fields['benar'] = &$this->benar;
+
+        // jawaban_essai
+        $this->jawaban_essai = new DbField('peserta', 'peserta', 'x_jawaban_essai', 'jawaban_essai', '`jawaban_essai`', '`jawaban_essai`', 201, 65535, -1, false, '`jawaban_essai`', false, false, false, 'FORMATTED TEXT', 'TEXTAREA');
+        $this->jawaban_essai->Nullable = false; // NOT NULL field
+        $this->jawaban_essai->Required = true; // Required field
+        $this->jawaban_essai->Sortable = true; // Allow sort
+        $this->Fields['jawaban_essai'] = &$this->jawaban_essai;
     }
 
     // Field Visibility
@@ -143,6 +152,58 @@ class Peserta extends DbTable
         } else {
             $fld->setSort("");
         }
+    }
+
+    // Current master table name
+    public function getCurrentMasterTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")];
+    }
+
+    public function setCurrentMasterTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")] = $v;
+    }
+
+    // Session master WHERE clause
+    public function getMasterFilter()
+    {
+        // Master filter
+        $masterFilter = "";
+        if ($this->getCurrentMasterTable() == "evaluasi") {
+            if ($this->id_evaluasi->getSessionValue() != "") {
+                $masterFilter .= "" . GetForeignKeySql("`id_evaluasi`", $this->id_evaluasi->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $masterFilter;
+    }
+
+    // Session detail WHERE clause
+    public function getDetailFilter()
+    {
+        // Detail filter
+        $detailFilter = "";
+        if ($this->getCurrentMasterTable() == "evaluasi") {
+            if ($this->id_evaluasi->getSessionValue() != "") {
+                $detailFilter .= "" . GetForeignKeySql("`id_evaluasi`", $this->id_evaluasi->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $detailFilter;
+    }
+
+    // Master filter
+    public function sqlMasterFilter_evaluasi()
+    {
+        return "`id_evaluasi`=@id_evaluasi@";
+    }
+    // Detail filter
+    public function sqlDetailFilter_evaluasi()
+    {
+        return "`id_evaluasi`=@id_evaluasi@";
     }
 
     // Table level SQL
@@ -521,6 +582,7 @@ class Peserta extends DbTable
         $this->nama_peserta->DbValue = $row['nama_peserta'];
         $this->id_evaluasi->DbValue = $row['id_evaluasi'];
         $this->benar->DbValue = $row['benar'];
+        $this->jawaban_essai->DbValue = $row['jawaban_essai'];
     }
 
     // Delete uploaded files
@@ -655,6 +717,10 @@ class Peserta extends DbTable
     // Add master url
     public function addMasterUrl($url)
     {
+        if ($this->getCurrentMasterTable() == "evaluasi" && !ContainsString($url, Config("TABLE_SHOW_MASTER") . "=")) {
+            $url .= (ContainsString($url, "?") ? "&" : "?") . Config("TABLE_SHOW_MASTER") . "=" . $this->getCurrentMasterTable();
+            $url .= "&" . GetForeignKeyUrl("fk_id_evaluasi", $this->id_evaluasi->CurrentValue);
+        }
         return $url;
     }
 
@@ -801,6 +867,7 @@ SORTHTML;
         $this->nama_peserta->setDbValue($row['nama_peserta']);
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
+        $this->jawaban_essai->setDbValue($row['jawaban_essai']);
     }
 
     // Render list row values
@@ -823,6 +890,8 @@ SORTHTML;
 
         // benar
 
+        // jawaban_essai
+
         // id_peserta
         $this->id_peserta->ViewValue = $this->id_peserta->CurrentValue;
         $this->id_peserta->ViewCustomAttributes = "";
@@ -843,6 +912,10 @@ SORTHTML;
         // benar
         $this->benar->ViewValue = $this->benar->CurrentValue;
         $this->benar->ViewCustomAttributes = "";
+
+        // jawaban_essai
+        $this->jawaban_essai->ViewValue = $this->jawaban_essai->CurrentValue;
+        $this->jawaban_essai->ViewCustomAttributes = "";
 
         // id_peserta
         $this->id_peserta->LinkCustomAttributes = "";
@@ -868,6 +941,11 @@ SORTHTML;
         $this->benar->LinkCustomAttributes = "";
         $this->benar->HrefValue = "";
         $this->benar->TooltipValue = "";
+
+        // jawaban_essai
+        $this->jawaban_essai->LinkCustomAttributes = "";
+        $this->jawaban_essai->HrefValue = "";
+        $this->jawaban_essai->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -911,8 +989,15 @@ SORTHTML;
         // id_evaluasi
         $this->id_evaluasi->EditAttrs["class"] = "form-control";
         $this->id_evaluasi->EditCustomAttributes = "";
-        $this->id_evaluasi->EditValue = $this->id_evaluasi->CurrentValue;
-        $this->id_evaluasi->PlaceHolder = RemoveHtml($this->id_evaluasi->caption());
+        if ($this->id_evaluasi->getSessionValue() != "") {
+            $this->id_evaluasi->CurrentValue = GetForeignKeyValue($this->id_evaluasi->getSessionValue());
+            $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
+            $this->id_evaluasi->ViewValue = FormatNumber($this->id_evaluasi->ViewValue, 0, -2, -2, -2);
+            $this->id_evaluasi->ViewCustomAttributes = "";
+        } else {
+            $this->id_evaluasi->EditValue = $this->id_evaluasi->CurrentValue;
+            $this->id_evaluasi->PlaceHolder = RemoveHtml($this->id_evaluasi->caption());
+        }
 
         // benar
         $this->benar->EditAttrs["class"] = "form-control";
@@ -922,6 +1007,12 @@ SORTHTML;
         }
         $this->benar->EditValue = $this->benar->CurrentValue;
         $this->benar->PlaceHolder = RemoveHtml($this->benar->caption());
+
+        // jawaban_essai
+        $this->jawaban_essai->EditAttrs["class"] = "form-control";
+        $this->jawaban_essai->EditCustomAttributes = "";
+        $this->jawaban_essai->EditValue = $this->jawaban_essai->CurrentValue;
+        $this->jawaban_essai->PlaceHolder = RemoveHtml($this->jawaban_essai->caption());
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -956,6 +1047,7 @@ SORTHTML;
                     $doc->exportCaption($this->nama_peserta);
                     $doc->exportCaption($this->id_evaluasi);
                     $doc->exportCaption($this->benar);
+                    $doc->exportCaption($this->jawaban_essai);
                 } else {
                     $doc->exportCaption($this->tanggal_jam);
                     $doc->exportCaption($this->nama_peserta);
@@ -995,6 +1087,7 @@ SORTHTML;
                         $doc->exportField($this->nama_peserta);
                         $doc->exportField($this->id_evaluasi);
                         $doc->exportField($this->benar);
+                        $doc->exportField($this->jawaban_essai);
                     } else {
                         $doc->exportField($this->tanggal_jam);
                         $doc->exportField($this->nama_peserta);

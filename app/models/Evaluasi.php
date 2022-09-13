@@ -73,12 +73,14 @@ class Evaluasi extends DbTable
         $this->id_evaluasi = new DbField('evaluasi', 'evaluasi', 'x_id_evaluasi', 'id_evaluasi', '`id_evaluasi`', '`id_evaluasi`', 3, 100, -1, false, '`id_evaluasi`', false, false, false, 'FORMATTED TEXT', 'NO');
         $this->id_evaluasi->IsAutoIncrement = true; // Autoincrement field
         $this->id_evaluasi->IsPrimaryKey = true; // Primary key field
+        $this->id_evaluasi->IsForeignKey = true; // Foreign key field
         $this->id_evaluasi->Sortable = true; // Allow sort
         $this->id_evaluasi->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_evaluasi'] = &$this->id_evaluasi;
 
         // id_materi
         $this->id_materi = new DbField('evaluasi', 'evaluasi', 'x_id_materi', 'id_materi', '`id_materi`', '`id_materi`', 3, 100, -1, false, '`id_materi`', false, false, false, 'FORMATTED TEXT', 'SELECT');
+        $this->id_materi->IsForeignKey = true; // Foreign key field
         $this->id_materi->Nullable = false; // NOT NULL field
         $this->id_materi->Required = true; // Required field
         $this->id_materi->Sortable = true; // Allow sort
@@ -142,6 +144,84 @@ class Evaluasi extends DbTable
         } else {
             $fld->setSort("");
         }
+    }
+
+    // Current master table name
+    public function getCurrentMasterTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")];
+    }
+
+    public function setCurrentMasterTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")] = $v;
+    }
+
+    // Session master WHERE clause
+    public function getMasterFilter()
+    {
+        // Master filter
+        $masterFilter = "";
+        if ($this->getCurrentMasterTable() == "materi") {
+            if ($this->id_materi->getSessionValue() != "") {
+                $masterFilter .= "" . GetForeignKeySql("`id_materi`", $this->id_materi->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $masterFilter;
+    }
+
+    // Session detail WHERE clause
+    public function getDetailFilter()
+    {
+        // Detail filter
+        $detailFilter = "";
+        if ($this->getCurrentMasterTable() == "materi") {
+            if ($this->id_materi->getSessionValue() != "") {
+                $detailFilter .= "" . GetForeignKeySql("`id_materi`", $this->id_materi->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $detailFilter;
+    }
+
+    // Master filter
+    public function sqlMasterFilter_materi()
+    {
+        return "`id_materi`=@id_materi@";
+    }
+    // Detail filter
+    public function sqlDetailFilter_materi()
+    {
+        return "`id_materi`=@id_materi@";
+    }
+
+    // Current detail table name
+    public function getCurrentDetailTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")];
+    }
+
+    public function setCurrentDetailTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")] = $v;
+    }
+
+    // Get detail url
+    public function getDetailUrl()
+    {
+        // Detail url
+        $detailUrl = "";
+        if ($this->getCurrentDetailTable() == "peserta") {
+            $detailUrl = Container("peserta")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
+            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_evaluasi", $this->id_evaluasi->CurrentValue);
+        }
+        if ($detailUrl == "") {
+            $detailUrl = "EvaluasiList";
+        }
+        return $detailUrl;
     }
 
     // Table level SQL
@@ -619,7 +699,11 @@ class Evaluasi extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm($parm));
+        if ($parm != "") {
+            $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm($parm));
+        } else {
+            $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+        }
         return $this->addMasterUrl($url);
     }
 
@@ -633,7 +717,11 @@ class Evaluasi extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm($parm));
+        if ($parm != "") {
+            $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm($parm));
+        } else {
+            $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+        }
         return $this->addMasterUrl($url);
     }
 
@@ -653,6 +741,10 @@ class Evaluasi extends DbTable
     // Add master url
     public function addMasterUrl($url)
     {
+        if ($this->getCurrentMasterTable() == "materi" && !ContainsString($url, Config("TABLE_SHOW_MASTER") . "=")) {
+            $url .= (ContainsString($url, "?") ? "&" : "?") . Config("TABLE_SHOW_MASTER") . "=" . $this->getCurrentMasterTable();
+            $url .= "&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue);
+        }
         return $url;
     }
 
@@ -899,7 +991,30 @@ SORTHTML;
         // id_materi
         $this->id_materi->EditAttrs["class"] = "form-control";
         $this->id_materi->EditCustomAttributes = "";
-        $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
+        if ($this->id_materi->getSessionValue() != "") {
+            $this->id_materi->CurrentValue = GetForeignKeyValue($this->id_materi->getSessionValue());
+            $curVal = strval($this->id_materi->CurrentValue);
+            if ($curVal != "") {
+                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                if ($this->id_materi->ViewValue === null) { // Lookup from database
+                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
+                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
+                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
+                    } else {
+                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
+                    }
+                }
+            } else {
+                $this->id_materi->ViewValue = null;
+            }
+            $this->id_materi->ViewCustomAttributes = "";
+        } else {
+            $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
+        }
 
         // soal
         $this->soal->EditAttrs["class"] = "form-control";

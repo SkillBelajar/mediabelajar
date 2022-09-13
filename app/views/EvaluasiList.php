@@ -53,6 +53,15 @@ loadjs.ready("head", function () {
 <div class="clearfix"></div>
 </div>
 <?php } ?>
+<?php if (!$Page->isExport() || Config("EXPORT_MASTER_RECORD") && $Page->isExport("print")) { ?>
+<?php
+if ($Page->DbMasterFilter != "" && $Page->getCurrentMasterTable() == "materi") {
+    if ($Page->MasterRecordExists) {
+        include_once "views/MateriMaster.php";
+    }
+}
+?>
+<?php } ?>
 <?php
 $Page->renderOtherOptions();
 ?>
@@ -96,6 +105,10 @@ $Page->showMessage();
 <input type="hidden" name="<?= $TokenValueKey ?>" value="<?= $TokenValue ?>"><!-- CSRF token value -->
 <?php } ?>
 <input type="hidden" name="t" value="evaluasi">
+<?php if ($Page->getCurrentMasterTable() == "materi" && $Page->CurrentAction) { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="materi">
+<input type="hidden" name="fk_id_materi" value="<?= HtmlEncode($Page->id_materi->getSessionValue()) ?>">
+<?php } ?>
 <div id="gmp_evaluasi" class="<?= ResponsiveTableClass() ?>card-body ew-grid-middle-panel">
 <?php if ($Page->TotalRecords > 0 || $Page->isGridEdit()) { ?>
 <table id="tbl_evaluasilist" class="table ew-table"><!-- .ew-table -->

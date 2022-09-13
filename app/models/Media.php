@@ -72,6 +72,7 @@ class Media extends DbTable
         $this->id_media = new DbField('media', 'media', 'x_id_media', 'id_media', '`id_media`', '`id_media`', 3, 100, -1, false, '`id_media`', false, false, false, 'FORMATTED TEXT', 'NO');
         $this->id_media->IsAutoIncrement = true; // Autoincrement field
         $this->id_media->IsPrimaryKey = true; // Primary key field
+        $this->id_media->IsForeignKey = true; // Foreign key field
         $this->id_media->Sortable = false; // Allow sort
         $this->id_media->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_media'] = &$this->id_media;
@@ -130,6 +131,32 @@ class Media extends DbTable
         } else {
             $fld->setSort("");
         }
+    }
+
+    // Current detail table name
+    public function getCurrentDetailTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")];
+    }
+
+    public function setCurrentDetailTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")] = $v;
+    }
+
+    // Get detail url
+    public function getDetailUrl()
+    {
+        // Detail url
+        $detailUrl = "";
+        if ($this->getCurrentDetailTable() == "materi") {
+            $detailUrl = Container("materi")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
+            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_media", $this->id_media->CurrentValue);
+        }
+        if ($detailUrl == "") {
+            $detailUrl = "MediaList";
+        }
+        return $detailUrl;
     }
 
     // Table level SQL
@@ -606,7 +633,11 @@ class Media extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        $url = $this->keyUrl("MediaEdit", $this->getUrlParm($parm));
+        if ($parm != "") {
+            $url = $this->keyUrl("MediaEdit", $this->getUrlParm($parm));
+        } else {
+            $url = $this->keyUrl("MediaEdit", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+        }
         return $this->addMasterUrl($url);
     }
 
@@ -620,7 +651,11 @@ class Media extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        $url = $this->keyUrl("MediaAdd", $this->getUrlParm($parm));
+        if ($parm != "") {
+            $url = $this->keyUrl("MediaAdd", $this->getUrlParm($parm));
+        } else {
+            $url = $this->keyUrl("MediaAdd", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+        }
         return $this->addMasterUrl($url);
     }
 

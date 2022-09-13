@@ -528,7 +528,8 @@ class MateriDelete extends Materi
         $this->id_materi->Visible = false;
         $this->id_media->setVisibility();
         $this->judul->setVisibility();
-        $this->isi->Visible = false;
+        $this->isi->setVisibility();
+        $this->pdf->Visible = false;
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -544,6 +545,9 @@ class MateriDelete extends Materi
 
         // Set up lookup cache
         $this->setupLookupOptions($this->id_media);
+
+        // Set up master/detail parameters
+        $this->setupMasterParms();
 
         // Set up Breadcrumb
         $this->setupBreadcrumb();
@@ -696,6 +700,8 @@ class MateriDelete extends Materi
         $this->id_media->setDbValue($row['id_media']);
         $this->judul->setDbValue($row['judul']);
         $this->isi->setDbValue($row['isi']);
+        $this->pdf->Upload->DbValue = $row['pdf'];
+        $this->pdf->setDbValue($this->pdf->Upload->DbValue);
     }
 
     // Return a row with default values
@@ -706,6 +712,7 @@ class MateriDelete extends Materi
         $row['id_media'] = null;
         $row['judul'] = null;
         $row['isi'] = null;
+        $row['pdf'] = null;
         return $row;
     }
 
@@ -728,6 +735,8 @@ class MateriDelete extends Materi
         // judul
 
         // isi
+
+        // pdf
         if ($this->RowType == ROWTYPE_VIEW) {
             // id_media
             $curVal = strval($this->id_media->CurrentValue);
@@ -758,6 +767,14 @@ class MateriDelete extends Materi
             $this->isi->ViewValue = $this->isi->CurrentValue;
             $this->isi->ViewCustomAttributes = "";
 
+            // pdf
+            if (!EmptyValue($this->pdf->Upload->DbValue)) {
+                $this->pdf->ViewValue = $this->pdf->Upload->DbValue;
+            } else {
+                $this->pdf->ViewValue = "";
+            }
+            $this->pdf->ViewCustomAttributes = "";
+
             // id_media
             $this->id_media->LinkCustomAttributes = "";
             $this->id_media->HrefValue = "";
@@ -767,6 +784,11 @@ class MateriDelete extends Materi
             $this->judul->LinkCustomAttributes = "";
             $this->judul->HrefValue = "";
             $this->judul->TooltipValue = "";
+
+            // isi
+            $this->isi->LinkCustomAttributes = "";
+            $this->isi->HrefValue = "";
+            $this->isi->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -852,6 +874,75 @@ class MateriDelete extends Materi
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
         return $deleteRows;
+    }
+
+    // Set up master/detail based on QueryString
+    protected function setupMasterParms()
+    {
+        $validMaster = false;
+        // Get the keys for master table
+        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                $validMaster = true;
+                $this->DbMasterFilter = "";
+                $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "media") {
+                $validMaster = true;
+                $masterTbl = Container("media");
+                if (($parm = Get("fk_id_media", Get("id_media"))) !== null) {
+                    $masterTbl->id_media->setQueryStringValue($parm);
+                    $this->id_media->setQueryStringValue($masterTbl->id_media->QueryStringValue);
+                    $this->id_media->setSessionValue($this->id_media->QueryStringValue);
+                    if (!is_numeric($masterTbl->id_media->QueryStringValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                    $validMaster = true;
+                    $this->DbMasterFilter = "";
+                    $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "media") {
+                $validMaster = true;
+                $masterTbl = Container("media");
+                if (($parm = Post("fk_id_media", Post("id_media"))) !== null) {
+                    $masterTbl->id_media->setFormValue($parm);
+                    $this->id_media->setFormValue($masterTbl->id_media->FormValue);
+                    $this->id_media->setSessionValue($this->id_media->FormValue);
+                    if (!is_numeric($masterTbl->id_media->FormValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        }
+        if ($validMaster) {
+            // Save current master table
+            $this->setCurrentMasterTable($masterTblVar);
+
+            // Reset start record counter (new master key)
+            if (!$this->isAddOrEdit()) {
+                $this->StartRecord = 1;
+                $this->setStartRecordNumber($this->StartRecord);
+            }
+
+            // Clear previous master key from Session
+            if ($masterTblVar != "media") {
+                if ($this->id_media->CurrentValue == "") {
+                    $this->id_media->setSessionValue("");
+                }
+            }
+        }
+        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
+        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
     }
 
     // Set up Breadcrumb

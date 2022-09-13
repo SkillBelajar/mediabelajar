@@ -97,6 +97,17 @@ $Page->showMessage();
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->jawaban_essai->Visible) { // jawaban_essai ?>
+    <tr id="r_jawaban_essai">
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_peserta_jawaban_essai"><?= $Page->jawaban_essai->caption() ?></span></td>
+        <td data-name="jawaban_essai" <?= $Page->jawaban_essai->cellAttributes() ?>>
+<span id="el_peserta_jawaban_essai">
+<span<?= $Page->jawaban_essai->viewAttributes() ?>>
+<?= $Page->jawaban_essai->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 </table>
 </form>
 <?php

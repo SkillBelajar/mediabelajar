@@ -47,6 +47,9 @@ $Page->showMessage();
 <?php if ($Page->judul->Visible) { // judul ?>
         <th class="<?= $Page->judul->headerCellClass() ?>"><span id="elh_materi_judul" class="materi_judul"><?= $Page->judul->caption() ?></span></th>
 <?php } ?>
+<?php if ($Page->isi->Visible) { // isi ?>
+        <th class="<?= $Page->isi->headerCellClass() ?>"><span id="elh_materi_isi" class="materi_isi"><?= $Page->isi->caption() ?></span></th>
+<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -81,6 +84,14 @@ while (!$Page->Recordset->EOF) {
 <span id="el<?= $Page->RowCount ?>_materi_judul" class="materi_judul">
 <span<?= $Page->judul->viewAttributes() ?>>
 <?= $Page->judul->getViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($Page->isi->Visible) { // isi ?>
+        <td <?= $Page->isi->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_materi_isi" class="materi_isi">
+<span<?= $Page->isi->viewAttributes() ?>>
+<?= $Page->isi->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

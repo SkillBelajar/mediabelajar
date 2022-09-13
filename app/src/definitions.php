@@ -56,4 +56,7 @@ return [
     "live" => \DI\create(Live::class),
 
     // Detail table pages
+    "MateriGrid" => \DI\create(MateriGrid::class),
+    "EvaluasiGrid" => \DI\create(EvaluasiGrid::class),
+    "PesertaGrid" => \DI\create(PesertaGrid::class),
 ];

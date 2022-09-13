@@ -87,6 +87,14 @@ $Page->showMessage();
     </tr>
 <?php } ?>
 </table>
+<?php
+    if (in_array("peserta", explode(",", $Page->getCurrentDetailTable())) && $peserta->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("peserta", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "PesertaGrid.php" ?>
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

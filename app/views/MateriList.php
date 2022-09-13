@@ -53,6 +53,15 @@ loadjs.ready("head", function () {
 <div class="clearfix"></div>
 </div>
 <?php } ?>
+<?php if (!$Page->isExport() || Config("EXPORT_MASTER_RECORD") && $Page->isExport("print")) { ?>
+<?php
+if ($Page->DbMasterFilter != "" && $Page->getCurrentMasterTable() == "media") {
+    if ($Page->MasterRecordExists) {
+        include_once "views/MediaMaster.php";
+    }
+}
+?>
+<?php } ?>
 <?php
 $Page->renderOtherOptions();
 ?>
@@ -96,6 +105,10 @@ $Page->showMessage();
 <input type="hidden" name="<?= $TokenValueKey ?>" value="<?= $TokenValue ?>"><!-- CSRF token value -->
 <?php } ?>
 <input type="hidden" name="t" value="materi">
+<?php if ($Page->getCurrentMasterTable() == "media" && $Page->CurrentAction) { ?>
+<input type="hidden" name="<?= Config("TABLE_SHOW_MASTER") ?>" value="media">
+<input type="hidden" name="fk_id_media" value="<?= HtmlEncode($Page->id_media->getSessionValue()) ?>">
+<?php } ?>
 <div id="gmp_materi" class="<?= ResponsiveTableClass() ?>card-body ew-grid-middle-panel">
 <?php if ($Page->TotalRecords > 0 || $Page->isGridEdit()) { ?>
 <table id="tbl_materilist" class="table ew-table"><!-- .ew-table -->
@@ -116,6 +129,9 @@ $Page->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Page->judul->Visible) { // judul ?>
         <th data-name="judul" class="<?= $Page->judul->headerCellClass() ?>"><div id="elh_materi_judul" class="materi_judul"><?= $Page->renderSort($Page->judul) ?></div></th>
+<?php } ?>
+<?php if ($Page->isi->Visible) { // isi ?>
+        <th data-name="isi" class="<?= $Page->isi->headerCellClass() ?>"><div id="elh_materi_isi" class="materi_isi"><?= $Page->renderSort($Page->isi) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -190,6 +206,14 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowCount ?>_materi_judul">
 <span<?= $Page->judul->viewAttributes() ?>>
 <?= $Page->judul->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->isi->Visible) { // isi ?>
+        <td data-name="isi" <?= $Page->isi->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_materi_isi">
+<span<?= $Page->isi->viewAttributes() ?>>
+<?= $Page->isi->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

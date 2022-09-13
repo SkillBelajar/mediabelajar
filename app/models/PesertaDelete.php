@@ -530,6 +530,7 @@ class PesertaDelete extends Peserta
         $this->nama_peserta->setVisibility();
         $this->id_evaluasi->setVisibility();
         $this->benar->setVisibility();
+        $this->jawaban_essai->Visible = false;
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -544,6 +545,9 @@ class PesertaDelete extends Peserta
         }
 
         // Set up lookup cache
+
+        // Set up master/detail parameters
+        $this->setupMasterParms();
 
         // Set up Breadcrumb
         $this->setupBreadcrumb();
@@ -697,6 +701,7 @@ class PesertaDelete extends Peserta
         $this->nama_peserta->setDbValue($row['nama_peserta']);
         $this->id_evaluasi->setDbValue($row['id_evaluasi']);
         $this->benar->setDbValue($row['benar']);
+        $this->jawaban_essai->setDbValue($row['jawaban_essai']);
     }
 
     // Return a row with default values
@@ -708,6 +713,7 @@ class PesertaDelete extends Peserta
         $row['nama_peserta'] = null;
         $row['id_evaluasi'] = null;
         $row['benar'] = null;
+        $row['jawaban_essai'] = null;
         return $row;
     }
 
@@ -732,6 +738,8 @@ class PesertaDelete extends Peserta
         // id_evaluasi
 
         // benar
+
+        // jawaban_essai
         if ($this->RowType == ROWTYPE_VIEW) {
             // tanggal_jam
             $this->tanggal_jam->ViewValue = $this->tanggal_jam->CurrentValue;
@@ -854,6 +862,75 @@ class PesertaDelete extends Peserta
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
         return $deleteRows;
+    }
+
+    // Set up master/detail based on QueryString
+    protected function setupMasterParms()
+    {
+        $validMaster = false;
+        // Get the keys for master table
+        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                $validMaster = true;
+                $this->DbMasterFilter = "";
+                $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "evaluasi") {
+                $validMaster = true;
+                $masterTbl = Container("evaluasi");
+                if (($parm = Get("fk_id_evaluasi", Get("id_evaluasi"))) !== null) {
+                    $masterTbl->id_evaluasi->setQueryStringValue($parm);
+                    $this->id_evaluasi->setQueryStringValue($masterTbl->id_evaluasi->QueryStringValue);
+                    $this->id_evaluasi->setSessionValue($this->id_evaluasi->QueryStringValue);
+                    if (!is_numeric($masterTbl->id_evaluasi->QueryStringValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                    $validMaster = true;
+                    $this->DbMasterFilter = "";
+                    $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "evaluasi") {
+                $validMaster = true;
+                $masterTbl = Container("evaluasi");
+                if (($parm = Post("fk_id_evaluasi", Post("id_evaluasi"))) !== null) {
+                    $masterTbl->id_evaluasi->setFormValue($parm);
+                    $this->id_evaluasi->setFormValue($masterTbl->id_evaluasi->FormValue);
+                    $this->id_evaluasi->setSessionValue($this->id_evaluasi->FormValue);
+                    if (!is_numeric($masterTbl->id_evaluasi->FormValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        }
+        if ($validMaster) {
+            // Save current master table
+            $this->setCurrentMasterTable($masterTblVar);
+
+            // Reset start record counter (new master key)
+            if (!$this->isAddOrEdit()) {
+                $this->StartRecord = 1;
+                $this->setStartRecordNumber($this->StartRecord);
+            }
+
+            // Clear previous master key from Session
+            if ($masterTblVar != "evaluasi") {
+                if ($this->id_evaluasi->CurrentValue == "") {
+                    $this->id_evaluasi->setSessionValue("");
+                }
+            }
+        }
+        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
+        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
     }
 
     // Set up Breadcrumb

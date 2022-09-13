@@ -76,6 +76,14 @@ $Page->showMessage();
     </tr>
 <?php } ?>
 </table>
+<?php
+    if (in_array("materi", explode(",", $Page->getCurrentDetailTable())) && $materi->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("materi", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "MateriGrid.php" ?>
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

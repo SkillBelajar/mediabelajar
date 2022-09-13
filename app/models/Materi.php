@@ -33,6 +33,7 @@ class Materi extends DbTable
     public $id_media;
     public $judul;
     public $isi;
+    public $pdf;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -73,12 +74,14 @@ class Materi extends DbTable
         $this->id_materi = new DbField('materi', 'materi', 'x_id_materi', 'id_materi', '`id_materi`', '`id_materi`', 3, 100, -1, false, '`id_materi`', false, false, false, 'FORMATTED TEXT', 'NO');
         $this->id_materi->IsAutoIncrement = true; // Autoincrement field
         $this->id_materi->IsPrimaryKey = true; // Primary key field
+        $this->id_materi->IsForeignKey = true; // Foreign key field
         $this->id_materi->Sortable = true; // Allow sort
         $this->id_materi->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_materi'] = &$this->id_materi;
 
         // id_media
         $this->id_media = new DbField('materi', 'materi', 'x_id_media', 'id_media', '`id_media`', '`id_media`', 3, 100, -1, false, '`id_media`', false, false, false, 'FORMATTED TEXT', 'SELECT');
+        $this->id_media->IsForeignKey = true; // Foreign key field
         $this->id_media->Nullable = false; // NOT NULL field
         $this->id_media->Required = true; // Required field
         $this->id_media->Sortable = true; // Allow sort
@@ -101,6 +104,14 @@ class Materi extends DbTable
         $this->isi->Required = true; // Required field
         $this->isi->Sortable = true; // Allow sort
         $this->Fields['isi'] = &$this->isi;
+
+        // pdf
+        $this->pdf = new DbField('materi', 'materi', 'x_pdf', 'pdf', '`pdf`', '`pdf`', 200, 255, -1, true, '`pdf`', false, false, false, 'FORMATTED TEXT', 'FILE');
+        $this->pdf->Nullable = false; // NOT NULL field
+        $this->pdf->Required = true; // Required field
+        $this->pdf->Sortable = true; // Allow sort
+        $this->pdf->UploadAllowedFileExt = "pdf";
+        $this->Fields['pdf'] = &$this->pdf;
     }
 
     // Field Visibility
@@ -138,6 +149,84 @@ class Materi extends DbTable
         } else {
             $fld->setSort("");
         }
+    }
+
+    // Current master table name
+    public function getCurrentMasterTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")];
+    }
+
+    public function setCurrentMasterTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")] = $v;
+    }
+
+    // Session master WHERE clause
+    public function getMasterFilter()
+    {
+        // Master filter
+        $masterFilter = "";
+        if ($this->getCurrentMasterTable() == "media") {
+            if ($this->id_media->getSessionValue() != "") {
+                $masterFilter .= "" . GetForeignKeySql("`id_media`", $this->id_media->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $masterFilter;
+    }
+
+    // Session detail WHERE clause
+    public function getDetailFilter()
+    {
+        // Detail filter
+        $detailFilter = "";
+        if ($this->getCurrentMasterTable() == "media") {
+            if ($this->id_media->getSessionValue() != "") {
+                $detailFilter .= "" . GetForeignKeySql("`id_media`", $this->id_media->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $detailFilter;
+    }
+
+    // Master filter
+    public function sqlMasterFilter_media()
+    {
+        return "`id_media`=@id_media@";
+    }
+    // Detail filter
+    public function sqlDetailFilter_media()
+    {
+        return "`id_media`=@id_media@";
+    }
+
+    // Current detail table name
+    public function getCurrentDetailTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")];
+    }
+
+    public function setCurrentDetailTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")] = $v;
+    }
+
+    // Get detail url
+    public function getDetailUrl()
+    {
+        // Detail url
+        $detailUrl = "";
+        if ($this->getCurrentDetailTable() == "evaluasi") {
+            $detailUrl = Container("evaluasi")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
+            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue);
+        }
+        if ($detailUrl == "") {
+            $detailUrl = "MateriList";
+        }
+        return $detailUrl;
     }
 
     // Table level SQL
@@ -515,12 +604,19 @@ class Materi extends DbTable
         $this->id_media->DbValue = $row['id_media'];
         $this->judul->DbValue = $row['judul'];
         $this->isi->DbValue = $row['isi'];
+        $this->pdf->Upload->DbValue = $row['pdf'];
     }
 
     // Delete uploaded files
     public function deleteUploadedFiles($row)
     {
         $this->loadDbValues($row);
+        $oldFiles = EmptyValue($row['pdf']) ? [] : [$row['pdf']];
+        foreach ($oldFiles as $oldFile) {
+            if (file_exists($this->pdf->oldPhysicalUploadPath() . $oldFile)) {
+                @unlink($this->pdf->oldPhysicalUploadPath() . $oldFile);
+            }
+        }
     }
 
     // Record filter WHERE clause
@@ -615,7 +711,11 @@ class Materi extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        $url = $this->keyUrl("MateriEdit", $this->getUrlParm($parm));
+        if ($parm != "") {
+            $url = $this->keyUrl("MateriEdit", $this->getUrlParm($parm));
+        } else {
+            $url = $this->keyUrl("MateriEdit", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+        }
         return $this->addMasterUrl($url);
     }
 
@@ -629,7 +729,11 @@ class Materi extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        $url = $this->keyUrl("MateriAdd", $this->getUrlParm($parm));
+        if ($parm != "") {
+            $url = $this->keyUrl("MateriAdd", $this->getUrlParm($parm));
+        } else {
+            $url = $this->keyUrl("MateriAdd", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+        }
         return $this->addMasterUrl($url);
     }
 
@@ -649,6 +753,10 @@ class Materi extends DbTable
     // Add master url
     public function addMasterUrl($url)
     {
+        if ($this->getCurrentMasterTable() == "media" && !ContainsString($url, Config("TABLE_SHOW_MASTER") . "=")) {
+            $url .= (ContainsString($url, "?") ? "&" : "?") . Config("TABLE_SHOW_MASTER") . "=" . $this->getCurrentMasterTable();
+            $url .= "&" . GetForeignKeyUrl("fk_id_media", $this->id_media->CurrentValue);
+        }
         return $url;
     }
 
@@ -794,6 +902,7 @@ SORTHTML;
         $this->id_media->setDbValue($row['id_media']);
         $this->judul->setDbValue($row['judul']);
         $this->isi->setDbValue($row['isi']);
+        $this->pdf->Upload->DbValue = $row['pdf'];
     }
 
     // Render list row values
@@ -813,6 +922,8 @@ SORTHTML;
         // judul
 
         // isi
+
+        // pdf
 
         // id_materi
         $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
@@ -847,6 +958,14 @@ SORTHTML;
         $this->isi->ViewValue = $this->isi->CurrentValue;
         $this->isi->ViewCustomAttributes = "";
 
+        // pdf
+        if (!EmptyValue($this->pdf->Upload->DbValue)) {
+            $this->pdf->ViewValue = $this->pdf->Upload->DbValue;
+        } else {
+            $this->pdf->ViewValue = "";
+        }
+        $this->pdf->ViewCustomAttributes = "";
+
         // id_materi
         $this->id_materi->LinkCustomAttributes = "";
         $this->id_materi->HrefValue = "";
@@ -866,6 +985,12 @@ SORTHTML;
         $this->isi->LinkCustomAttributes = "";
         $this->isi->HrefValue = "";
         $this->isi->TooltipValue = "";
+
+        // pdf
+        $this->pdf->LinkCustomAttributes = "";
+        $this->pdf->HrefValue = "";
+        $this->pdf->ExportHrefValue = $this->pdf->UploadPath . $this->pdf->Upload->DbValue;
+        $this->pdf->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -891,7 +1016,30 @@ SORTHTML;
         // id_media
         $this->id_media->EditAttrs["class"] = "form-control";
         $this->id_media->EditCustomAttributes = "";
-        $this->id_media->PlaceHolder = RemoveHtml($this->id_media->caption());
+        if ($this->id_media->getSessionValue() != "") {
+            $this->id_media->CurrentValue = GetForeignKeyValue($this->id_media->getSessionValue());
+            $curVal = strval($this->id_media->CurrentValue);
+            if ($curVal != "") {
+                $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
+                if ($this->id_media->ViewValue === null) { // Lookup from database
+                    $filterWrk = "`id_media`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                    $sqlWrk = $this->id_media->Lookup->getSql(false, $filterWrk, '', $this, true);
+                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->id_media->Lookup->renderViewRow($rswrk[0]);
+                        $this->id_media->ViewValue = $this->id_media->displayValue($arwrk);
+                    } else {
+                        $this->id_media->ViewValue = $this->id_media->CurrentValue;
+                    }
+                }
+            } else {
+                $this->id_media->ViewValue = null;
+            }
+            $this->id_media->ViewCustomAttributes = "";
+        } else {
+            $this->id_media->PlaceHolder = RemoveHtml($this->id_media->caption());
+        }
 
         // judul
         $this->judul->EditAttrs["class"] = "form-control";
@@ -907,6 +1055,18 @@ SORTHTML;
         $this->isi->EditCustomAttributes = "";
         $this->isi->EditValue = $this->isi->CurrentValue;
         $this->isi->PlaceHolder = RemoveHtml($this->isi->caption());
+
+        // pdf
+        $this->pdf->EditAttrs["class"] = "form-control";
+        $this->pdf->EditCustomAttributes = "";
+        if (!EmptyValue($this->pdf->Upload->DbValue)) {
+            $this->pdf->EditValue = $this->pdf->Upload->DbValue;
+        } else {
+            $this->pdf->EditValue = "";
+        }
+        if (!EmptyValue($this->pdf->CurrentValue)) {
+            $this->pdf->Upload->FileName = $this->pdf->CurrentValue;
+        }
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -940,10 +1100,12 @@ SORTHTML;
                     $doc->exportCaption($this->id_media);
                     $doc->exportCaption($this->judul);
                     $doc->exportCaption($this->isi);
+                    $doc->exportCaption($this->pdf);
                 } else {
                     $doc->exportCaption($this->id_media);
                     $doc->exportCaption($this->judul);
                     $doc->exportCaption($this->isi);
+                    $doc->exportCaption($this->pdf);
                 }
                 $doc->endExportRow();
             }
@@ -977,10 +1139,12 @@ SORTHTML;
                         $doc->exportField($this->id_media);
                         $doc->exportField($this->judul);
                         $doc->exportField($this->isi);
+                        $doc->exportField($this->pdf);
                     } else {
                         $doc->exportField($this->id_media);
                         $doc->exportField($this->judul);
                         $doc->exportField($this->isi);
+                        $doc->exportField($this->pdf);
                     }
                     $doc->endExportRow($rowCnt);
                 }
@@ -1000,7 +1164,115 @@ SORTHTML;
     // Get file data
     public function getFileData($fldparm, $key, $resize, $width = 0, $height = 0, $plugins = [])
     {
-        // No binary fields
+        $width = ($width > 0) ? $width : Config("THUMBNAIL_DEFAULT_WIDTH");
+        $height = ($height > 0) ? $height : Config("THUMBNAIL_DEFAULT_HEIGHT");
+
+        // Set up field name / file name field / file type field
+        $fldName = "";
+        $fileNameFld = "";
+        $fileTypeFld = "";
+        if ($fldparm == 'pdf') {
+            $fldName = "pdf";
+            $fileNameFld = "pdf";
+        } else {
+            return false; // Incorrect field
+        }
+
+        // Set up key values
+        $ar = explode(Config("COMPOSITE_KEY_SEPARATOR"), $key);
+        if (count($ar) == 1) {
+            $this->id_materi->CurrentValue = $ar[0];
+        } else {
+            return false; // Incorrect key
+        }
+
+        // Set up filter (WHERE Clause)
+        $filter = $this->getRecordFilter();
+        $this->CurrentFilter = $filter;
+        $sql = $this->getCurrentSql();
+        $conn = $this->getConnection();
+        $dbtype = GetConnectionType($this->Dbid);
+        if ($row = $conn->fetchAssoc($sql)) {
+            $val = $row[$fldName];
+            if (!EmptyValue($val)) {
+                $fld = $this->Fields[$fldName];
+
+                // Binary data
+                if ($fld->DataType == DATATYPE_BLOB) {
+                    if ($dbtype != "MYSQL") {
+                        if (is_resource($val) && get_resource_type($val) == "stream") { // Byte array
+                            $val = stream_get_contents($val);
+                        }
+                    }
+                    if ($resize) {
+                        ResizeBinary($val, $width, $height, 100, $plugins);
+                    }
+
+                    // Write file type
+                    if ($fileTypeFld != "" && !EmptyValue($row[$fileTypeFld])) {
+                        AddHeader("Content-type", $row[$fileTypeFld]);
+                    } else {
+                        AddHeader("Content-type", ContentType($val));
+                    }
+
+                    // Write file name
+                    $downloadPdf = !Config("EMBED_PDF") && Config("DOWNLOAD_PDF_FILE");
+                    if ($fileNameFld != "" && !EmptyValue($row[$fileNameFld])) {
+                        $fileName = $row[$fileNameFld];
+                        $pathinfo = pathinfo($fileName);
+                        $ext = strtolower(@$pathinfo["extension"]);
+                        $isPdf = SameText($ext, "pdf");
+                        if ($downloadPdf || !$isPdf) { // Skip header if not download PDF
+                            AddHeader("Content-Disposition", "attachment; filename=\"" . $fileName . "\"");
+                        }
+                    } else {
+                        $ext = ContentExtension($val);
+                        $isPdf = SameText($ext, ".pdf");
+                        if ($isPdf && $downloadPdf) { // Add header if download PDF
+                            AddHeader("Content-Disposition", "attachment; filename=\"" . $fileName . "\"");
+                        }
+                    }
+
+                    // Write file data
+                    if (
+                        StartsString("PK", $val) &&
+                        ContainsString($val, "[Content_Types].xml") &&
+                        ContainsString($val, "_rels") &&
+                        ContainsString($val, "docProps")
+                    ) { // Fix Office 2007 documents
+                        if (!EndsString("\0\0\0", $val)) { // Not ends with 3 or 4 \0
+                            $val .= "\0\0\0\0";
+                        }
+                    }
+
+                    // Clear any debug message
+                    if (ob_get_length()) {
+                        ob_end_clean();
+                    }
+
+                    // Write binary data
+                    Write($val);
+
+                // Upload to folder
+                } else {
+                    if ($fld->UploadMultiple) {
+                        $files = explode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $val);
+                    } else {
+                        $files = [$val];
+                    }
+                    $data = [];
+                    $ar = [];
+                    foreach ($files as $file) {
+                        if (!EmptyValue($file)) {
+                            $ar[$file] = FullUrl($fld->hrefPath() . $file);
+                        }
+                    }
+                    $data[$fld->Param] = $ar;
+                    WriteJson($data);
+                }
+            }
+            return true;
+        }
         return false;
     }
 

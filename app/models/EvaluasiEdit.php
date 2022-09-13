@@ -699,6 +699,9 @@ class EvaluasiEdit extends Evaluasi
                 }
             }
 
+            // Set up master detail parameters
+            $this->setupMasterParms();
+
             // Load current record
             $loaded = $this->loadRow();
         }
@@ -706,6 +709,9 @@ class EvaluasiEdit extends Evaluasi
         // Process form if post back
         if ($postBack) {
             $this->loadFormValues(); // Get form values
+
+            // Set up detail parameters
+            $this->setupDetailParms();
         }
 
         // Validate form if post back
@@ -732,9 +738,16 @@ class EvaluasiEdit extends Evaluasi
                     $this->terminate("EvaluasiList"); // No matching record, return to list
                     return;
                 }
+
+                // Set up detail parameters
+                $this->setupDetailParms();
                 break;
             case "update": // Update
-                $returnUrl = $this->getReturnUrl();
+                if ($this->getCurrentDetailTable() != "") { // Master/detail edit
+                    $returnUrl = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $this->getCurrentDetailTable()); // Master/Detail view page
+                } else {
+                    $returnUrl = $this->getReturnUrl();
+                }
                 if (GetPageName($returnUrl) == "EvaluasiList") {
                     $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
                 }
@@ -759,6 +772,9 @@ class EvaluasiEdit extends Evaluasi
                 } else {
                     $this->EventCancelled = true; // Event cancelled
                     $this->restoreFormValues(); // Restore form values if update failed
+
+                    // Set up detail parameters
+                    $this->setupDetailParms();
                 }
         }
 
@@ -1023,27 +1039,50 @@ class EvaluasiEdit extends Evaluasi
             // id_materi
             $this->id_materi->EditAttrs["class"] = "form-control";
             $this->id_materi->EditCustomAttributes = "";
-            $curVal = trim(strval($this->id_materi->CurrentValue));
-            if ($curVal != "") {
-                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
-            } else {
-                $this->id_materi->ViewValue = $this->id_materi->Lookup !== null && is_array($this->id_materi->Lookup->Options) ? $curVal : null;
-            }
-            if ($this->id_materi->ViewValue !== null) { // Load from cache
-                $this->id_materi->EditValue = array_values($this->id_materi->Lookup->Options);
-            } else { // Lookup from database
-                if ($curVal == "") {
-                    $filterWrk = "0=1";
+            if ($this->id_materi->getSessionValue() != "") {
+                $this->id_materi->CurrentValue = GetForeignKeyValue($this->id_materi->getSessionValue());
+                $curVal = strval($this->id_materi->CurrentValue);
+                if ($curVal != "") {
+                    $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                    if ($this->id_materi->ViewValue === null) { // Lookup from database
+                        $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                        $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
+                        $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
+                        $ari = count($rswrk);
+                        if ($ari > 0) { // Lookup values found
+                            $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
+                            $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
+                        } else {
+                            $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
+                        }
+                    }
                 } else {
-                    $filterWrk = "`id_materi`" . SearchString("=", $this->id_materi->CurrentValue, DATATYPE_NUMBER, "");
+                    $this->id_materi->ViewValue = null;
                 }
-                $sqlWrk = $this->id_materi->Lookup->getSql(true, $filterWrk, '', $this);
-                $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                $ari = count($rswrk);
-                $arwrk = $rswrk;
-                $this->id_materi->EditValue = $arwrk;
+                $this->id_materi->ViewCustomAttributes = "";
+            } else {
+                $curVal = trim(strval($this->id_materi->CurrentValue));
+                if ($curVal != "") {
+                    $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                } else {
+                    $this->id_materi->ViewValue = $this->id_materi->Lookup !== null && is_array($this->id_materi->Lookup->Options) ? $curVal : null;
+                }
+                if ($this->id_materi->ViewValue !== null) { // Load from cache
+                    $this->id_materi->EditValue = array_values($this->id_materi->Lookup->Options);
+                } else { // Lookup from database
+                    if ($curVal == "") {
+                        $filterWrk = "0=1";
+                    } else {
+                        $filterWrk = "`id_materi`" . SearchString("=", $this->id_materi->CurrentValue, DATATYPE_NUMBER, "");
+                    }
+                    $sqlWrk = $this->id_materi->Lookup->getSql(true, $filterWrk, '', $this);
+                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
+                    $ari = count($rswrk);
+                    $arwrk = $rswrk;
+                    $this->id_materi->EditValue = $arwrk;
+                }
+                $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
             }
-            $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
 
             // soal
             $this->soal->EditAttrs["class"] = "form-control";
@@ -1115,6 +1154,13 @@ class EvaluasiEdit extends Evaluasi
             }
         }
 
+        // Validate detail grid
+        $detailTblVar = explode(",", $this->getCurrentDetailTable());
+        $detailPage = Container("PesertaGrid");
+        if (in_array("peserta", $detailTblVar) && $detailPage->DetailEdit) {
+            $detailPage->validateGridForm();
+        }
+
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
 
@@ -1141,6 +1187,11 @@ class EvaluasiEdit extends Evaluasi
             $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
             $editRow = false; // Update Failed
         } else {
+            // Begin transaction
+            if ($this->getCurrentDetailTable() != "") {
+                $conn->beginTransaction();
+            }
+
             // Save old values
             $this->loadDbValues($rsold);
             $rsnew = [];
@@ -1177,6 +1228,24 @@ class EvaluasiEdit extends Evaluasi
                 }
                 if ($editRow) {
                 }
+
+                // Update detail records
+                $detailTblVar = explode(",", $this->getCurrentDetailTable());
+                if ($editRow) {
+                    $detailPage = Container("PesertaGrid");
+                    if (in_array("peserta", $detailTblVar) && $detailPage->DetailEdit) {
+                        $editRow = $detailPage->gridUpdate();
+                    }
+                }
+
+                // Commit/Rollback transaction
+                if ($this->getCurrentDetailTable() != "") {
+                    if ($editRow) {
+                        $conn->commit(); // Commit transaction
+                    } else {
+                        $conn->rollback(); // Rollback transaction
+                    }
+                }
             } else {
                 if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
                     // Use the message, do nothing
@@ -1205,6 +1274,105 @@ class EvaluasiEdit extends Evaluasi
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
         return $editRow;
+    }
+
+    // Set up master/detail based on QueryString
+    protected function setupMasterParms()
+    {
+        $validMaster = false;
+        // Get the keys for master table
+        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                $validMaster = true;
+                $this->DbMasterFilter = "";
+                $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "materi") {
+                $validMaster = true;
+                $masterTbl = Container("materi");
+                if (($parm = Get("fk_id_materi", Get("id_materi"))) !== null) {
+                    $masterTbl->id_materi->setQueryStringValue($parm);
+                    $this->id_materi->setQueryStringValue($masterTbl->id_materi->QueryStringValue);
+                    $this->id_materi->setSessionValue($this->id_materi->QueryStringValue);
+                    if (!is_numeric($masterTbl->id_materi->QueryStringValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
+            $masterTblVar = $master;
+            if ($masterTblVar == "") {
+                    $validMaster = true;
+                    $this->DbMasterFilter = "";
+                    $this->DbDetailFilter = "";
+            }
+            if ($masterTblVar == "materi") {
+                $validMaster = true;
+                $masterTbl = Container("materi");
+                if (($parm = Post("fk_id_materi", Post("id_materi"))) !== null) {
+                    $masterTbl->id_materi->setFormValue($parm);
+                    $this->id_materi->setFormValue($masterTbl->id_materi->FormValue);
+                    $this->id_materi->setSessionValue($this->id_materi->FormValue);
+                    if (!is_numeric($masterTbl->id_materi->FormValue)) {
+                        $validMaster = false;
+                    }
+                } else {
+                    $validMaster = false;
+                }
+            }
+        }
+        if ($validMaster) {
+            // Save current master table
+            $this->setCurrentMasterTable($masterTblVar);
+            $this->setSessionWhere($this->getDetailFilter());
+
+            // Reset start record counter (new master key)
+            if (!$this->isAddOrEdit()) {
+                $this->StartRecord = 1;
+                $this->setStartRecordNumber($this->StartRecord);
+            }
+
+            // Clear previous master key from Session
+            if ($masterTblVar != "materi") {
+                if ($this->id_materi->CurrentValue == "") {
+                    $this->id_materi->setSessionValue("");
+                }
+            }
+        }
+        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
+        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
+    }
+
+    // Set up detail parms based on QueryString
+    protected function setupDetailParms()
+    {
+        // Get the keys for master table
+        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
+        if ($detailTblVar !== null) {
+            $this->setCurrentDetailTable($detailTblVar);
+        } else {
+            $detailTblVar = $this->getCurrentDetailTable();
+        }
+        if ($detailTblVar != "") {
+            $detailTblVar = explode(",", $detailTblVar);
+            if (in_array("peserta", $detailTblVar)) {
+                $detailPageObj = Container("PesertaGrid");
+                if ($detailPageObj->DetailEdit) {
+                    $detailPageObj->CurrentMode = "edit";
+                    $detailPageObj->CurrentAction = "gridedit";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_evaluasi->IsDetailKey = true;
+                    $detailPageObj->id_evaluasi->CurrentValue = $this->id_evaluasi->CurrentValue;
+                    $detailPageObj->id_evaluasi->setSessionValue($detailPageObj->id_evaluasi->CurrentValue);
+                }
+            }
+        }
     }
 
     // Set up Breadcrumb

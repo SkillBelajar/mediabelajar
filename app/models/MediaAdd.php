@@ -683,6 +683,9 @@ class MediaAdd extends Media
             $this->loadFormValues(); // Load form values
         }
 
+        // Set up detail parameters
+        $this->setupDetailParms();
+
         // Validate form if post back
         if ($postBack) {
             if (!$this->validateForm()) {
@@ -707,6 +710,9 @@ class MediaAdd extends Media
                     $this->terminate("MediaList"); // No matching record, return to list
                     return;
                 }
+
+                // Set up detail parameters
+                $this->setupDetailParms();
                 break;
             case "insert": // Add new record
                 $this->SendEmail = true; // Send email on add success
@@ -714,7 +720,11 @@ class MediaAdd extends Media
                     if ($this->getSuccessMessage() == "" && Post("addopt") != "1") { // Skip success message for addopt (done in JavaScript)
                         $this->setSuccessMessage($Language->phrase("AddSuccess")); // Set up success message
                     }
-                    $returnUrl = $this->getReturnUrl();
+                    if ($this->getCurrentDetailTable() != "") { // Master/detail add
+                        $returnUrl = $this->getDetailUrl();
+                    } else {
+                        $returnUrl = $this->getReturnUrl();
+                    }
                     if (GetPageName($returnUrl) == "MediaList") {
                         $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
                     } elseif (GetPageName($returnUrl) == "MediaView") {
@@ -733,6 +743,9 @@ class MediaAdd extends Media
                 } else {
                     $this->EventCancelled = true; // Event cancelled
                     $this->restoreFormValues(); // Add failed, restore form values
+
+                    // Set up detail parameters
+                    $this->setupDetailParms();
                 }
         }
 
@@ -1003,6 +1016,13 @@ class MediaAdd extends Media
             }
         }
 
+        // Validate detail grid
+        $detailTblVar = explode(",", $this->getCurrentDetailTable());
+        $detailPage = Container("MateriGrid");
+        if (in_array("materi", $detailTblVar) && $detailPage->DetailAdd) {
+            $detailPage->validateGridForm();
+        }
+
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
 
@@ -1020,6 +1040,11 @@ class MediaAdd extends Media
     {
         global $Language, $Security;
         $conn = $this->getConnection();
+
+        // Begin transaction
+        if ($this->getCurrentDetailTable() != "") {
+            $conn->beginTransaction();
+        }
 
         // Load db values from rsold
         $this->loadDbValues($rsold);
@@ -1050,6 +1075,28 @@ class MediaAdd extends Media
             }
             $addRow = false;
         }
+
+        // Add detail records
+        if ($addRow) {
+            $detailTblVar = explode(",", $this->getCurrentDetailTable());
+            $detailPage = Container("MateriGrid");
+            if (in_array("materi", $detailTblVar) && $detailPage->DetailAdd) {
+                $detailPage->id_media->setSessionValue($this->id_media->CurrentValue); // Set master key
+                $addRow = $detailPage->gridInsert();
+                if (!$addRow) {
+                $detailPage->id_media->setSessionValue(""); // Clear master key if insert failed
+                }
+            }
+        }
+
+        // Commit/Rollback transaction
+        if ($this->getCurrentDetailTable() != "") {
+            if ($addRow) {
+                $conn->commit(); // Commit transaction
+            } else {
+                $conn->rollback(); // Rollback transaction
+            }
+        }
         if ($addRow) {
             // Call Row Inserted event
             $this->rowInserted($rsold, $rsnew);
@@ -1065,6 +1112,39 @@ class MediaAdd extends Media
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
         return $addRow;
+    }
+
+    // Set up detail parms based on QueryString
+    protected function setupDetailParms()
+    {
+        // Get the keys for master table
+        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
+        if ($detailTblVar !== null) {
+            $this->setCurrentDetailTable($detailTblVar);
+        } else {
+            $detailTblVar = $this->getCurrentDetailTable();
+        }
+        if ($detailTblVar != "") {
+            $detailTblVar = explode(",", $detailTblVar);
+            if (in_array("materi", $detailTblVar)) {
+                $detailPageObj = Container("MateriGrid");
+                if ($detailPageObj->DetailAdd) {
+                    if ($this->CopyRecord) {
+                        $detailPageObj->CurrentMode = "copy";
+                    } else {
+                        $detailPageObj->CurrentMode = "add";
+                    }
+                    $detailPageObj->CurrentAction = "gridadd";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_media->IsDetailKey = true;
+                    $detailPageObj->id_media->CurrentValue = $this->id_media->CurrentValue;
+                    $detailPageObj->id_media->setSessionValue($detailPageObj->id_media->CurrentValue);
+                }
+            }
+        }
     }
 
     // Set up Breadcrumb

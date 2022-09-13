@@ -704,6 +704,9 @@ class MediaEdit extends Media
         // Process form if post back
         if ($postBack) {
             $this->loadFormValues(); // Get form values
+
+            // Set up detail parameters
+            $this->setupDetailParms();
         }
 
         // Validate form if post back
@@ -730,9 +733,16 @@ class MediaEdit extends Media
                     $this->terminate("MediaList"); // No matching record, return to list
                     return;
                 }
+
+                // Set up detail parameters
+                $this->setupDetailParms();
                 break;
             case "update": // Update
-                $returnUrl = $this->getReturnUrl();
+                if ($this->getCurrentDetailTable() != "") { // Master/detail edit
+                    $returnUrl = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $this->getCurrentDetailTable()); // Master/Detail view page
+                } else {
+                    $returnUrl = $this->getReturnUrl();
+                }
                 if (GetPageName($returnUrl) == "MediaList") {
                     $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
                 }
@@ -757,6 +767,9 @@ class MediaEdit extends Media
                 } else {
                     $this->EventCancelled = true; // Event cancelled
                     $this->restoreFormValues(); // Restore form values if update failed
+
+                    // Set up detail parameters
+                    $this->setupDetailParms();
                 }
         }
 
@@ -1041,6 +1054,13 @@ class MediaEdit extends Media
             }
         }
 
+        // Validate detail grid
+        $detailTblVar = explode(",", $this->getCurrentDetailTable());
+        $detailPage = Container("MateriGrid");
+        if (in_array("materi", $detailTblVar) && $detailPage->DetailEdit) {
+            $detailPage->validateGridForm();
+        }
+
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
 
@@ -1067,6 +1087,11 @@ class MediaEdit extends Media
             $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
             $editRow = false; // Update Failed
         } else {
+            // Begin transaction
+            if ($this->getCurrentDetailTable() != "") {
+                $conn->beginTransaction();
+            }
+
             // Save old values
             $this->loadDbValues($rsold);
             $rsnew = [];
@@ -1100,6 +1125,24 @@ class MediaEdit extends Media
                 }
                 if ($editRow) {
                 }
+
+                // Update detail records
+                $detailTblVar = explode(",", $this->getCurrentDetailTable());
+                if ($editRow) {
+                    $detailPage = Container("MateriGrid");
+                    if (in_array("materi", $detailTblVar) && $detailPage->DetailEdit) {
+                        $editRow = $detailPage->gridUpdate();
+                    }
+                }
+
+                // Commit/Rollback transaction
+                if ($this->getCurrentDetailTable() != "") {
+                    if ($editRow) {
+                        $conn->commit(); // Commit transaction
+                    } else {
+                        $conn->rollback(); // Rollback transaction
+                    }
+                }
             } else {
                 if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
                     // Use the message, do nothing
@@ -1128,6 +1171,35 @@ class MediaEdit extends Media
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
         return $editRow;
+    }
+
+    // Set up detail parms based on QueryString
+    protected function setupDetailParms()
+    {
+        // Get the keys for master table
+        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
+        if ($detailTblVar !== null) {
+            $this->setCurrentDetailTable($detailTblVar);
+        } else {
+            $detailTblVar = $this->getCurrentDetailTable();
+        }
+        if ($detailTblVar != "") {
+            $detailTblVar = explode(",", $detailTblVar);
+            if (in_array("materi", $detailTblVar)) {
+                $detailPageObj = Container("MateriGrid");
+                if ($detailPageObj->DetailEdit) {
+                    $detailPageObj->CurrentMode = "edit";
+                    $detailPageObj->CurrentAction = "gridedit";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_media->IsDetailKey = true;
+                    $detailPageObj->id_media->CurrentValue = $this->id_media->CurrentValue;
+                    $detailPageObj->id_media->setSessionValue($detailPageObj->id_media->CurrentValue);
+                }
+            }
+        }
     }
 
     // Set up Breadcrumb

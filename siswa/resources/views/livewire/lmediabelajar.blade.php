@@ -24,10 +24,10 @@
             $jenis_soal = $soal[0]->jawaban;
             $id_evaluasi = $soal[0]->id_evaluasi;
             /*
-                                                                                                                                                                                                                        if ($jenis_soal == 'Essai') {
-                                                                                                                                                                                                                            $jenis = $jen
-                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                        */
+                                                                                                                                                                                                                                                                                                                                                                                                                                    if ($jenis_soal == 'Essai') {
+                                                                                                                                                                                                                                                                                                                                                                                                                                        $jenis = $jen
+                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                    */
             ?>
             <h3>Soal : </h3>
             {!! $soal_keluar !!}
@@ -40,9 +40,25 @@
                 <input type="hidden" value="{{ $id_evaluasi }}" name="id_evaluasi">
                 <input type="hidden" value="{{ $jenis_soal }}" name="jenis_soal">
                 <input type="submit" class="btn btn-info" value="Simpan Jawaban">
-
-
             </form>
+
+            <hr>
+            <div class="well">
+                <h4>Yang Sudah Menjawab</h4>
+                <?php
+                $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_evaluasi]);
+                // dd($jb);
+                ?>
+                @foreach ($jb as $item)
+                    <div class="alert alert-info">
+                        {{ $item->nama_peserta }}
+                        Menjawab : <br>
+                        {{ $item->jawaban_essai }}
+                    </div>
+                @endforeach
+
+
+            </div>
         @elseif($aksi == 'tampilkan_jawaban')
             tampilkan jawaan
         @endif

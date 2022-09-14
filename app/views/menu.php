@@ -19,6 +19,7 @@ echo $topMenu->toScript();
 // Sidebar menu
 $sideMenu = new Menu("menu", true, false);
 $sideMenu->addMenuItem(5, "mi_live", $MenuLanguage->MenuPhrase("5", "MenuText"), $MenuRelativePath . "LiveList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}live'), false, false, "", "", false);
+$sideMenu->addMenuItem(6, "mi_gambar", $MenuLanguage->MenuPhrase("6", "MenuText"), $MenuRelativePath . "GambarList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}gambar'), false, false, "", "", false);
 $sideMenu->addMenuItem(3, "mi_media", $MenuLanguage->MenuPhrase("3", "MenuText"), $MenuRelativePath . "MediaList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}media'), false, false, "", "", false);
 $sideMenu->addMenuItem(2, "mi_materi", $MenuLanguage->MenuPhrase("2", "MenuText"), $MenuRelativePath . "MateriList?cmd=resetall", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}materi'), false, false, "", "", false);
 $sideMenu->addMenuItem(1, "mi_evaluasi", $MenuLanguage->MenuPhrase("1", "MenuText"), $MenuRelativePath . "EvaluasiList?cmd=resetall", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}evaluasi'), false, false, "", "", false);

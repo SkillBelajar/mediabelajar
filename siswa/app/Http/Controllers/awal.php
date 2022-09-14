@@ -40,6 +40,21 @@ class awal extends Controller
         if (empty($nama)) {
             return redirect("/");
         }
+
+        //ganti evaluasi gambar lolcahost menjadi IP
+        $ip_server = $_SERVER['SERVER_ADDR'];
+        $localhost = DB::select("SELECT * FROM `evaluasi` WHERE `soal` LIKE '%localhost%'");
+        foreach ($localhost as $item) {
+            $id_evaluasi = $item->id_evaluasi;
+            $soal = $item->soal;
+
+            $replace = str_replace("localhost", $ip_server, $soal);
+            // dd($replace);
+            //ganti
+            DB::update("UPDATE `evaluasi` SET `soal` = ? WHERE `evaluasi`.`id_evaluasi` = ?;", [
+                $replace, $id_evaluasi
+            ]);
+        }
         return view("mediabelajar");
     }
 
@@ -68,6 +83,7 @@ class awal extends Controller
         DB::insert("INSERT INTO `peserta` (`id_peserta`, `tanggal_jam`, `nama_peserta`, `id_evaluasi`, `benar`, `jawaban_essai`, `ip`) VALUES (NULL, ?, ?, ?, ?, ?, ?);", [
             $tanggal_jam, $nama, $id_evaluasi, $benar, $jawaban, $ip
         ]);
+
 
         return redirect("/mediabelajar");
     }

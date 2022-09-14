@@ -54,6 +54,7 @@ return [
     "media" => \DI\create(Media::class),
     "peserta" => \DI\create(Peserta::class),
     "live" => \DI\create(Live::class),
+    "gambar" => \DI\create(Gambar::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),

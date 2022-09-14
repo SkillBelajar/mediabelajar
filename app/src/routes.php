@@ -86,6 +86,23 @@ return function (App $app) {
         }
     );
 
+    // gambar
+    $app->any('/GambarList[/{id_gambar}]', GambarController::class . ':list')->add(PermissionMiddleware::class)->setName('GambarList-gambar-list'); // list
+    $app->any('/GambarAdd[/{id_gambar}]', GambarController::class . ':add')->add(PermissionMiddleware::class)->setName('GambarAdd-gambar-add'); // add
+    $app->any('/GambarView[/{id_gambar}]', GambarController::class . ':view')->add(PermissionMiddleware::class)->setName('GambarView-gambar-view'); // view
+    $app->any('/GambarEdit[/{id_gambar}]', GambarController::class . ':edit')->add(PermissionMiddleware::class)->setName('GambarEdit-gambar-edit'); // edit
+    $app->any('/GambarDelete[/{id_gambar}]', GambarController::class . ':delete')->add(PermissionMiddleware::class)->setName('GambarDelete-gambar-delete'); // delete
+    $app->group(
+        '/gambar',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_gambar}]', GambarController::class . ':list')->add(PermissionMiddleware::class)->setName('gambar/list-gambar-list-2'); // list
+            $group->any('/add[/{id_gambar}]', GambarController::class . ':add')->add(PermissionMiddleware::class)->setName('gambar/add-gambar-add-2'); // add
+            $group->any('/view[/{id_gambar}]', GambarController::class . ':view')->add(PermissionMiddleware::class)->setName('gambar/view-gambar-view-2'); // view
+            $group->any('/edit[/{id_gambar}]', GambarController::class . ':edit')->add(PermissionMiddleware::class)->setName('gambar/edit-gambar-edit-2'); // edit
+            $group->any('/delete[/{id_gambar}]', GambarController::class . ':delete')->add(PermissionMiddleware::class)->setName('gambar/delete-gambar-delete-2'); // delete
+        }
+    );
+
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
 

@@ -920,6 +920,9 @@
     <menu id="5">
       <phrase id="menutext" value="live" />
     </menu>
+    <menu id="6">
+      <phrase id="menutext" value="gambar" />
+    </menu>
     <menu id="3">
       <phrase id="menutext" value="media" />
     </menu>
@@ -1036,6 +1039,15 @@
       </field>
       <field id="live_catatan">
         <phrase id="fldcaption" value="live catatan" />
+      </field>
+    </table>
+    <table id="gambar">
+      <phrase id="tblcaption" value="gambar" />
+      <field id="id_gambar">
+        <phrase id="fldcaption" value="id gambar" />
+      </field>
+      <field id="nama_gambar">
+        <phrase id="fldcaption" value="nama gambar" />
       </field>
     </table>
   </project>

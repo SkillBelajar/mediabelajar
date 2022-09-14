@@ -22,7 +22,11 @@
         @yield('isi')
     </div>
 
+
     @livewireScripts()
+
+
+
 </body>
 
 </html>

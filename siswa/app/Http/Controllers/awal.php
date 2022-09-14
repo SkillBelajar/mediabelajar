@@ -121,4 +121,22 @@ class awal extends Controller
 
         return redirect("/mediabelajar");
     }
+
+    public function gambar()
+    {
+        //echo "ok";
+        $gambar = DB::select("SELECT * FROM `gambar` ORDER BY `gambar`.`id_gambar` DESC");
+        $ip_server = $_SERVER['SERVER_ADDR'];
+
+        /*
+        foreach ($gambar as $item) {
+            echo "http://192.168.1.20/mediabelajar/app/files/g1.PNG";
+            echo "<hr>";
+        }
+        */
+        return view("gambal", [
+            'gambar' => $gambar,
+            'ip' => $ip_server
+        ]);
+    }
 }

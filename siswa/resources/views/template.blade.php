@@ -13,11 +13,12 @@
 
 <body>
     <div class="container">
-        <br>
 
+        <!--
         <h3>@yield('judul')</h3>
         {{ \Session::get('nama') }}
-        <hr>
+-->
+
         @yield('isi')
     </div>
 

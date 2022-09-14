@@ -177,7 +177,7 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
     <?php if ($Page->nama_gambar->Visible) { // nama_gambar ?>
         <td data-name="nama_gambar" <?= $Page->nama_gambar->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_gambar_nama_gambar">
-<span>
+<span<?= $Page->nama_gambar->viewAttributes() ?>>
 <?= GetFileViewTag($Page->nama_gambar, $Page->nama_gambar->getViewValue(), false) ?>
 </span>
 </span>

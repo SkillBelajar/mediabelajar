@@ -68,7 +68,7 @@ while (!$Page->Recordset->EOF) {
 <?php if ($Page->nama_gambar->Visible) { // nama_gambar ?>
         <td <?= $Page->nama_gambar->cellAttributes() ?>>
 <span id="el<?= $Page->RowCount ?>_gambar_nama_gambar" class="gambar_nama_gambar">
-<span>
+<span<?= $Page->nama_gambar->viewAttributes() ?>>
 <?= GetFileViewTag($Page->nama_gambar, $Page->nama_gambar->getViewValue(), false) ?>
 </span>
 </span>

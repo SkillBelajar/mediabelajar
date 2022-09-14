@@ -179,6 +179,23 @@
   <MasterDetail MasterTable="evaluasi" DetailTable="peserta" EnforceReferentialIntegrity="0" CascadeUpdate="0" CascadeDelete="0">
     <Relation MasterField="id_evaluasi" DetailField="id_evaluasi" />
   </MasterDetail>
+  <CustomScript ScriptType="Server" ScriptCodeType="Table" ScriptName="Page_DataRendering" ScriptCtrlID="list" ScriptL1Key="gambar" ScriptL2Key=""><![CDATA[// Page Data Rendering event
+function Page_DataRendering(&$header)
+{
+    // Example:
+    //$header = "your header";
+
+    echo "<br>" ;
+     echo "<br>" ;
+ $ip_server = $_SERVER['SERVER_ADDR'];
+
+echo "<a href='http://".$ip_server."/mediabelajar/siswa/public/gambar' target='_blank'>Lihat Link Gambar</a>" ;
+    
+        echo "<br>" ;
+         echo "<br>" ;
+    
+}
+]]></CustomScript>
   <Menu MenuID="5" MenuText="live" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="live" MenuType="" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="-1" MenuIconClass="" MenuNavbar="0" />
   <Menu MenuID="6" MenuText="gambar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="gambar" MenuType="" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="-1" MenuIconClass="" MenuNavbar="0" />
   <Menu MenuID="3" MenuText="media" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="media" MenuType="" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="100" MenuIconClass="" MenuNavbar="0" />

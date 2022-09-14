@@ -936,9 +936,6 @@ class GambarView extends Gambar
 
             // nama_gambar
             if (!EmptyValue($this->nama_gambar->Upload->DbValue)) {
-                $this->nama_gambar->ImageWidth = 300;
-                $this->nama_gambar->ImageHeight = 300;
-                $this->nama_gambar->ImageAlt = $this->nama_gambar->alt();
                 $this->nama_gambar->ViewValue = $this->nama_gambar->Upload->DbValue;
             } else {
                 $this->nama_gambar->ViewValue = "";
@@ -952,24 +949,9 @@ class GambarView extends Gambar
 
             // nama_gambar
             $this->nama_gambar->LinkCustomAttributes = "";
-            if (!EmptyValue($this->nama_gambar->Upload->DbValue)) {
-                $this->nama_gambar->HrefValue = GetFileUploadUrl($this->nama_gambar, $this->nama_gambar->htmlDecode($this->nama_gambar->Upload->DbValue)); // Add prefix/suffix
-                $this->nama_gambar->LinkAttrs["target"] = ""; // Add target
-                if ($this->isExport()) {
-                    $this->nama_gambar->HrefValue = FullUrl($this->nama_gambar->HrefValue, "href");
-                }
-            } else {
-                $this->nama_gambar->HrefValue = "";
-            }
+            $this->nama_gambar->HrefValue = "";
             $this->nama_gambar->ExportHrefValue = $this->nama_gambar->UploadPath . $this->nama_gambar->Upload->DbValue;
             $this->nama_gambar->TooltipValue = "";
-            if ($this->nama_gambar->UseColorbox) {
-                if (EmptyValue($this->nama_gambar->TooltipValue)) {
-                    $this->nama_gambar->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
-                }
-                $this->nama_gambar->LinkAttrs["data-rel"] = "gambar_x_nama_gambar";
-                $this->nama_gambar->LinkAttrs->appendClass("ew-lightbox");
-            }
         }
 
         // Call Row Rendered event

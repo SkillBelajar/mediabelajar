@@ -111,8 +111,8 @@ $Page->showMessage();
         <label id="elh_gambar_id_gambar" class="<?= $Page->LeftColumnClass ?>"><?= $Page->id_gambar->caption() ?><?= $Page->id_gambar->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->id_gambar->cellAttributes() ?>>
 <span id="el_gambar_id_gambar">
-<span<?= $Page->id_gambar->viewAttributes() ?>>
-<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Page->id_gambar->EditValue)) ?>"></span>
+<span>
+<?= GetImageViewTag($Page->id_gambar, $Page->id_gambar->EditValue) ?></span>
 </span>
 <input type="hidden" data-table="gambar" data-field="x_id_gambar" name="x_id_gambar" id="x_id_gambar" value="<?= HtmlEncode($Page->id_gambar->CurrentValue) ?>">
 </div></div>

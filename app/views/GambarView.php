@@ -47,8 +47,8 @@ $Page->showMessage();
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_gambar_id_gambar"><?= $Page->id_gambar->caption() ?></span></td>
         <td data-name="id_gambar" <?= $Page->id_gambar->cellAttributes() ?>>
 <span id="el_gambar_id_gambar">
-<span<?= $Page->id_gambar->viewAttributes() ?>>
-<?= $Page->id_gambar->getViewValue() ?></span>
+<span>
+<?= GetImageViewTag($Page->id_gambar, $Page->id_gambar->getViewValue()) ?></span>
 </span>
 </td>
     </tr>
@@ -58,7 +58,7 @@ $Page->showMessage();
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_gambar_nama_gambar"><?= $Page->nama_gambar->caption() ?></span></td>
         <td data-name="nama_gambar" <?= $Page->nama_gambar->cellAttributes() ?>>
 <span id="el_gambar_nama_gambar">
-<span>
+<span<?= $Page->nama_gambar->viewAttributes() ?>>
 <?= GetFileViewTag($Page->nama_gambar, $Page->nama_gambar->getViewValue(), false) ?>
 </span>
 </span>

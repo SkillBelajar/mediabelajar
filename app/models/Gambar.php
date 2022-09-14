@@ -68,7 +68,7 @@ class Gambar extends DbTable
         $this->BasicSearch = new BasicSearch($this->TableVar);
 
         // id_gambar
-        $this->id_gambar = new DbField('gambar', 'gambar', 'x_id_gambar', 'id_gambar', '`id_gambar`', '`id_gambar`', 3, 100, -1, false, '`id_gambar`', false, false, false, 'FORMATTED TEXT', 'NO');
+        $this->id_gambar = new DbField('gambar', 'gambar', 'x_id_gambar', 'id_gambar', '`id_gambar`', '`id_gambar`', 3, 100, -1, false, '`id_gambar`', false, false, false, 'IMAGE', 'NO');
         $this->id_gambar->IsAutoIncrement = true; // Autoincrement field
         $this->id_gambar->IsPrimaryKey = true; // Primary key field
         $this->id_gambar->Sortable = false; // Allow sort
@@ -76,7 +76,7 @@ class Gambar extends DbTable
         $this->Fields['id_gambar'] = &$this->id_gambar;
 
         // nama_gambar
-        $this->nama_gambar = new DbField('gambar', 'gambar', 'x_nama_gambar', 'nama_gambar', '`nama_gambar`', '`nama_gambar`', 200, 255, -1, true, '`nama_gambar`', false, false, false, 'IMAGE', 'FILE');
+        $this->nama_gambar = new DbField('gambar', 'gambar', 'x_nama_gambar', 'nama_gambar', '`nama_gambar`', '`nama_gambar`', 200, 255, -1, true, '`nama_gambar`', false, false, false, 'FORMATTED TEXT', 'FILE');
         $this->nama_gambar->Nullable = false; // NOT NULL field
         $this->nama_gambar->Required = true; // Required field
         $this->nama_gambar->Sortable = true; // Allow sort
@@ -798,9 +798,6 @@ SORTHTML;
 
         // nama_gambar
         if (!EmptyValue($this->nama_gambar->Upload->DbValue)) {
-            $this->nama_gambar->ImageWidth = 300;
-            $this->nama_gambar->ImageHeight = 300;
-            $this->nama_gambar->ImageAlt = $this->nama_gambar->alt();
             $this->nama_gambar->ViewValue = $this->nama_gambar->Upload->DbValue;
         } else {
             $this->nama_gambar->ViewValue = "";
@@ -814,24 +811,9 @@ SORTHTML;
 
         // nama_gambar
         $this->nama_gambar->LinkCustomAttributes = "";
-        if (!EmptyValue($this->nama_gambar->Upload->DbValue)) {
-            $this->nama_gambar->HrefValue = GetFileUploadUrl($this->nama_gambar, $this->nama_gambar->htmlDecode($this->nama_gambar->Upload->DbValue)); // Add prefix/suffix
-            $this->nama_gambar->LinkAttrs["target"] = ""; // Add target
-            if ($this->isExport()) {
-                $this->nama_gambar->HrefValue = FullUrl($this->nama_gambar->HrefValue, "href");
-            }
-        } else {
-            $this->nama_gambar->HrefValue = "";
-        }
+        $this->nama_gambar->HrefValue = "";
         $this->nama_gambar->ExportHrefValue = $this->nama_gambar->UploadPath . $this->nama_gambar->Upload->DbValue;
         $this->nama_gambar->TooltipValue = "";
-        if ($this->nama_gambar->UseColorbox) {
-            if (EmptyValue($this->nama_gambar->TooltipValue)) {
-                $this->nama_gambar->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
-            }
-            $this->nama_gambar->LinkAttrs["data-rel"] = "gambar_x_nama_gambar";
-            $this->nama_gambar->LinkAttrs->appendClass("ew-lightbox");
-        }
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -858,9 +840,6 @@ SORTHTML;
         $this->nama_gambar->EditAttrs["class"] = "form-control";
         $this->nama_gambar->EditCustomAttributes = "";
         if (!EmptyValue($this->nama_gambar->Upload->DbValue)) {
-            $this->nama_gambar->ImageWidth = 300;
-            $this->nama_gambar->ImageHeight = 300;
-            $this->nama_gambar->ImageAlt = $this->nama_gambar->alt();
             $this->nama_gambar->EditValue = $this->nama_gambar->Upload->DbValue;
         } else {
             $this->nama_gambar->EditValue = "";

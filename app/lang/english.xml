@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2022/9/13" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
+<ew-language date="2022/9/14" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
   <!--
     *** Important Notes:
     1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -1033,6 +1033,47 @@
         <phrase id="fldtagcaption2" value="Soal" />
         <phrase id="fldtagvalue3" value="tampilkan_jawaban" />
         <phrase id="fldtagcaption3" value="tampilkan_jawaban" />
+      </field>
+      <field id="nomor_soal">
+        <phrase id="fldcaption" value="nomor soal" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="1" />
+        <phrase id="fldtagvalue2" value="2" />
+        <phrase id="fldtagcaption2" value="2" />
+        <phrase id="fldtagvalue3" value="3" />
+        <phrase id="fldtagcaption3" value="3" />
+        <phrase id="fldtagvalue4" value="4" />
+        <phrase id="fldtagcaption4" value="4" />
+        <phrase id="fldtagvalue5" value="5" />
+        <phrase id="fldtagcaption5" value="5" />
+        <phrase id="fldtagvalue6" value="6" />
+        <phrase id="fldtagcaption6" value="6" />
+        <phrase id="fldtagvalue7" value="7" />
+        <phrase id="fldtagcaption7" value="7" />
+        <phrase id="fldtagvalue8" value="8" />
+        <phrase id="fldtagcaption8" value="8" />
+        <phrase id="fldtagvalue9" value="9" />
+        <phrase id="fldtagcaption9" value="9" />
+        <phrase id="fldtagvalue10" value="10" />
+        <phrase id="fldtagcaption10" value="10" />
+        <phrase id="fldtagvalue11" value="11" />
+        <phrase id="fldtagcaption11" value="11" />
+        <phrase id="fldtagvalue12" value="12" />
+        <phrase id="fldtagcaption12" value="12" />
+        <phrase id="fldtagvalue13" value="13" />
+        <phrase id="fldtagcaption13" value="13" />
+        <phrase id="fldtagvalue14" value="14" />
+        <phrase id="fldtagcaption14" value="14" />
+        <phrase id="fldtagvalue15" value="15" />
+        <phrase id="fldtagcaption15" value="15" />
+        <phrase id="fldtagvalue16" value="16" />
+        <phrase id="fldtagcaption16" value="16" />
+        <phrase id="fldtagvalue17" value="17" />
+        <phrase id="fldtagcaption17" value="17" />
+        <phrase id="fldtagvalue18" value="18" />
+        <phrase id="fldtagcaption18" value="18" />
+        <phrase id="fldtagvalue19" value="19" />
+        <phrase id="fldtagcaption19" value="19" />
       </field>
       <field id="id_materi">
         <phrase id="fldcaption" value="id materi" />

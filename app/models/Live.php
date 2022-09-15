@@ -31,6 +31,7 @@ class Live extends DbTable
     // Fields
     public $id_live;
     public $aksi;
+    public $nomor_soal;
     public $id_materi;
     public $live_catatan;
 
@@ -87,6 +88,18 @@ class Live extends DbTable
         $this->aksi->Lookup = new Lookup('aksi', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
         $this->aksi->OptionCount = 3;
         $this->Fields['aksi'] = &$this->aksi;
+
+        // nomor_soal
+        $this->nomor_soal = new DbField('live', 'live', 'x_nomor_soal', 'nomor_soal', '`nomor_soal`', '`nomor_soal`', 3, 100, -1, false, '`nomor_soal`', false, false, false, 'FORMATTED TEXT', 'SELECT');
+        $this->nomor_soal->Nullable = false; // NOT NULL field
+        $this->nomor_soal->Required = true; // Required field
+        $this->nomor_soal->Sortable = true; // Allow sort
+        $this->nomor_soal->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->nomor_soal->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->nomor_soal->Lookup = new Lookup('nomor_soal', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
+        $this->nomor_soal->OptionCount = 19;
+        $this->nomor_soal->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->Fields['nomor_soal'] = &$this->nomor_soal;
 
         // id_materi
         $this->id_materi = new DbField('live', 'live', 'x_id_materi', 'id_materi', '`id_materi`', '`id_materi`', 3, 100, -1, false, '`id_materi`', false, false, false, 'FORMATTED TEXT', 'SELECT');
@@ -517,6 +530,7 @@ class Live extends DbTable
         }
         $this->id_live->DbValue = $row['id_live'];
         $this->aksi->DbValue = $row['aksi'];
+        $this->nomor_soal->DbValue = $row['nomor_soal'];
         $this->id_materi->DbValue = $row['id_materi'];
         $this->live_catatan->DbValue = $row['live_catatan'];
     }
@@ -796,6 +810,7 @@ SORTHTML;
         }
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
+        $this->nomor_soal->setDbValue($row['nomor_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -814,6 +829,8 @@ SORTHTML;
 
         // aksi
 
+        // nomor_soal
+
         // id_materi
 
         // live_catatan
@@ -829,6 +846,14 @@ SORTHTML;
             $this->aksi->ViewValue = null;
         }
         $this->aksi->ViewCustomAttributes = "";
+
+        // nomor_soal
+        if (strval($this->nomor_soal->CurrentValue) != "") {
+            $this->nomor_soal->ViewValue = $this->nomor_soal->optionCaption($this->nomor_soal->CurrentValue);
+        } else {
+            $this->nomor_soal->ViewValue = null;
+        }
+        $this->nomor_soal->ViewCustomAttributes = "";
 
         // id_materi
         $curVal = strval($this->id_materi->CurrentValue);
@@ -864,6 +889,11 @@ SORTHTML;
         $this->aksi->LinkCustomAttributes = "";
         $this->aksi->HrefValue = "";
         $this->aksi->TooltipValue = "";
+
+        // nomor_soal
+        $this->nomor_soal->LinkCustomAttributes = "";
+        $this->nomor_soal->HrefValue = "";
+        $this->nomor_soal->TooltipValue = "";
 
         // id_materi
         $this->id_materi->LinkCustomAttributes = "";
@@ -901,6 +931,12 @@ SORTHTML;
         $this->aksi->EditCustomAttributes = "";
         $this->aksi->EditValue = $this->aksi->options(true);
         $this->aksi->PlaceHolder = RemoveHtml($this->aksi->caption());
+
+        // nomor_soal
+        $this->nomor_soal->EditAttrs["class"] = "form-control";
+        $this->nomor_soal->EditCustomAttributes = "";
+        $this->nomor_soal->EditValue = $this->nomor_soal->options(true);
+        $this->nomor_soal->PlaceHolder = RemoveHtml($this->nomor_soal->caption());
 
         // id_materi
         $this->id_materi->EditAttrs["class"] = "form-control";
@@ -943,10 +979,12 @@ SORTHTML;
                 if ($exportPageType == "view") {
                     $doc->exportCaption($this->id_live);
                     $doc->exportCaption($this->aksi);
+                    $doc->exportCaption($this->nomor_soal);
                     $doc->exportCaption($this->id_materi);
                     $doc->exportCaption($this->live_catatan);
                 } else {
                     $doc->exportCaption($this->aksi);
+                    $doc->exportCaption($this->nomor_soal);
                     $doc->exportCaption($this->id_materi);
                     $doc->exportCaption($this->live_catatan);
                 }
@@ -980,10 +1018,12 @@ SORTHTML;
                     if ($exportPageType == "view") {
                         $doc->exportField($this->id_live);
                         $doc->exportField($this->aksi);
+                        $doc->exportField($this->nomor_soal);
                         $doc->exportField($this->id_materi);
                         $doc->exportField($this->live_catatan);
                     } else {
                         $doc->exportField($this->aksi);
+                        $doc->exportField($this->nomor_soal);
                         $doc->exportField($this->id_materi);
                         $doc->exportField($this->live_catatan);
                     }

@@ -623,6 +623,7 @@ class LiveEdit extends Live
         $this->CurrentAction = Param("action"); // Set up current action
         $this->id_live->setVisibility();
         $this->aksi->setVisibility();
+        $this->nomor_soal->setVisibility();
         $this->id_materi->setVisibility();
         $this->live_catatan->setVisibility();
         $this->hideFieldsForAddEdit();
@@ -819,6 +820,16 @@ class LiveEdit extends Live
             }
         }
 
+        // Check field name 'nomor_soal' first before field var 'x_nomor_soal'
+        $val = $CurrentForm->hasValue("nomor_soal") ? $CurrentForm->getValue("nomor_soal") : $CurrentForm->getValue("x_nomor_soal");
+        if (!$this->nomor_soal->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->nomor_soal->Visible = false; // Disable update for API request
+            } else {
+                $this->nomor_soal->setFormValue($val);
+            }
+        }
+
         // Check field name 'id_materi' first before field var 'x_id_materi'
         $val = $CurrentForm->hasValue("id_materi") ? $CurrentForm->getValue("id_materi") : $CurrentForm->getValue("x_id_materi");
         if (!$this->id_materi->IsDetailKey) {
@@ -846,6 +857,7 @@ class LiveEdit extends Live
         global $CurrentForm;
         $this->id_live->CurrentValue = $this->id_live->FormValue;
         $this->aksi->CurrentValue = $this->aksi->FormValue;
+        $this->nomor_soal->CurrentValue = $this->nomor_soal->FormValue;
         $this->id_materi->CurrentValue = $this->id_materi->FormValue;
         $this->live_catatan->CurrentValue = $this->live_catatan->FormValue;
     }
@@ -899,6 +911,7 @@ class LiveEdit extends Live
         }
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
+        $this->nomor_soal->setDbValue($row['nomor_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -909,6 +922,7 @@ class LiveEdit extends Live
         $row = [];
         $row['id_live'] = null;
         $row['aksi'] = null;
+        $row['nomor_soal'] = null;
         $row['id_materi'] = null;
         $row['live_catatan'] = null;
         return $row;
@@ -953,6 +967,8 @@ class LiveEdit extends Live
 
         // aksi
 
+        // nomor_soal
+
         // id_materi
 
         // live_catatan
@@ -968,6 +984,14 @@ class LiveEdit extends Live
                 $this->aksi->ViewValue = null;
             }
             $this->aksi->ViewCustomAttributes = "";
+
+            // nomor_soal
+            if (strval($this->nomor_soal->CurrentValue) != "") {
+                $this->nomor_soal->ViewValue = $this->nomor_soal->optionCaption($this->nomor_soal->CurrentValue);
+            } else {
+                $this->nomor_soal->ViewValue = null;
+            }
+            $this->nomor_soal->ViewCustomAttributes = "";
 
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
@@ -1004,6 +1028,11 @@ class LiveEdit extends Live
             $this->aksi->HrefValue = "";
             $this->aksi->TooltipValue = "";
 
+            // nomor_soal
+            $this->nomor_soal->LinkCustomAttributes = "";
+            $this->nomor_soal->HrefValue = "";
+            $this->nomor_soal->TooltipValue = "";
+
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
@@ -1025,6 +1054,12 @@ class LiveEdit extends Live
             $this->aksi->EditCustomAttributes = "";
             $this->aksi->EditValue = $this->aksi->options(true);
             $this->aksi->PlaceHolder = RemoveHtml($this->aksi->caption());
+
+            // nomor_soal
+            $this->nomor_soal->EditAttrs["class"] = "form-control";
+            $this->nomor_soal->EditCustomAttributes = "";
+            $this->nomor_soal->EditValue = $this->nomor_soal->options(true);
+            $this->nomor_soal->PlaceHolder = RemoveHtml($this->nomor_soal->caption());
 
             // id_materi
             $this->id_materi->EditAttrs["class"] = "form-control";
@@ -1067,6 +1102,10 @@ class LiveEdit extends Live
             $this->aksi->LinkCustomAttributes = "";
             $this->aksi->HrefValue = "";
 
+            // nomor_soal
+            $this->nomor_soal->LinkCustomAttributes = "";
+            $this->nomor_soal->HrefValue = "";
+
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
@@ -1102,6 +1141,11 @@ class LiveEdit extends Live
         if ($this->aksi->Required) {
             if (!$this->aksi->IsDetailKey && EmptyValue($this->aksi->FormValue)) {
                 $this->aksi->addErrorMessage(str_replace("%s", $this->aksi->caption(), $this->aksi->RequiredErrorMessage));
+            }
+        }
+        if ($this->nomor_soal->Required) {
+            if (!$this->nomor_soal->IsDetailKey && EmptyValue($this->nomor_soal->FormValue)) {
+                $this->nomor_soal->addErrorMessage(str_replace("%s", $this->nomor_soal->caption(), $this->nomor_soal->RequiredErrorMessage));
             }
         }
         if ($this->id_materi->Required) {
@@ -1147,6 +1191,9 @@ class LiveEdit extends Live
 
             // aksi
             $this->aksi->setDbValueDef($rsnew, $this->aksi->CurrentValue, "", $this->aksi->ReadOnly);
+
+            // nomor_soal
+            $this->nomor_soal->setDbValueDef($rsnew, $this->nomor_soal->CurrentValue, 0, $this->nomor_soal->ReadOnly);
 
             // id_materi
             $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, $this->id_materi->ReadOnly);
@@ -1232,6 +1279,8 @@ class LiveEdit extends Live
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_aksi":
+                    break;
+                case "x_nomor_soal":
                     break;
                 case "x_id_materi":
                     break;

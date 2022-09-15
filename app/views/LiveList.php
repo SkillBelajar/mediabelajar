@@ -114,6 +114,9 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->aksi->Visible) { // aksi ?>
         <th data-name="aksi" class="<?= $Page->aksi->headerCellClass() ?>"><div id="elh_live_aksi" class="live_aksi"><?= $Page->renderSort($Page->aksi) ?></div></th>
 <?php } ?>
+<?php if ($Page->nomor_soal->Visible) { // nomor_soal ?>
+        <th data-name="nomor_soal" class="<?= $Page->nomor_soal->headerCellClass() ?>"><div id="elh_live_nomor_soal" class="live_nomor_soal"><?= $Page->renderSort($Page->nomor_soal) ?></div></th>
+<?php } ?>
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <th data-name="id_materi" class="<?= $Page->id_materi->headerCellClass() ?>"><div id="elh_live_id_materi" class="live_id_materi"><?= $Page->renderSort($Page->id_materi) ?></div></th>
 <?php } ?>
@@ -185,6 +188,14 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowCount ?>_live_aksi">
 <span<?= $Page->aksi->viewAttributes() ?>>
 <?= $Page->aksi->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->nomor_soal->Visible) { // nomor_soal ?>
+        <td data-name="nomor_soal" <?= $Page->nomor_soal->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_live_nomor_soal">
+<span<?= $Page->nomor_soal->viewAttributes() ?>>
+<?= $Page->nomor_soal->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

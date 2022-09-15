@@ -681,6 +681,7 @@ class LiveView extends Live
         $this->CurrentAction = Param("action"); // Set up current action
         $this->id_live->setVisibility();
         $this->aksi->setVisibility();
+        $this->nomor_soal->setVisibility();
         $this->id_materi->setVisibility();
         $this->live_catatan->setVisibility();
         $this->hideFieldsForAddEdit();
@@ -870,6 +871,7 @@ class LiveView extends Live
         }
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
+        $this->nomor_soal->setDbValue($row['nomor_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -880,6 +882,7 @@ class LiveView extends Live
         $row = [];
         $row['id_live'] = null;
         $row['aksi'] = null;
+        $row['nomor_soal'] = null;
         $row['id_materi'] = null;
         $row['live_catatan'] = null;
         return $row;
@@ -907,6 +910,8 @@ class LiveView extends Live
 
         // aksi
 
+        // nomor_soal
+
         // id_materi
 
         // live_catatan
@@ -922,6 +927,14 @@ class LiveView extends Live
                 $this->aksi->ViewValue = null;
             }
             $this->aksi->ViewCustomAttributes = "";
+
+            // nomor_soal
+            if (strval($this->nomor_soal->CurrentValue) != "") {
+                $this->nomor_soal->ViewValue = $this->nomor_soal->optionCaption($this->nomor_soal->CurrentValue);
+            } else {
+                $this->nomor_soal->ViewValue = null;
+            }
+            $this->nomor_soal->ViewCustomAttributes = "";
 
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
@@ -957,6 +970,11 @@ class LiveView extends Live
             $this->aksi->LinkCustomAttributes = "";
             $this->aksi->HrefValue = "";
             $this->aksi->TooltipValue = "";
+
+            // nomor_soal
+            $this->nomor_soal->LinkCustomAttributes = "";
+            $this->nomor_soal->HrefValue = "";
+            $this->nomor_soal->TooltipValue = "";
 
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
@@ -1000,6 +1018,8 @@ class LiveView extends Live
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_aksi":
+                    break;
+                case "x_nomor_soal":
                     break;
                 case "x_id_materi":
                     break;

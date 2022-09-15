@@ -64,6 +64,17 @@ $Page->showMessage();
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->nomor_soal->Visible) { // nomor_soal ?>
+    <tr id="r_nomor_soal">
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_live_nomor_soal"><?= $Page->nomor_soal->caption() ?></span></td>
+        <td data-name="nomor_soal" <?= $Page->nomor_soal->cellAttributes() ?>>
+<span id="el_live_nomor_soal">
+<span<?= $Page->nomor_soal->viewAttributes() ?>>
+<?= $Page->nomor_soal->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
     <tr id="r_id_materi">
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_live_id_materi"><?= $Page->id_materi->caption() ?></span></td>

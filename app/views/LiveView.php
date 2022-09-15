@@ -75,6 +75,17 @@ $Page->showMessage();
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->waktu_soal->Visible) { // waktu_soal ?>
+    <tr id="r_waktu_soal">
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_live_waktu_soal"><?= $Page->waktu_soal->caption() ?></span></td>
+        <td data-name="waktu_soal" <?= $Page->waktu_soal->cellAttributes() ?>>
+<span id="el_live_waktu_soal">
+<span<?= $Page->waktu_soal->viewAttributes() ?>>
+<?= $Page->waktu_soal->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
     <tr id="r_id_materi">
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_live_id_materi"><?= $Page->id_materi->caption() ?></span></td>

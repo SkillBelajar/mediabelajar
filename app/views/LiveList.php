@@ -117,6 +117,9 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->nomor_soal->Visible) { // nomor_soal ?>
         <th data-name="nomor_soal" class="<?= $Page->nomor_soal->headerCellClass() ?>"><div id="elh_live_nomor_soal" class="live_nomor_soal"><?= $Page->renderSort($Page->nomor_soal) ?></div></th>
 <?php } ?>
+<?php if ($Page->waktu_soal->Visible) { // waktu_soal ?>
+        <th data-name="waktu_soal" class="<?= $Page->waktu_soal->headerCellClass() ?>"><div id="elh_live_waktu_soal" class="live_waktu_soal"><?= $Page->renderSort($Page->waktu_soal) ?></div></th>
+<?php } ?>
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <th data-name="id_materi" class="<?= $Page->id_materi->headerCellClass() ?>"><div id="elh_live_id_materi" class="live_id_materi"><?= $Page->renderSort($Page->id_materi) ?></div></th>
 <?php } ?>
@@ -196,6 +199,14 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowCount ?>_live_nomor_soal">
 <span<?= $Page->nomor_soal->viewAttributes() ?>>
 <?= $Page->nomor_soal->getViewValue() ?></span>
+</span>
+</td>
+    <?php } ?>
+    <?php if ($Page->waktu_soal->Visible) { // waktu_soal ?>
+        <td data-name="waktu_soal" <?= $Page->waktu_soal->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_live_waktu_soal">
+<span<?= $Page->waktu_soal->viewAttributes() ?>>
+<?= $Page->waktu_soal->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

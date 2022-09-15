@@ -20,6 +20,7 @@ loadjs.ready("head", function () {
         ["id_live", [fields.id_live.required ? ew.Validators.required(fields.id_live.caption) : null], fields.id_live.isInvalid],
         ["aksi", [fields.aksi.required ? ew.Validators.required(fields.aksi.caption) : null], fields.aksi.isInvalid],
         ["nomor_soal", [fields.nomor_soal.required ? ew.Validators.required(fields.nomor_soal.caption) : null], fields.nomor_soal.isInvalid],
+        ["waktu_soal", [fields.waktu_soal.required ? ew.Validators.required(fields.waktu_soal.caption) : null], fields.waktu_soal.isInvalid],
         ["id_materi", [fields.id_materi.required ? ew.Validators.required(fields.id_materi.caption) : null], fields.id_materi.isInvalid],
         ["live_catatan", [fields.live_catatan.required ? ew.Validators.required(fields.live_catatan.caption) : null], fields.live_catatan.isInvalid]
     ]);
@@ -90,6 +91,7 @@ loadjs.ready("head", function () {
     // Dynamic selection lists
     fliveedit.lists.aksi = <?= $Page->aksi->toClientList($Page) ?>;
     fliveedit.lists.nomor_soal = <?= $Page->nomor_soal->toClientList($Page) ?>;
+    fliveedit.lists.waktu_soal = <?= $Page->waktu_soal->toClientList($Page) ?>;
     fliveedit.lists.id_materi = <?= $Page->id_materi->toClientList($Page) ?>;
     loadjs.done("fliveedit");
 });
@@ -183,6 +185,39 @@ loadjs.ready("head", function() {
     options.data = ew.vars.tables.live.fields.nomor_soal.lookupOptions;
     options.dropdownParent = $(el).closest("#ew-modal-dialog, #ew-add-opt-dialog")[0];
     Object.assign(options, ew.vars.tables.live.fields.nomor_soal.selectOptions);
+    ew.createSelect(options);
+});
+</script>
+</span>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->waktu_soal->Visible) { // waktu_soal ?>
+    <div id="r_waktu_soal" class="form-group row">
+        <label id="elh_live_waktu_soal" for="x_waktu_soal" class="<?= $Page->LeftColumnClass ?>"><?= $Page->waktu_soal->caption() ?><?= $Page->waktu_soal->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->waktu_soal->cellAttributes() ?>>
+<span id="el_live_waktu_soal">
+    <select
+        id="x_waktu_soal"
+        name="x_waktu_soal"
+        class="form-control ew-select<?= $Page->waktu_soal->isInvalidClass() ?>"
+        data-select2-id="live_x_waktu_soal"
+        data-table="live"
+        data-field="x_waktu_soal"
+        data-value-separator="<?= $Page->waktu_soal->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->waktu_soal->getPlaceHolder()) ?>"
+        <?= $Page->waktu_soal->editAttributes() ?>>
+        <?= $Page->waktu_soal->selectOptionListHtml("x_waktu_soal") ?>
+    </select>
+    <?= $Page->waktu_soal->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->waktu_soal->getErrorMessage() ?></div>
+<script>
+loadjs.ready("head", function() {
+    var el = document.querySelector("select[data-select2-id='live_x_waktu_soal']"),
+        options = { name: "x_waktu_soal", selectId: "live_x_waktu_soal", language: ew.LANGUAGE_ID, dir: ew.IS_RTL ? "rtl" : "ltr" };
+    options.data = ew.vars.tables.live.fields.waktu_soal.lookupOptions;
+    options.dropdownParent = $(el).closest("#ew-modal-dialog, #ew-add-opt-dialog")[0];
+    Object.assign(options, ew.vars.tables.live.fields.waktu_soal.selectOptions);
     ew.createSelect(options);
 });
 </script>

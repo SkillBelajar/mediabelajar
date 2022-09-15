@@ -1075,6 +1075,21 @@
         <phrase id="fldtagvalue19" value="19" />
         <phrase id="fldtagcaption19" value="19" />
       </field>
+      <field id="waktu_soal">
+        <phrase id="fldcaption" value="waktu soal" />
+        <phrase id="fldtagvalue1" value="30" />
+        <phrase id="fldtagcaption1" value="30 Detik" />
+        <phrase id="fldtagvalue2" value="60" />
+        <phrase id="fldtagcaption2" value="1 Menit" />
+        <phrase id="fldtagvalue3" value="90" />
+        <phrase id="fldtagcaption3" value="1 Menit + 30 Detik" />
+        <phrase id="fldtagvalue4" value="120" />
+        <phrase id="fldtagcaption4" value="2 Menit" />
+        <phrase id="fldtagvalue5" value="180" />
+        <phrase id="fldtagcaption5" value="3 Menit" />
+        <phrase id="fldtagvalue6" value="300" />
+        <phrase id="fldtagcaption6" value="5 Menit" />
+      </field>
       <field id="id_materi">
         <phrase id="fldcaption" value="id materi" />
       </field>

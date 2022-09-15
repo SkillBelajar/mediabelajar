@@ -734,6 +734,7 @@ class LiveList extends Live
         $this->id_live->Visible = false;
         $this->aksi->setVisibility();
         $this->nomor_soal->setVisibility();
+        $this->waktu_soal->setVisibility();
         $this->id_materi->setVisibility();
         $this->live_catatan->setVisibility();
         $this->hideFieldsForAddEdit();
@@ -1036,6 +1037,7 @@ class LiveList extends Live
         $filterList = Concat($filterList, $this->id_live->AdvancedSearch->toJson(), ","); // Field id_live
         $filterList = Concat($filterList, $this->aksi->AdvancedSearch->toJson(), ","); // Field aksi
         $filterList = Concat($filterList, $this->nomor_soal->AdvancedSearch->toJson(), ","); // Field nomor_soal
+        $filterList = Concat($filterList, $this->waktu_soal->AdvancedSearch->toJson(), ","); // Field waktu_soal
         $filterList = Concat($filterList, $this->id_materi->AdvancedSearch->toJson(), ","); // Field id_materi
         $filterList = Concat($filterList, $this->live_catatan->AdvancedSearch->toJson(), ","); // Field live_catatan
         if ($this->BasicSearch->Keyword != "") {
@@ -1101,6 +1103,14 @@ class LiveList extends Live
         $this->nomor_soal->AdvancedSearch->SearchValue2 = @$filter["y_nomor_soal"];
         $this->nomor_soal->AdvancedSearch->SearchOperator2 = @$filter["w_nomor_soal"];
         $this->nomor_soal->AdvancedSearch->save();
+
+        // Field waktu_soal
+        $this->waktu_soal->AdvancedSearch->SearchValue = @$filter["x_waktu_soal"];
+        $this->waktu_soal->AdvancedSearch->SearchOperator = @$filter["z_waktu_soal"];
+        $this->waktu_soal->AdvancedSearch->SearchCondition = @$filter["v_waktu_soal"];
+        $this->waktu_soal->AdvancedSearch->SearchValue2 = @$filter["y_waktu_soal"];
+        $this->waktu_soal->AdvancedSearch->SearchOperator2 = @$filter["w_waktu_soal"];
+        $this->waktu_soal->AdvancedSearch->save();
 
         // Field id_materi
         $this->id_materi->AdvancedSearch->SearchValue = @$filter["x_id_materi"];
@@ -1288,6 +1298,7 @@ class LiveList extends Live
             $this->CurrentOrderType = Get("ordertype", "");
             $this->updateSort($this->aksi); // aksi
             $this->updateSort($this->nomor_soal); // nomor_soal
+            $this->updateSort($this->waktu_soal); // waktu_soal
             $this->updateSort($this->id_materi); // id_materi
             $this->updateSort($this->live_catatan); // live_catatan
             $this->setStartRecordNumber(1); // Reset start position
@@ -1336,6 +1347,7 @@ class LiveList extends Live
                 $this->id_live->setSort("");
                 $this->aksi->setSort("");
                 $this->nomor_soal->setSort("");
+                $this->waktu_soal->setSort("");
                 $this->id_materi->setSort("");
                 $this->live_catatan->setSort("");
             }
@@ -1710,6 +1722,7 @@ class LiveList extends Live
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
         $this->nomor_soal->setDbValue($row['nomor_soal']);
+        $this->waktu_soal->setDbValue($row['waktu_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -1721,6 +1734,7 @@ class LiveList extends Live
         $row['id_live'] = null;
         $row['aksi'] = null;
         $row['nomor_soal'] = null;
+        $row['waktu_soal'] = null;
         $row['id_materi'] = null;
         $row['live_catatan'] = null;
         return $row;
@@ -1773,6 +1787,8 @@ class LiveList extends Live
 
         // nomor_soal
 
+        // waktu_soal
+
         // id_materi
 
         // live_catatan
@@ -1792,6 +1808,14 @@ class LiveList extends Live
                 $this->nomor_soal->ViewValue = null;
             }
             $this->nomor_soal->ViewCustomAttributes = "";
+
+            // waktu_soal
+            if (strval($this->waktu_soal->CurrentValue) != "") {
+                $this->waktu_soal->ViewValue = $this->waktu_soal->optionCaption($this->waktu_soal->CurrentValue);
+            } else {
+                $this->waktu_soal->ViewValue = null;
+            }
+            $this->waktu_soal->ViewCustomAttributes = "";
 
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
@@ -1827,6 +1851,11 @@ class LiveList extends Live
             $this->nomor_soal->LinkCustomAttributes = "";
             $this->nomor_soal->HrefValue = "";
             $this->nomor_soal->TooltipValue = "";
+
+            // waktu_soal
+            $this->waktu_soal->LinkCustomAttributes = "";
+            $this->waktu_soal->HrefValue = "";
+            $this->waktu_soal->TooltipValue = "";
 
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
@@ -1906,6 +1935,8 @@ class LiveList extends Live
                 case "x_aksi":
                     break;
                 case "x_nomor_soal":
+                    break;
+                case "x_waktu_soal":
                     break;
                 case "x_id_materi":
                     break;

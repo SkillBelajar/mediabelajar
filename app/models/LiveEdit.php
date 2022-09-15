@@ -624,6 +624,7 @@ class LiveEdit extends Live
         $this->id_live->setVisibility();
         $this->aksi->setVisibility();
         $this->nomor_soal->setVisibility();
+        $this->waktu_soal->setVisibility();
         $this->id_materi->setVisibility();
         $this->live_catatan->setVisibility();
         $this->hideFieldsForAddEdit();
@@ -830,6 +831,16 @@ class LiveEdit extends Live
             }
         }
 
+        // Check field name 'waktu_soal' first before field var 'x_waktu_soal'
+        $val = $CurrentForm->hasValue("waktu_soal") ? $CurrentForm->getValue("waktu_soal") : $CurrentForm->getValue("x_waktu_soal");
+        if (!$this->waktu_soal->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->waktu_soal->Visible = false; // Disable update for API request
+            } else {
+                $this->waktu_soal->setFormValue($val);
+            }
+        }
+
         // Check field name 'id_materi' first before field var 'x_id_materi'
         $val = $CurrentForm->hasValue("id_materi") ? $CurrentForm->getValue("id_materi") : $CurrentForm->getValue("x_id_materi");
         if (!$this->id_materi->IsDetailKey) {
@@ -858,6 +869,7 @@ class LiveEdit extends Live
         $this->id_live->CurrentValue = $this->id_live->FormValue;
         $this->aksi->CurrentValue = $this->aksi->FormValue;
         $this->nomor_soal->CurrentValue = $this->nomor_soal->FormValue;
+        $this->waktu_soal->CurrentValue = $this->waktu_soal->FormValue;
         $this->id_materi->CurrentValue = $this->id_materi->FormValue;
         $this->live_catatan->CurrentValue = $this->live_catatan->FormValue;
     }
@@ -912,6 +924,7 @@ class LiveEdit extends Live
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
         $this->nomor_soal->setDbValue($row['nomor_soal']);
+        $this->waktu_soal->setDbValue($row['waktu_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -923,6 +936,7 @@ class LiveEdit extends Live
         $row['id_live'] = null;
         $row['aksi'] = null;
         $row['nomor_soal'] = null;
+        $row['waktu_soal'] = null;
         $row['id_materi'] = null;
         $row['live_catatan'] = null;
         return $row;
@@ -969,6 +983,8 @@ class LiveEdit extends Live
 
         // nomor_soal
 
+        // waktu_soal
+
         // id_materi
 
         // live_catatan
@@ -992,6 +1008,14 @@ class LiveEdit extends Live
                 $this->nomor_soal->ViewValue = null;
             }
             $this->nomor_soal->ViewCustomAttributes = "";
+
+            // waktu_soal
+            if (strval($this->waktu_soal->CurrentValue) != "") {
+                $this->waktu_soal->ViewValue = $this->waktu_soal->optionCaption($this->waktu_soal->CurrentValue);
+            } else {
+                $this->waktu_soal->ViewValue = null;
+            }
+            $this->waktu_soal->ViewCustomAttributes = "";
 
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
@@ -1033,6 +1057,11 @@ class LiveEdit extends Live
             $this->nomor_soal->HrefValue = "";
             $this->nomor_soal->TooltipValue = "";
 
+            // waktu_soal
+            $this->waktu_soal->LinkCustomAttributes = "";
+            $this->waktu_soal->HrefValue = "";
+            $this->waktu_soal->TooltipValue = "";
+
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
@@ -1060,6 +1089,12 @@ class LiveEdit extends Live
             $this->nomor_soal->EditCustomAttributes = "";
             $this->nomor_soal->EditValue = $this->nomor_soal->options(true);
             $this->nomor_soal->PlaceHolder = RemoveHtml($this->nomor_soal->caption());
+
+            // waktu_soal
+            $this->waktu_soal->EditAttrs["class"] = "form-control";
+            $this->waktu_soal->EditCustomAttributes = "";
+            $this->waktu_soal->EditValue = $this->waktu_soal->options(true);
+            $this->waktu_soal->PlaceHolder = RemoveHtml($this->waktu_soal->caption());
 
             // id_materi
             $this->id_materi->EditAttrs["class"] = "form-control";
@@ -1106,6 +1141,10 @@ class LiveEdit extends Live
             $this->nomor_soal->LinkCustomAttributes = "";
             $this->nomor_soal->HrefValue = "";
 
+            // waktu_soal
+            $this->waktu_soal->LinkCustomAttributes = "";
+            $this->waktu_soal->HrefValue = "";
+
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
@@ -1146,6 +1185,11 @@ class LiveEdit extends Live
         if ($this->nomor_soal->Required) {
             if (!$this->nomor_soal->IsDetailKey && EmptyValue($this->nomor_soal->FormValue)) {
                 $this->nomor_soal->addErrorMessage(str_replace("%s", $this->nomor_soal->caption(), $this->nomor_soal->RequiredErrorMessage));
+            }
+        }
+        if ($this->waktu_soal->Required) {
+            if (!$this->waktu_soal->IsDetailKey && EmptyValue($this->waktu_soal->FormValue)) {
+                $this->waktu_soal->addErrorMessage(str_replace("%s", $this->waktu_soal->caption(), $this->waktu_soal->RequiredErrorMessage));
             }
         }
         if ($this->id_materi->Required) {
@@ -1194,6 +1238,9 @@ class LiveEdit extends Live
 
             // nomor_soal
             $this->nomor_soal->setDbValueDef($rsnew, $this->nomor_soal->CurrentValue, 0, $this->nomor_soal->ReadOnly);
+
+            // waktu_soal
+            $this->waktu_soal->setDbValueDef($rsnew, $this->waktu_soal->CurrentValue, 0, $this->waktu_soal->ReadOnly);
 
             // id_materi
             $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, $this->id_materi->ReadOnly);
@@ -1281,6 +1328,8 @@ class LiveEdit extends Live
                 case "x_aksi":
                     break;
                 case "x_nomor_soal":
+                    break;
+                case "x_waktu_soal":
                     break;
                 case "x_id_materi":
                     break;

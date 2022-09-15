@@ -32,6 +32,7 @@ class Live extends DbTable
     public $id_live;
     public $aksi;
     public $nomor_soal;
+    public $waktu_soal;
     public $id_materi;
     public $live_catatan;
 
@@ -100,6 +101,18 @@ class Live extends DbTable
         $this->nomor_soal->OptionCount = 19;
         $this->nomor_soal->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['nomor_soal'] = &$this->nomor_soal;
+
+        // waktu_soal
+        $this->waktu_soal = new DbField('live', 'live', 'x_waktu_soal', 'waktu_soal', '`waktu_soal`', '`waktu_soal`', 3, 100, -1, false, '`waktu_soal`', false, false, false, 'FORMATTED TEXT', 'SELECT');
+        $this->waktu_soal->Nullable = false; // NOT NULL field
+        $this->waktu_soal->Required = true; // Required field
+        $this->waktu_soal->Sortable = true; // Allow sort
+        $this->waktu_soal->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->waktu_soal->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
+        $this->waktu_soal->Lookup = new Lookup('waktu_soal', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
+        $this->waktu_soal->OptionCount = 6;
+        $this->waktu_soal->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->Fields['waktu_soal'] = &$this->waktu_soal;
 
         // id_materi
         $this->id_materi = new DbField('live', 'live', 'x_id_materi', 'id_materi', '`id_materi`', '`id_materi`', 3, 100, -1, false, '`id_materi`', false, false, false, 'FORMATTED TEXT', 'SELECT');
@@ -531,6 +544,7 @@ class Live extends DbTable
         $this->id_live->DbValue = $row['id_live'];
         $this->aksi->DbValue = $row['aksi'];
         $this->nomor_soal->DbValue = $row['nomor_soal'];
+        $this->waktu_soal->DbValue = $row['waktu_soal'];
         $this->id_materi->DbValue = $row['id_materi'];
         $this->live_catatan->DbValue = $row['live_catatan'];
     }
@@ -811,6 +825,7 @@ SORTHTML;
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
         $this->nomor_soal->setDbValue($row['nomor_soal']);
+        $this->waktu_soal->setDbValue($row['waktu_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -830,6 +845,8 @@ SORTHTML;
         // aksi
 
         // nomor_soal
+
+        // waktu_soal
 
         // id_materi
 
@@ -854,6 +871,14 @@ SORTHTML;
             $this->nomor_soal->ViewValue = null;
         }
         $this->nomor_soal->ViewCustomAttributes = "";
+
+        // waktu_soal
+        if (strval($this->waktu_soal->CurrentValue) != "") {
+            $this->waktu_soal->ViewValue = $this->waktu_soal->optionCaption($this->waktu_soal->CurrentValue);
+        } else {
+            $this->waktu_soal->ViewValue = null;
+        }
+        $this->waktu_soal->ViewCustomAttributes = "";
 
         // id_materi
         $curVal = strval($this->id_materi->CurrentValue);
@@ -894,6 +919,11 @@ SORTHTML;
         $this->nomor_soal->LinkCustomAttributes = "";
         $this->nomor_soal->HrefValue = "";
         $this->nomor_soal->TooltipValue = "";
+
+        // waktu_soal
+        $this->waktu_soal->LinkCustomAttributes = "";
+        $this->waktu_soal->HrefValue = "";
+        $this->waktu_soal->TooltipValue = "";
 
         // id_materi
         $this->id_materi->LinkCustomAttributes = "";
@@ -938,6 +968,12 @@ SORTHTML;
         $this->nomor_soal->EditValue = $this->nomor_soal->options(true);
         $this->nomor_soal->PlaceHolder = RemoveHtml($this->nomor_soal->caption());
 
+        // waktu_soal
+        $this->waktu_soal->EditAttrs["class"] = "form-control";
+        $this->waktu_soal->EditCustomAttributes = "";
+        $this->waktu_soal->EditValue = $this->waktu_soal->options(true);
+        $this->waktu_soal->PlaceHolder = RemoveHtml($this->waktu_soal->caption());
+
         // id_materi
         $this->id_materi->EditAttrs["class"] = "form-control";
         $this->id_materi->EditCustomAttributes = "";
@@ -980,11 +1016,13 @@ SORTHTML;
                     $doc->exportCaption($this->id_live);
                     $doc->exportCaption($this->aksi);
                     $doc->exportCaption($this->nomor_soal);
+                    $doc->exportCaption($this->waktu_soal);
                     $doc->exportCaption($this->id_materi);
                     $doc->exportCaption($this->live_catatan);
                 } else {
                     $doc->exportCaption($this->aksi);
                     $doc->exportCaption($this->nomor_soal);
+                    $doc->exportCaption($this->waktu_soal);
                     $doc->exportCaption($this->id_materi);
                     $doc->exportCaption($this->live_catatan);
                 }
@@ -1019,11 +1057,13 @@ SORTHTML;
                         $doc->exportField($this->id_live);
                         $doc->exportField($this->aksi);
                         $doc->exportField($this->nomor_soal);
+                        $doc->exportField($this->waktu_soal);
                         $doc->exportField($this->id_materi);
                         $doc->exportField($this->live_catatan);
                     } else {
                         $doc->exportField($this->aksi);
                         $doc->exportField($this->nomor_soal);
+                        $doc->exportField($this->waktu_soal);
                         $doc->exportField($this->id_materi);
                         $doc->exportField($this->live_catatan);
                     }

@@ -682,6 +682,7 @@ class LiveView extends Live
         $this->id_live->setVisibility();
         $this->aksi->setVisibility();
         $this->nomor_soal->setVisibility();
+        $this->waktu_soal->setVisibility();
         $this->id_materi->setVisibility();
         $this->live_catatan->setVisibility();
         $this->hideFieldsForAddEdit();
@@ -872,6 +873,7 @@ class LiveView extends Live
         $this->id_live->setDbValue($row['id_live']);
         $this->aksi->setDbValue($row['aksi']);
         $this->nomor_soal->setDbValue($row['nomor_soal']);
+        $this->waktu_soal->setDbValue($row['waktu_soal']);
         $this->id_materi->setDbValue($row['id_materi']);
         $this->live_catatan->setDbValue($row['live_catatan']);
     }
@@ -883,6 +885,7 @@ class LiveView extends Live
         $row['id_live'] = null;
         $row['aksi'] = null;
         $row['nomor_soal'] = null;
+        $row['waktu_soal'] = null;
         $row['id_materi'] = null;
         $row['live_catatan'] = null;
         return $row;
@@ -912,6 +915,8 @@ class LiveView extends Live
 
         // nomor_soal
 
+        // waktu_soal
+
         // id_materi
 
         // live_catatan
@@ -935,6 +940,14 @@ class LiveView extends Live
                 $this->nomor_soal->ViewValue = null;
             }
             $this->nomor_soal->ViewCustomAttributes = "";
+
+            // waktu_soal
+            if (strval($this->waktu_soal->CurrentValue) != "") {
+                $this->waktu_soal->ViewValue = $this->waktu_soal->optionCaption($this->waktu_soal->CurrentValue);
+            } else {
+                $this->waktu_soal->ViewValue = null;
+            }
+            $this->waktu_soal->ViewCustomAttributes = "";
 
             // id_materi
             $curVal = strval($this->id_materi->CurrentValue);
@@ -975,6 +988,11 @@ class LiveView extends Live
             $this->nomor_soal->LinkCustomAttributes = "";
             $this->nomor_soal->HrefValue = "";
             $this->nomor_soal->TooltipValue = "";
+
+            // waktu_soal
+            $this->waktu_soal->LinkCustomAttributes = "";
+            $this->waktu_soal->HrefValue = "";
+            $this->waktu_soal->TooltipValue = "";
 
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
@@ -1020,6 +1038,8 @@ class LiveView extends Live
                 case "x_aksi":
                     break;
                 case "x_nomor_soal":
+                    break;
+                case "x_waktu_soal":
                     break;
                 case "x_id_materi":
                     break;

@@ -1002,11 +1002,8 @@ class LiveEdit extends Live
             $this->aksi->ViewCustomAttributes = "";
 
             // nomor_soal
-            if (strval($this->nomor_soal->CurrentValue) != "") {
-                $this->nomor_soal->ViewValue = $this->nomor_soal->optionCaption($this->nomor_soal->CurrentValue);
-            } else {
-                $this->nomor_soal->ViewValue = null;
-            }
+            $this->nomor_soal->ViewValue = $this->nomor_soal->CurrentValue;
+            $this->nomor_soal->ViewValue = FormatNumber($this->nomor_soal->ViewValue, 0, -2, -2, -2);
             $this->nomor_soal->ViewCustomAttributes = "";
 
             // waktu_soal
@@ -1087,7 +1084,7 @@ class LiveEdit extends Live
             // nomor_soal
             $this->nomor_soal->EditAttrs["class"] = "form-control";
             $this->nomor_soal->EditCustomAttributes = "";
-            $this->nomor_soal->EditValue = $this->nomor_soal->options(true);
+            $this->nomor_soal->EditValue = HtmlEncode($this->nomor_soal->CurrentValue);
             $this->nomor_soal->PlaceHolder = RemoveHtml($this->nomor_soal->caption());
 
             // waktu_soal
@@ -1186,6 +1183,9 @@ class LiveEdit extends Live
             if (!$this->nomor_soal->IsDetailKey && EmptyValue($this->nomor_soal->FormValue)) {
                 $this->nomor_soal->addErrorMessage(str_replace("%s", $this->nomor_soal->caption(), $this->nomor_soal->RequiredErrorMessage));
             }
+        }
+        if (!CheckInteger($this->nomor_soal->FormValue)) {
+            $this->nomor_soal->addErrorMessage($this->nomor_soal->getErrorMessage(false));
         }
         if ($this->waktu_soal->Required) {
             if (!$this->waktu_soal->IsDetailKey && EmptyValue($this->waktu_soal->FormValue)) {
@@ -1326,8 +1326,6 @@ class LiveEdit extends Live
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_aksi":
-                    break;
-                case "x_nomor_soal":
                     break;
                 case "x_waktu_soal":
                     break;

@@ -91,14 +91,10 @@ class Live extends DbTable
         $this->Fields['aksi'] = &$this->aksi;
 
         // nomor_soal
-        $this->nomor_soal = new DbField('live', 'live', 'x_nomor_soal', 'nomor_soal', '`nomor_soal`', '`nomor_soal`', 3, 100, -1, false, '`nomor_soal`', false, false, false, 'FORMATTED TEXT', 'SELECT');
+        $this->nomor_soal = new DbField('live', 'live', 'x_nomor_soal', 'nomor_soal', '`nomor_soal`', '`nomor_soal`', 3, 100, -1, false, '`nomor_soal`', false, false, false, 'FORMATTED TEXT', 'TEXT');
         $this->nomor_soal->Nullable = false; // NOT NULL field
         $this->nomor_soal->Required = true; // Required field
         $this->nomor_soal->Sortable = true; // Allow sort
-        $this->nomor_soal->UsePleaseSelect = true; // Use PleaseSelect by default
-        $this->nomor_soal->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->nomor_soal->Lookup = new Lookup('nomor_soal', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->nomor_soal->OptionCount = 19;
         $this->nomor_soal->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['nomor_soal'] = &$this->nomor_soal;
 
@@ -110,7 +106,7 @@ class Live extends DbTable
         $this->waktu_soal->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->waktu_soal->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
         $this->waktu_soal->Lookup = new Lookup('waktu_soal', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->waktu_soal->OptionCount = 6;
+        $this->waktu_soal->OptionCount = 7;
         $this->waktu_soal->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['waktu_soal'] = &$this->waktu_soal;
 
@@ -865,11 +861,8 @@ SORTHTML;
         $this->aksi->ViewCustomAttributes = "";
 
         // nomor_soal
-        if (strval($this->nomor_soal->CurrentValue) != "") {
-            $this->nomor_soal->ViewValue = $this->nomor_soal->optionCaption($this->nomor_soal->CurrentValue);
-        } else {
-            $this->nomor_soal->ViewValue = null;
-        }
+        $this->nomor_soal->ViewValue = $this->nomor_soal->CurrentValue;
+        $this->nomor_soal->ViewValue = FormatNumber($this->nomor_soal->ViewValue, 0, -2, -2, -2);
         $this->nomor_soal->ViewCustomAttributes = "";
 
         // waktu_soal
@@ -965,7 +958,7 @@ SORTHTML;
         // nomor_soal
         $this->nomor_soal->EditAttrs["class"] = "form-control";
         $this->nomor_soal->EditCustomAttributes = "";
-        $this->nomor_soal->EditValue = $this->nomor_soal->options(true);
+        $this->nomor_soal->EditValue = $this->nomor_soal->CurrentValue;
         $this->nomor_soal->PlaceHolder = RemoveHtml($this->nomor_soal->caption());
 
         // waktu_soal

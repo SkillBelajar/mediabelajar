@@ -934,11 +934,8 @@ class LiveView extends Live
             $this->aksi->ViewCustomAttributes = "";
 
             // nomor_soal
-            if (strval($this->nomor_soal->CurrentValue) != "") {
-                $this->nomor_soal->ViewValue = $this->nomor_soal->optionCaption($this->nomor_soal->CurrentValue);
-            } else {
-                $this->nomor_soal->ViewValue = null;
-            }
+            $this->nomor_soal->ViewValue = $this->nomor_soal->CurrentValue;
+            $this->nomor_soal->ViewValue = FormatNumber($this->nomor_soal->ViewValue, 0, -2, -2, -2);
             $this->nomor_soal->ViewCustomAttributes = "";
 
             // waktu_soal
@@ -1036,8 +1033,6 @@ class LiveView extends Live
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
                 case "x_aksi":
-                    break;
-                case "x_nomor_soal":
                     break;
                 case "x_waktu_soal":
                     break;

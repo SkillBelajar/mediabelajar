@@ -917,6 +917,9 @@
   <project>
     <phrase id="bodytitle" value="Media Belajar" />
     <phrase id="footertext" value="Dibuat Oleh Muhammad Ullil Fahri" />
+    <menu id="12">
+      <phrase id="menutext" value="Edit Live" />
+    </menu>
     <menu id="5">
       <phrase id="menutext" value="live" />
     </menu>

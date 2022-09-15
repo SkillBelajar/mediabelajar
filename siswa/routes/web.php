@@ -33,3 +33,6 @@ Route::post('/simpanabc', [awal::class, 'simpanabc']);
 
 Route::get('/gambar', [awal::class, 'gambar']);
 Route::get('/nilai', [awal::class, 'nilai']);
+
+$key = md5(date("h"));
+Route::get('/resetpeserta/' . $key . '', [awal::class, 'resetpeserta']);

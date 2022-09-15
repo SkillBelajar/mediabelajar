@@ -39,4 +39,10 @@
             @endforeach
         </tbody>
     </table>
+
+    <hr>
+    <a href="{{ url('/resetpeserta') }}/{{ $key }}" class="btn btn-info">Reset Peserta</a>
+
+    <br>
+    <br>
 @endsection

@@ -2303,8 +2303,15 @@ class PesertaGrid extends Peserta
     // Page Data Rendering event
     public function pageDataRendering(&$header)
     {
-        // Example:
+       // Example:
         //$header = "your header";
+        echo "<br>" ;
+         echo "<br>" ;
+     $ip_server = $_SERVER['SERVER_ADDR'];
+    $kunci = md5(date("h")) ;
+    echo "<a href='http://".$ip_server."/mediabelajar/siswa/public/nilai?key=".$kunci."' target='_blank'>Lihat Nilai</a>" ;
+            echo "<br>" ;
+             echo "<br>" ;
     }
 
     // Page Data Rendered event

@@ -143,9 +143,24 @@ class awal extends Controller
     public function nilai()
     {
         //echo "ok"
-        $peserta = DB::select("SELECT DISTINCT(nama_peserta) as nama FROM `peserta` ORDER BY `nama` ASC");
-        return view("nilai", [
-            'peserta' => $peserta
-        ]);
+        $key = md5(date("h"));
+        $kunci = $_GET["key"];
+        if ($key != $kunci) {
+            echo "Kunci Tidak Cocok";
+        } else {
+
+            $peserta = DB::select("SELECT DISTINCT(nama_peserta) as nama FROM `peserta` ORDER BY `nama` ASC");
+            return view("nilai", [
+                'peserta' => $peserta,
+                'key' => $key
+            ]);
+        }
+    }
+
+    public function resetpeserta()
+    {
+        DB::table("peserta")->truncate();
+        // return redirect("nilai");
+        echo "<script>window.location='/mediabelajar/app/PesertaList'</script>";
     }
 }

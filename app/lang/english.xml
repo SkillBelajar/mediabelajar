@@ -923,6 +923,9 @@
     <menu id="6">
       <phrase id="menutext" value="gambar" />
     </menu>
+    <menu id="7">
+      <phrase id="menutext" value="slide" />
+    </menu>
     <menu id="3">
       <phrase id="menutext" value="media" />
     </menu>
@@ -1095,18 +1098,8 @@
       <field id="id_materi">
         <phrase id="fldcaption" value="id materi" />
       </field>
-      <field id="slide_ke">
-        <phrase id="fldcaption" value="slide ke" />
-      </field>
       <field id="live_catatan">
         <phrase id="fldcaption" value="live catatan" />
-      </field>
-      <field id="refresh">
-        <phrase id="fldcaption" value="refresh" />
-        <phrase id="fldtagvalue1" value="Ya" />
-        <phrase id="fldtagcaption1" value="Ya" />
-        <phrase id="fldtagvalue2" value="Tidak" />
-        <phrase id="fldtagcaption2" value="Tidak" />
       </field>
     </table>
     <table id="gambar">
@@ -1116,6 +1109,22 @@
       </field>
       <field id="nama_gambar">
         <phrase id="fldcaption" value="nama gambar" />
+      </field>
+    </table>
+    <table id="slide">
+      <phrase id="tblcaption" value="slide" />
+      <field id="id_slide">
+        <phrase id="fldcaption" value="id slide" />
+      </field>
+      <field id="slide">
+        <phrase id="fldcaption" value="slide" />
+      </field>
+      <field id="refresh">
+        <phrase id="fldcaption" value="refresh" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="Ya" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="Tidak" />
       </field>
     </table>
   </project>

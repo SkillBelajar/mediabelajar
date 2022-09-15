@@ -55,6 +55,7 @@ return [
     "peserta" => \DI\create(Peserta::class),
     "live" => \DI\create(Live::class),
     "gambar" => \DI\create(Gambar::class),
+    "slide" => \DI\create(Slide::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),

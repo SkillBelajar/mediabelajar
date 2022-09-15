@@ -73,9 +73,9 @@
             $id_evaluasi = $soal[0]->id_evaluasi;
             $kunci = $soal[0]->jawaban;
             /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($jenis_soal == 'Essai') {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $jenis = $jen
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if ($jenis_soal == 'Essai') {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $jenis = $jen
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */
             ?>
             <h3>Soal : </h3>
             {!! $soal_keluar !!}
@@ -98,13 +98,13 @@
                     $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_evaluasi]);
                     // dd($jb);
                     ?>
-                    @foreach ($jb as $item)
-                        <div class="alert alert-info">
-                            {{ $item->nama_peserta }}
-                            Menjawab : <br>
-                            {{ $item->jawaban_essai }}
-                        </div>
-                    @endforeach
+
+                    <div class="list-group">
+                        @foreach ($jb as $item)
+                            <a href="#" class="list-group-item"> {{ $item->nama_peserta }} -->
+                                {{ $item->jawaban_essai }} </a>
+                        @endforeach
+                    </div>
                 </div>
             @else
                 <form method="post" action="simpanabc">
@@ -125,20 +125,19 @@
                     <input type="submit" class="btn btn-info" value="Simpan Jawaban">
                 </form>
                 <br>
-                <div class="well">
-                    <h4>Yang Sudah Menjawab</h4>
-                    <?php
-                    $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_evaluasi]);
-                    // dd($jb);
-                    ?>
+
+                <h4>Yang Sudah Menjawab</h4>
+                <?php
+                $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_evaluasi]);
+                // dd($jb);
+                ?>
+                <div class="list-group">
                     @foreach ($jb as $item)
-                        <div class="alert alert-info">
-                            {{ $item->nama_peserta }}
-                            Menjawab : <br>
-                            {{ $item->jawaban_essai }}
-                        </div>
+                        <a href="#" class="list-group-item"> {{ $item->nama_peserta }} -->
+                            {{ $item->jawaban_essai }} </a>
                     @endforeach
                 </div>
+
 
             @endif
         @elseif($aksi == 'tampilkan_jawaban')
@@ -156,27 +155,21 @@
                 Soal : <br>
                 {!! $soal !!}
                 <hr>
-                @foreach ($jb as $item)
-                    @if ($item->benar == 'benar')
-                        <div class="alert alert-info">
-                            {{ $item->nama_peserta }}
-                            Menjawab : <br>
-                            {{ $item->jawaban_essai }}
-                        </div>
-                    @elseif($item->benar == '-')
-                        <div class="alert alert-info">
-                            {{ $item->nama_peserta }}
-                            Menjawab : <br>
-                            {{ $item->jawaban_essai }}
-                        </div>
-                    @else
-                        <div class="alert alert-danger">
-                            {{ $item->nama_peserta }}
-                            Menjawab : <br>
-                            {{ $item->jawaban_essai }}
-                        </div>
-                    @endif
-                @endforeach
+                <div class="list-group">
+                    @foreach ($jb as $item)
+                        @if ($item->benar == 'benar')
+                            <a href="#" class="list-group-item"> {{ $item->nama_peserta }} -->
+                                {{ $item->jawaban_essai }} Benar </a>
+                        @elseif($item->benar == '-')
+                            <a href="#" class="list-group-item"> {{ $item->nama_peserta }} -->
+                                {{ $item->jawaban_essai }} </a>
+                        @else
+                            <a href="#" class="list-group-item list-group-item-danger"> {{ $item->nama_peserta }}
+                                -->
+                                {{ $item->jawaban_essai }} Salah </a>
+                        @endif
+                    @endforeach
+                </div>
             </div>
         @endif
     </div>

@@ -139,4 +139,13 @@ class awal extends Controller
             'ip' => $ip_server
         ]);
     }
+
+    public function nilai()
+    {
+        //echo "ok"
+        $peserta = DB::select("SELECT DISTINCT(nama_peserta) as nama FROM `peserta` ORDER BY `nama` ASC");
+        return view("nilai", [
+            'peserta' => $peserta
+        ]);
+    }
 }

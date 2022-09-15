@@ -32,3 +32,4 @@ Route::post('/simpanabc', [awal::class, 'simpanabc']);
 
 
 Route::get('/gambar', [awal::class, 'gambar']);
+Route::get('/nilai', [awal::class, 'nilai']);

@@ -161,7 +161,7 @@ $CONFIG = [
 
     // General
     "UNFORMAT_YEAR" => 50, // Unformat year
-    "RANDOM_KEY" => 'P3i7IoTttdLxtyyD', // Random key for encryption
+    "RANDOM_KEY" => '4Pd6faH1yt5CkdyG', // Random key for encryption
     "ENCRYPTION_KEY" => '', // Encryption key for data protection
     "PROJECT_STYLESHEET_FILENAME" => "css/project1.css", // Project stylesheet file name
     "PROJECT_CHARSET" => "utf-8", // Project charset
@@ -380,7 +380,7 @@ $CONFIG = [
     "IMAGE_ALLOWED_FILE_EXT" => "gif,jpe,jpeg,jpg,png,bmp", // Allowed file extensions for images
     "DOWNLOAD_ALLOWED_FILE_EXT" => "csv,pdf,xls,doc,xlsx,docx", // Allowed file extensions for download (non-image)
     "ENCRYPT_FILE_PATH" => true, // Encrypt file path
-    "MAX_FILE_SIZE" => 2000000, // Max file size
+    "MAX_FILE_SIZE" => 20000000, // Max file size
     "MAX_FILE_COUNT" => 0, // Max file count
     "THUMBNAIL_DEFAULT_WIDTH" => 100, // Thumbnail default width
     "THUMBNAIL_DEFAULT_HEIGHT" => 0, // Thumbnail default height

@@ -106,7 +106,7 @@ class Live extends DbTable
         $this->waktu_soal->UsePleaseSelect = true; // Use PleaseSelect by default
         $this->waktu_soal->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
         $this->waktu_soal->Lookup = new Lookup('waktu_soal', 'live', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->waktu_soal->OptionCount = 7;
+        $this->waktu_soal->OptionCount = 8;
         $this->waktu_soal->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['waktu_soal'] = &$this->waktu_soal;
 

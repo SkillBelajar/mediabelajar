@@ -1095,8 +1095,10 @@
         <phrase id="fldtagcaption5" value="3 Menit" />
         <phrase id="fldtagvalue6" value="300" />
         <phrase id="fldtagcaption6" value="5 Menit" />
-        <phrase id="fldtagvalue7" value="" />
-        <phrase id="fldtagcaption7" value="" />
+        <phrase id="fldtagvalue7" value="999999999" />
+        <phrase id="fldtagcaption7" value="Unlimited" />
+        <phrase id="fldtagvalue8" value="" />
+        <phrase id="fldtagcaption8" value="" />
       </field>
       <field id="id_materi">
         <phrase id="fldcaption" value="id materi" />

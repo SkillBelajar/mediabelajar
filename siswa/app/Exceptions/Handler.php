@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\InvalidOrderException;
+use PharIo\Manifest\InvalidUrlException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,6 +34,5 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        //
     }
 }

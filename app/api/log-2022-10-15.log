@@ -2,3 +2,7 @@
 [2022-10-15T02:22:46.969721+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
 [2022-10-15T02:28:57.344616+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
 [2022-10-15T02:30:44.696479+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
+[2022-10-15T04:57:10.503249+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
+[2022-10-15T04:57:30.339951+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
+[2022-10-15T04:57:53.457591+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []
+[2022-10-15T04:58:21.790272+00:00] log.DEBUG: SELECT `id_materi` AS `lf`, `judul` AS `df`, '' AS `df2`, '' AS `df3`, '' AS `df4` FROM `materi` ORDER BY `id_materi` DESC [] []

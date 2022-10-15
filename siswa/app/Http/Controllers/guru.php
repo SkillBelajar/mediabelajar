@@ -28,8 +28,48 @@ class guru extends Controller
         }
     }
 
-    public function simpan_livex(Request $request $id)
+
+    public function materilive($id)
     {
-        echo $id;
+        $live = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
+        $id_materi = $live[0]->id_materi;
+        $nomor_soal = $live[0]->nomor_soal;
+        $aksi2 = $live[0]->aksi;
+
+        $soal = DB::select("SELECT * FROM `evaluasi` WHERE `id_materi` = ? ORDER BY `evaluasi`.`id_evaluasi` ASC", [$id_materi]);
+
+        return view("live", [
+            'aksi' => $aksi2,
+            'id_materi' => $id_materi,
+            'nomor_soal' => $nomor_soal,
+            'soal' => $soal
+
+        ]);
+    }
+
+    public function simpan_livex(Request $request, $id)
+    {
+
+        $aksi = $request->aksi;
+        //edit materi
+        DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);
+
+        echo "<script>window.location='" . url('/materilive') . "/" . $id . "'</script>";
+        /*
+        $live = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
+        $id_materi = $live[0]->id_materi;
+        $nomor_soal = $live[0]->nomor_soal;
+        $aksi2 = $live[0]->aksi;
+
+        $soal = DB::select("SELECT * FROM `evaluasi` WHERE `id_materi` = ? ORDER BY `evaluasi`.`id_evaluasi` ASC", [$id_materi]);
+
+        return view("live", [
+            'aksi' => $aksi2,
+            'id_materi' => $id_materi,
+            'nomor_soal' => $nomor_soal,
+            'soal' => $soal
+
+        ]);
+        */
     }
 }

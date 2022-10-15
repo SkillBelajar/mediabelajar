@@ -42,4 +42,7 @@ Route::get('/gurulive', [guru::class, 'gurulive']);
 
 $key2 = md5(date("dmyh"));
 Route::get('/livex/{id}', [guru::class, 'livex']);
+
+Route::get('/materilive/{id}', [materilive::class, 'livex']);
+
 Route::post('/livex/{id}', [guru::class, 'simpan_livex']);

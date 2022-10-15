@@ -76,4 +76,11 @@ class guru extends Controller
         ]);
         */
     }
+
+    public function simpan_materilive(Request $request)
+    {
+        $aksi = $request->aksi;
+        $soal = $request->soal;
+        dd($soal);
+    }
 }

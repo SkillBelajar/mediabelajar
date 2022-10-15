@@ -21,12 +21,13 @@
         </select>
         <br>
         <label>Soal : </label>
-        <select name="aksi" class="form-control">
+        <select name="soal" class="form-control">
             <?php
             $no = 1;
+            $no2 = 1;
             ?>
             @foreach ($soal as $item)
-                <option value="">{{ $no++ }}. {!! $item->soal !!}</option>
+                <option value="{{ $no++ }}">{{ $no2++ }}. {!! $item->soal !!}</option>
             @endforeach
         </select>
 

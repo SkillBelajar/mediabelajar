@@ -46,3 +46,5 @@ Route::get('/livex/{id}', [guru::class, 'livex']);
 Route::get('/materilive/{id}', [guru::class, 'materilive']);
 
 Route::post('/livex/{id}', [guru::class, 'simpan_livex']);
+
+Route::post('/materilive/{id}', [guru::class, 'simpan_materilive']);

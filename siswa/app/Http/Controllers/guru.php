@@ -38,11 +38,15 @@ class guru extends Controller
 
         $soal = DB::select("SELECT * FROM `evaluasi` WHERE `id_materi` = ? ORDER BY `evaluasi`.`id_evaluasi` ASC", [$id_materi]);
 
+        $materix = DB::select("SELECT * FROM `materi` WHERE `id_materi` = ?", [$id_materi]);
+        $judul = $materix[0]->judul;
+
         return view("live", [
             'aksi' => $aksi2,
             'id_materi' => $id_materi,
             'nomor_soal' => $nomor_soal,
-            'soal' => $soal
+            'soal' => $soal,
+            'judul' => $judul
 
         ]);
     }

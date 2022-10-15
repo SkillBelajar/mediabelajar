@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\awal;
+use App\Http\Controllers\guru;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,3 +37,9 @@ Route::get('/nilai', [awal::class, 'nilai']);
 
 $key = md5(date("h"));
 Route::get('/resetpeserta/' . $key . '', [awal::class, 'resetpeserta']);
+
+Route::get('/gurulive', [guru::class, 'gurulive']);
+
+$key2 = md5(date("dmyh"));
+Route::get('/livex/{id}', [guru::class, 'livex']);
+Route::post('/livex/{id}', [guru::class, 'simpan_livex']);

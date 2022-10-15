@@ -77,10 +77,13 @@ class guru extends Controller
         */
     }
 
-    public function simpan_materilive(Request $request)
+    public function simpan_materilive(Request $request, $id)
     {
         $aksi = $request->aksi;
         $soal = $request->soal;
-        dd($soal);
+        DB::update("UPDATE `live` SET `aksi` = ?, `nomor_soal` = ?, `waktu_soal` = '999999999' WHERE `live`.`id_live` = 1;", [
+            $aksi, $soal
+        ]);
+        echo "<script>window.location='" . url('/materilive') . "/" . $id . "'</script>";
     }
 }

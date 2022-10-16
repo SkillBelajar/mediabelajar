@@ -56,6 +56,7 @@ return [
     "live" => \DI\create(Live::class),
     "gambar" => \DI\create(Gambar::class),
     "slide" => \DI\create(Slide::class),
+    "video" => \DI\create(Video::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),

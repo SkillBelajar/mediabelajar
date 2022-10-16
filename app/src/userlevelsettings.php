@@ -13,7 +13,8 @@ $USER_LEVEL_PRIVS = [["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}evaluasi","-2","0"]
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}peserta","-2","0"],
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}live","-2","0"],
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}gambar","-2","0"],
-    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}slide","-2","0"]];
+    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}slide","-2","0"],
+    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}video","-2","0"]];
 // User level table info
 $USER_LEVEL_TABLES = [["evaluasi","evaluasi","evaluasi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["materi","materi","materi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
@@ -21,4 +22,5 @@ $USER_LEVEL_TABLES = [["evaluasi","evaluasi","evaluasi",true,"{08AC9454-AE1D-4A1
     ["peserta","peserta","peserta",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["live","live","live",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["gambar","gambar","gambar",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
-    ["slide","slide","slide",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"]];
+    ["slide","slide","slide",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
+    ["video","video","video",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"]];

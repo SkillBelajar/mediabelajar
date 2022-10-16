@@ -161,7 +161,7 @@ $CONFIG = [
 
     // General
     "UNFORMAT_YEAR" => 50, // Unformat year
-    "RANDOM_KEY" => '16oE4sq0C4fdOwbk', // Random key for encryption
+    "RANDOM_KEY" => 'ExNAayvxl5qvwLX4', // Random key for encryption
     "ENCRYPTION_KEY" => '', // Encryption key for data protection
     "PROJECT_STYLESHEET_FILENAME" => "css/project1.css", // Project stylesheet file name
     "PROJECT_CHARSET" => "utf-8", // Project charset
@@ -376,11 +376,11 @@ $CONFIG = [
     "UPLOAD_THUMBNAIL_FOLDER" => "thumbnail", // Temporary thumbnail folder
     "UPLOAD_THUMBNAIL_WIDTH" => 200, // Temporary thumbnail max width
     "UPLOAD_THUMBNAIL_HEIGHT" => 0, // Temporary thumbnail max height
-    "UPLOAD_ALLOWED_FILE_EXT" => "gif,jpg,jpeg,bmp,png,doc,docx,xls,xlsx,pdf,zip", // Allowed file extensions
+    "UPLOAD_ALLOWED_FILE_EXT" => "gif,jpg,jpeg,bmp,png,doc,docx,xls,xlsx,pdf,zip,mp4", // Allowed file extensions
     "IMAGE_ALLOWED_FILE_EXT" => "gif,jpe,jpeg,jpg,png,bmp", // Allowed file extensions for images
     "DOWNLOAD_ALLOWED_FILE_EXT" => "csv,pdf,xls,doc,xlsx,docx", // Allowed file extensions for download (non-image)
     "ENCRYPT_FILE_PATH" => true, // Encrypt file path
-    "MAX_FILE_SIZE" => 20000000, // Max file size
+    "MAX_FILE_SIZE" => 999999999, // Max file size
     "MAX_FILE_COUNT" => 0, // Max file count
     "THUMBNAIL_DEFAULT_WIDTH" => 100, // Thumbnail default width
     "THUMBNAIL_DEFAULT_HEIGHT" => 0, // Thumbnail default height

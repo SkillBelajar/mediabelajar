@@ -41,6 +41,7 @@ class guru extends Controller
         $materix = DB::select("SELECT * FROM `materi` WHERE `id_materi` = ?", [$id_materi]);
         $judul = $materix[0]->judul;
 
+
         return view("live", [
             'aksi' => $aksi2,
             'id_materi' => $id_materi,

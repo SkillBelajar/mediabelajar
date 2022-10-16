@@ -21,6 +21,7 @@
         </select>
         <br>
         <label>Soal : </label>
+        <a href='../../../app/EvaluasiList?showmaster=materi&fk_id_materi={{ $id_materi }}'>Tambah Soal</a>
         <select name="soal" class="form-control">
             <?php
             $no = 1;

@@ -53,7 +53,8 @@ class guru extends Controller
 
     public function simpan_livex(Request $request, $id)
     {
-
+        //hapus semua peserta
+        DB::table('peserta')->truncate();
         $aksi = $request->aksi;
         //edit materi
         DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);

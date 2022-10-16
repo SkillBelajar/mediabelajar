@@ -103,23 +103,6 @@ return function (App $app) {
         }
     );
 
-    // video
-    $app->any('/VideoList[/{id_video}]', VideoController::class . ':list')->add(PermissionMiddleware::class)->setName('VideoList-video-list'); // list
-    $app->any('/VideoAdd[/{id_video}]', VideoController::class . ':add')->add(PermissionMiddleware::class)->setName('VideoAdd-video-add'); // add
-    $app->any('/VideoView[/{id_video}]', VideoController::class . ':view')->add(PermissionMiddleware::class)->setName('VideoView-video-view'); // view
-    $app->any('/VideoEdit[/{id_video}]', VideoController::class . ':edit')->add(PermissionMiddleware::class)->setName('VideoEdit-video-edit'); // edit
-    $app->any('/VideoDelete[/{id_video}]', VideoController::class . ':delete')->add(PermissionMiddleware::class)->setName('VideoDelete-video-delete'); // delete
-    $app->group(
-        '/video',
-        function (RouteCollectorProxy $group) {
-            $group->any('/list[/{id_video}]', VideoController::class . ':list')->add(PermissionMiddleware::class)->setName('video/list-video-list-2'); // list
-            $group->any('/add[/{id_video}]', VideoController::class . ':add')->add(PermissionMiddleware::class)->setName('video/add-video-add-2'); // add
-            $group->any('/view[/{id_video}]', VideoController::class . ':view')->add(PermissionMiddleware::class)->setName('video/view-video-view-2'); // view
-            $group->any('/edit[/{id_video}]', VideoController::class . ':edit')->add(PermissionMiddleware::class)->setName('video/edit-video-edit-2'); // edit
-            $group->any('/delete[/{id_video}]', VideoController::class . ':delete')->add(PermissionMiddleware::class)->setName('video/delete-video-delete-2'); // delete
-        }
-    );
-
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
 

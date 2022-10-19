@@ -3,7 +3,7 @@
     <!--
     <div wire:poll.13s>
     -->
-    <div wire:poll.3s>
+    <div wire:poll.19s>
 
 
         <?php

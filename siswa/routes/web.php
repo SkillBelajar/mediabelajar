@@ -52,4 +52,6 @@ Route::post('/materilive/{id}', [guru::class, 'simpan_materilive']);
 
 Route::get('/video', [guru::class, 'video']);
 
-Route::get('/ulangan', [ulangan::class, 'soal']);
+Route::get('/ulangan/{no}', [ulangan::class, 'soal']);
+
+Route::post('/ulangan/{no}', [ulangan::class, 'soal2']);

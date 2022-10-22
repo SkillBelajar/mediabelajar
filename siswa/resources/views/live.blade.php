@@ -18,6 +18,7 @@
             <option value="Materi">Materi</option>
             <option value="Soal">Soal</option>
             <option value="tampilkan_jawaban">tampilkan_jawaban</option>
+            <option value="ulangan">ulangan</option>
         </select>
         <br>
         <label>Soal : </label>

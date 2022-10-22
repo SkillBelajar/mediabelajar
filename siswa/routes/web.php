@@ -55,3 +55,6 @@ Route::get('/video', [guru::class, 'video']);
 Route::get('/ulangan/{no}', [ulangan::class, 'soal']);
 
 Route::post('/ulangan/{no}', [ulangan::class, 'soal2']);
+
+
+Route::get('livescore', [ulangan::class, 'livescore']);

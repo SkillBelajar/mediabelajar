@@ -95,4 +95,10 @@ class ulangan extends Controller
             echo "<script>window.location='" . url('/ulangan') . "/1'</script>";
         }
     }
+
+    public function livescore()
+    {
+        // echo "o";
+        return view("livescore");
+    }
 }

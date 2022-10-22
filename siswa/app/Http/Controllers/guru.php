@@ -56,6 +56,7 @@ class guru extends Controller
     {
         //hapus semua peserta
         DB::table('peserta')->truncate();
+        DB::table('skor_ulangan')->truncate();
         $aksi = $request->aksi;
         //edit materi
         DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);

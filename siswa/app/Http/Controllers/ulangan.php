@@ -15,6 +15,13 @@ class ulangan extends Controller
 
         $live = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
         $id_materi = $live[0]->id_materi;
+
+        $media = DB::select("SELECT * FROM `materi` WHERE `id_materi` = ?;", [$id_materi]);
+        $id_media = $media[0]->id_media;
+        // dd($id_media);
+
+
+        //dd($id_materi);
         $aksi = $live[0]->aksi;
         // dd($aksi);
         if ($aksi != "ulangan") {
@@ -22,10 +29,10 @@ class ulangan extends Controller
         }
 
         $nomor = $no - 1;
-        $soal = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = 6 and evaluasi.jawaban != 'Essai' ORDER BY `evaluasi`.`id_evaluasi` ASC limit ?,1;", [$nomor]);
+        $soal = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai' ORDER BY `evaluasi`.`id_evaluasi` ASC limit ?,1;", [$id_media, $nomor]);
         // dd($soal);
 
-        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = 6 and evaluasi.jawaban != 'Essai';");
+        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai';", [$id_media]);
 
         $total = count($qj);
 

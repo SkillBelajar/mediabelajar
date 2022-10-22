@@ -29,6 +29,13 @@ class ulangan extends Controller
 
         $total = count($qj);
 
+        //tambahkan ke skor
+        //cek sudah ada apa belum
+        $ada_skor = DB::select("SELECT * FROM `skor_ulangan` WHERE `nama` LIKE ?", [$nama]);
+        $tas = count($ada_skor);
+        if ($tas < 1) {
+            DB::insert("INSERT INTO `skor_ulangan` (`id_skor_ulangan`, `nama`, `skor`) VALUES (NULL, ?, '0');", [$nama]);
+        }
         return view("ulangan", [
             'soal' => $soal,
             'total' => $total,
@@ -61,6 +68,26 @@ class ulangan extends Controller
         $no2 = $no + 1;
 
         $total = $request->total;
+
+        //update skor siswa
+        //ambil nilai lama
+        /*
+        $nilai_lama = DB::select("SELECT * FROM `skor_ulangan` WHERE `nama` LIKE ?", [$nama]);
+        //dd($nilai_lama);
+        $nilai_lamax = $nilai_lama[0]->skor;
+       // $nilai_baru = $nilai_lamax + $skor;
+
+        //  dd($nilai_baru);
+        //edit skor
+  */
+        $skor_total = DB::select("SELECT sum(skor) as total_nilai FROM `ulangan` WHERE `nama` LIKE ?;", [$nama]);
+        $tst = $skor_total[0]->total_nilai;
+        //dd($tst);
+        DB::update("UPDATE `skor_ulangan` SET `skor` = ? WHERE nama = ?;", [
+            $tst, $nama
+        ]);
+
+
         // dd($total);
         if ($total >= $no2) {
             echo "<script>window.location='" . url('/ulangan') . "/" . $no2  . "'</script>";

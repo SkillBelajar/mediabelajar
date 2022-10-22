@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\awal;
 use App\Http\Controllers\guru;
+use App\Http\Controllers\ulangan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,3 +51,5 @@ Route::post('/livex/{id}', [guru::class, 'simpan_livex']);
 Route::post('/materilive/{id}', [guru::class, 'simpan_materilive']);
 
 Route::get('/video', [guru::class, 'video']);
+
+Route::get('/ulangan', [ulangan::class, 'soal']);

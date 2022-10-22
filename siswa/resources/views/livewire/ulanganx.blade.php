@@ -1,7 +1,7 @@
 <div>
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
     <div wire:poll>
-        <h1>Live Scroe Nilai Siswa</h1>
+        <h1>Live Score Nilai Siswa</h1>
         <hr>
         <?php
         $live = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` DESC');

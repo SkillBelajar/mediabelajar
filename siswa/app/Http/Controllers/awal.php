@@ -29,10 +29,11 @@ class awal extends Controller
         // $request->session()->put("aksi", $aksi);
         // $request->session()->put("id_materi", $id_materi);
 
-        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`) VALUES (NULL, ?);", [$nama]);
+        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi` , `harapan`) VALUES (NULL, ? ,  '-' ,'-');", [$nama]);
 
         //  echo "<script>window.location='" . url('/') . "/" . $aksi . "/" . $id_materi . "'</script>";
-        return redirect("/mediabelajar");
+        //return redirect("/mediabelajar");
+        return redirect("/emosi30");
     }
 
     public function mediabelajar()
@@ -164,5 +165,12 @@ class awal extends Controller
         DB::table("peserta")->truncate();
         // return redirect("nilai");
         echo "<script>window.location='/mediabelajar/app/PesertaList'</script>";
+    }
+
+    public function emosi()
+    {
+        //echo "ok";
+
+        return view("emosi");
     }
 }

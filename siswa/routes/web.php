@@ -62,3 +62,5 @@ Route::get('livescore', [ulangan::class, 'livescore']);
 Route::get('/random', [randomx::class, 'random']);
 
 Route::get('/terpilih', [randomx::class, 'terpilih']);
+
+Route::get('/emosi30', [awal::class, 'emosi']);

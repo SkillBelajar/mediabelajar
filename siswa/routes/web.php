@@ -3,6 +3,7 @@
 use App\Http\Controllers\awal;
 use App\Http\Controllers\guru;
 use App\Http\Controllers\randomx;
+use App\Http\Controllers\siswa2;
 use App\Http\Controllers\ulangan;
 use Illuminate\Support\Facades\Route;
 
@@ -64,3 +65,8 @@ Route::get('/random', [randomx::class, 'random']);
 Route::get('/terpilih', [randomx::class, 'terpilih']);
 
 Route::get('/emosi30', [awal::class, 'emosi']);
+
+Route::get('/simpanemosi/{emosi}', [awal::class, 'simpanemosi']);
+
+Route::get('/kemampuan', [siswa2::class, 'kemampuan']);
+Route::post('/kemampuan', [siswa2::class, 'skemampuan']);

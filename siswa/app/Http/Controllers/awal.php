@@ -29,10 +29,14 @@ class awal extends Controller
         // $request->session()->put("aksi", $aksi);
         // $request->session()->put("id_materi", $id_materi);
 
-        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi` , `harapan`) VALUES (NULL, ? ,  '-' ,'-');", [$nama]);
+        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi` , `harapan` , `level`) VALUES (NULL, ? ,  '-' ,'-',1);", [$nama]);
 
         //  echo "<script>window.location='" . url('/') . "/" . $aksi . "/" . $id_materi . "'</script>";
         //return redirect("/mediabelajar");
+        //hapys user nbiasa
+
+        DB::delete("DELETE FROM `data_peserta` WHERE `nama` LIKE 'user'");
+
         return redirect("/emosi30");
     }
 
@@ -172,5 +176,16 @@ class awal extends Controller
         //echo "ok";
 
         return view("emosi");
+    }
+
+    public function simpanemosi($emosi)
+    {
+        //echo $emosi;
+        $nama = \Session::get('nama');
+        DB::update("UPDATE `data_peserta` SET `emosi` = ? WHERE `data_peserta`.`nama` = ? ;", [
+            $emosi, $nama
+        ]);
+
+        return redirect("/kemampuan");
     }
 }

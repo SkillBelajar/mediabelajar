@@ -61,14 +61,18 @@ class guru extends Controller
         DB::table('data_peserta')->truncate();
         $aksi = $request->aksi;
         //edit materi
+        /*
         //if aksi random
         $pesertax = DB::select("SELECT * FROM `data_peserta` ORDER BY rand() limit 1;");
         $nama_peserta = $pesertax[0]->nama;
         // dd($nama_peserta);
         DB::update("UPDATE `terpilih` SET `nama` = ?  WHERE `terpilih`.`id_terpilih` = 1;", [$nama_peserta]);
         //
-
-        DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);
+        */
+        // DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);
+        DB::update("UPDATE `live` SET `aksi` = 'Materi', `id_materi` = ? WHERE `live`.`id_live` = 1;", [$aksi]);
+        //tambah peserta acak
+        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi`, `harapan`, `level`) VALUES (NULL, 'user', 'user', 'user', '1');");
 
         echo "<script>window.location='" . url('/materilive') . "/" . $id . "'</script>";
         /*
@@ -91,6 +95,10 @@ class guru extends Controller
 
     public function simpan_materilive(Request $request, $id)
     {
+        error_reporting(0);
+
+
+
         $pesertax = DB::select("SELECT * FROM `data_peserta` ORDER BY rand() limit 1;");
         $nama_peserta = $pesertax[0]->nama;
         // dd($nama_peserta);

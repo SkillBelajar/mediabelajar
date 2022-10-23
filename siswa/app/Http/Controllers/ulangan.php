@@ -108,10 +108,24 @@ class ulangan extends Controller
     public function livescore()
     {
         // echo "o";
+        $live = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
+        $id_materi = $live[0]->id_materi;
+
+        $media = DB::select("SELECT * FROM `materi` WHERE `id_materi` = ?;", [$id_materi]);
+        $id_media = $media[0]->id_media;
+
+
+        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai';", [$id_media]);
+
+        $total = count($qj);
+        //dd($total);
+
         $md5_kunci = md5(date("dmyh"));
         $key =  $_GET["key"];
         if ($key == $md5_kunci) {
-            return view("livescore");
+            return view("livescore", [
+                'total' => $total
+            ]);
         }
     }
 }

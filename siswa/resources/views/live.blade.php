@@ -19,6 +19,8 @@
             <option value="Soal">Soal</option>
             <option value="tampilkan_jawaban">tampilkan_jawaban</option>
             <option value="ulangan">ulangan</option>
+            <option value="random">Random Peserta</option>
+            <option value="reset">Reset Peserta</option>
         </select>
         <br>
         <label>Soal : </label>

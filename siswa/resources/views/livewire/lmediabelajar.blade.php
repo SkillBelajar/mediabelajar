@@ -25,13 +25,13 @@
 
         <?php
         /*
-                                                                                                                                                                                                                                                                                                                                                                                                        //lakukan cek refresh halaman
-                                                                                                                                                                                                                                                                                                                                                                                                        $ref = \DB::select('SELECT * FROM `slide` WHERE `id_slide` = 1');
-                                                                                                                                                                                                                                                                                                                                                                                                        $status_ref = $ref[0]->refresh;
+                                                                                                                                                                                                                                                                                                                                                                                                                                        //lakukan cek refresh halaman
+                                                                                                                                                                                                                                                                                                                                                                                                                                        $ref = \DB::select('SELECT * FROM `slide` WHERE `id_slide` = 1');
+                                                                                                                                                                                                                                                                                                                                                                                                                                        $status_ref = $ref[0]->refresh;
 
-                                                                                                                                                                                                                                                                                                                                                                                                        //ambil halaman slide
-                                                                                                                                                                                                                                                                                                                                                                                                        $slide_ke = $ref[0]->slide;
-                                                                                                                                                                                                                                                                                                                                                                                                        */
+                                                                                                                                                                                                                                                                                                                                                                                                                                        //ambil halaman slide
+                                                                                                                                                                                                                                                                                                                                                                                                                                        $slide_ke = $ref[0]->slide;
+                                                                                                                                                                                                                                                                                                                                                                                                                                        */
         $status_ref = 0;
         ?>
         @if ($status_ref == 1)
@@ -71,6 +71,14 @@
         @elseif ($aksi == 'ulangan')
             <script>
                 window.location = 'ulangan/1'
+            </script>
+        @elseif ($aksi == 'random')
+            <script>
+                window.location = 'random'
+            </script>
+        @elseif ($aksi == 'reset')
+            <script>
+                window.location = '/'
             </script>
         @elseif($aksi == 'Soal')
             <!--

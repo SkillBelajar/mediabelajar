@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\awal;
 use App\Http\Controllers\guru;
+use App\Http\Controllers\randomx;
 use App\Http\Controllers\ulangan;
 use Illuminate\Support\Facades\Route;
 
@@ -58,3 +59,6 @@ Route::post('/ulangan/{no}', [ulangan::class, 'soal2']);
 
 
 Route::get('livescore', [ulangan::class, 'livescore']);
+Route::get('/random', [randomx::class, 'random']);
+
+Route::get('/terpilih', [randomx::class, 'terpilih']);

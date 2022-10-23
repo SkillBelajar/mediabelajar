@@ -2,3 +2,8 @@ Sql Untuk Soal Ulangan Harian
 
 
 SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = 6 and evaluasi.jawaban != "Essai" ORDER BY `evaluasi`.`id_evaluasi` ASC
+
+
+Random Nam
+SELECT * FROM `data_peserta`
+ORDER BY rand() limit 1;

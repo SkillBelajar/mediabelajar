@@ -37,4 +37,11 @@
         <input type="submit" class="btn btn-info" value="Tampilkan Ke Siswa">
         @csrf
     </form>
+
+    <br>
+    <hr>
+    <?php
+    $md5_kunci = md5(date('dmyh'));
+    ?>
+    <a href='{{ url('/livescore?key=' . $md5_kunci . '') }}' class="btn btn-info">Lihat Nilai Ulangan</a>
 @endsection

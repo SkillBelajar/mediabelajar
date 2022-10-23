@@ -42,12 +42,16 @@ class guru extends Controller
         $judul = $materix[0]->judul;
 
 
+        $pesertaada = DB::select("SELECT * FROM `data_peserta` ORDER BY `data_peserta`.`level` ASC");
+        // dd($pesertaada);
+
         return view("live", [
             'aksi' => $aksi2,
             'id_materi' => $id_materi,
             'nomor_soal' => $nomor_soal,
             'soal' => $soal,
-            'judul' => $judul
+            'judul' => $judul,
+            'peserta' => $pesertaada
 
         ]);
     }

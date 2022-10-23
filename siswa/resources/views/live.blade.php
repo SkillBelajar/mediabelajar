@@ -46,4 +46,54 @@
     $md5_kunci = md5(date('dmyh'));
     ?>
     <a href='{{ url('/livescore?key=' . $md5_kunci . '') }}' class="btn btn-info">Lihat Nilai Ulangan</a>
+    <hr>
+    <br>
+    <h4>Pemetaan Peserta</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Emosi</th>
+                <th>Harapan</th>
+                <th>Level</th>
+                <th>Terpilih</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach ($peserta as $item)
+                <tr>
+                    <td>{{ $item->nama }} </td>
+                    <td>{{ $item->emosi }}</td>
+                    <td>{{ $item->harapan }}</td>
+                    <td><?php
+                    $level = $item->level;
+                    if ($level == 1) {
+                        $n = 'Mudah';
+                    } elseif ($level == 2) {
+                        $n = 'Sedang';
+                    } elseif ($level == 3) {
+                        # code...
+                        $n = 'Sangat Sulit';
+                    }
+                    ?>
+                        {{ $n }}
+                    </td>
+                    <td>
+                        <?php
+                        $tp = \DB::select('SELECT * FROM `terpilih` WHERE `nama` LIKE ?', [$item->nama]);
+                        $ht = count($tp);
+
+                        ?>
+
+                        @if ($ht == 1)
+                            YA
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+
+
+        </tbody>
+    </table>
 @endsection

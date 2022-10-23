@@ -24,8 +24,10 @@ class ulangan extends Controller
         //dd($id_materi);
         $aksi = $live[0]->aksi;
         // dd($aksi);
+        $md5_kunci = md5(date("dmyh"));
+        // dd($md5_kunci);
         if ($aksi != "ulangan") {
-            echo "<script>window.location='" . url('/rekapnilai') . "'</script>";
+            echo "<script>window.location='" . url('/livescore?key=' . $md5_kunci . '') . "'</script>";
         }
 
         $nomor = $no - 1;
@@ -106,6 +108,10 @@ class ulangan extends Controller
     public function livescore()
     {
         // echo "o";
-        return view("livescore");
+        $md5_kunci = md5(date("dmyh"));
+        $key =  $_GET["key"];
+        if ($key == $md5_kunci) {
+            return view("livescore");
+        }
     }
 }

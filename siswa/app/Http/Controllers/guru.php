@@ -108,11 +108,16 @@ class guru extends Controller
         // dd($nama_peserta);
         DB::update("UPDATE `terpilih` SET `nama` = ?  WHERE `terpilih`.`id_terpilih` = 1;", [$nama_peserta]);
         //
+
+
         $aksi = $request->aksi;
         $soal = $request->soal;
         DB::update("UPDATE `live` SET `aksi` = ?, `nomor_soal` = ?, `waktu_soal` = '999999999' WHERE `live`.`id_live` = 1;", [
             $aksi, $soal
         ]);
+
+        //dd($aksi);
+
         echo "<script>window.location='" . url('/materilive') . "/" . $id . "'</script>";
     }
 }

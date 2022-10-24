@@ -32,7 +32,21 @@
                     <td>
                         <form method="POST">
                             <select name="jawaban" class="form-control" required>
-                                <option value="">==Pilih==</option>
+
+                                <?php
+                                //echo $nomor;
+                                error_reporting(0);
+                                $jb = \DB::select('SELECT * FROM `ulangan` WHERE `nama` LIKE ? AND `nomor_soal` LIKE ?', [$nama, $nomor]);
+                                $ada = count($jb);
+                                $jawabanx = $jb[0]->jawaban;
+                                //echo $ada;
+                                ?>
+                                @if ($ada == 1)
+                                    <option value="{{ $jawabanx }}">{{ $jawabanx }}</option>
+                                @else
+                                    <option value="">==Pilih==</option>
+                                @endif
+
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="C">C</option>
@@ -45,6 +59,12 @@
                             @csrf
                             <input type="hidden" value="{{ $total }}" name="total">
                         </form>
+
+                        <br>
+
+
+
+
                     </td>
 
                 </tr>
@@ -60,7 +80,20 @@
         //echo "The number is: $x <br>";
     ?>
 
-    <a href="{{ url('/ulangan') }}/{{ $x }}" class="btn btn-warning">{{ $x }}</a>
+    <?php
+    //echo $nomor;
+    error_reporting(0);
+    $jb = \DB::select('SELECT * FROM `ulangan` WHERE `nama` LIKE ? AND `nomor_soal` LIKE ?', [$nama, $x]);
+    $ada = count($jb);
+    $jawabanx = $jb[0]->jawaban;
+    //echo $ada;
+    ?>
+    @if ($ada == 1)
+        <a href="{{ url('/ulangan') }}/{{ $x }}" class="btn btn-info">{{ $x }}</a>
+    @else
+        <a href="{{ url('/ulangan') }}/{{ $x }}" class="btn btn-warning">{{ $x }}</a>
+    @endif
+
 
     <?php
     }

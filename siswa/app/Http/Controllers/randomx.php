@@ -23,7 +23,7 @@ class randomx extends Controller
         //dd($nama);
 
         //update live jadi materi
-        DB::update("UPDATE `live` SET `aksi` = 'Materi' WHERE `live`.`id_live` = 1;");
+        //  DB::update("UPDATE `live` SET `aksi` = 'Materi' WHERE `live`.`id_live` = 1;");
 
         return view("terpilih", [
             'nama' => $nama

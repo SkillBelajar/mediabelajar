@@ -19,4 +19,7 @@
         </div>
 
     </div>
+
+
+    <a href="{{ url('/mediabelajar') }}" class="btn btn-info">Kembali Ke Materi</a>
 @endsection

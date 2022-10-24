@@ -71,8 +71,8 @@ class ulangan extends Controller
             $nama, $no
         ]);
 
-        DB::insert("INSERT INTO `ulangan` (`id_ulangan`, `nama`, `nomor_soal`, `skor`) VALUES (NULL, ?, ?, ?);", [
-            $nama, $no, $skor
+        DB::insert("INSERT INTO `ulangan` (`id_ulangan`, `nama`, `nomor_soal`, `skor` , `jawaban`) VALUES (NULL, ?, ?, ? ,?);", [
+            $nama, $no, $skor, $jawaban
         ]);
         $no2 = $no + 1;
 

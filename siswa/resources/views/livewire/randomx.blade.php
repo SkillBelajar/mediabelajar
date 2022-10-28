@@ -6,7 +6,7 @@
     <div wire:poll>
         <?php
         $peserta = \DB::select("SELECT * FROM `data_peserta`
-                                                                                                                                                                                        ORDER BY rand() limit 1;");
+                                                                                                                                                                                                ORDER BY rand() limit 1;");
         $ps = $peserta[0]->nama;
         $emosi = $peserta[0]->emosi;
 

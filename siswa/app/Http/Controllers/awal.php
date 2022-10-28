@@ -29,8 +29,8 @@ class awal extends Controller
         // $request->session()->put("aksi", $aksi);
         // $request->session()->put("id_materi", $id_materi);
 
-        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi` , `harapan` , `level`) VALUES (NULL, ? ,  '-' ,'-',1);", [$nama]);
-
+        // DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi` , `harapan` , `level`) VALUES (NULL, ? ,  '-' ,'-',1);", [$nama]);
+        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi` , `harapan` , `level`, `kesiapan`, `minat`) VALUES (NULL, ? ,  '-' ,'-',1 ,'-','-');", [$nama]);
         //  echo "<script>window.location='" . url('/') . "/" . $aksi . "/" . $id_materi . "'</script>";
         //return redirect("/mediabelajar");
         //hapys user nbiasa

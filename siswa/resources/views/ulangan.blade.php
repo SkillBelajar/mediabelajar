@@ -107,16 +107,18 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>3 Tertinggi</th>
+                <th>Nomor</th>
+                <th>Nama Peserta</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` DESC LIMIT 0,3;');
-
+            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` DESC ;');
+            $no = 1;
             ?>
             @foreach ($tertinggi as $item)
                 <tr>
+                    <td>{{ $no++ }}</td>
                     <td>{{ $item->nama }}</td>
                 </tr>
             @endforeach
@@ -126,23 +128,26 @@
 
     <br>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>3 Terendah</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
+    <!--
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>3 Terendah</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
 
-            ?>
-            @foreach ($tertinggi as $item)
-                <tr>
-                    <td>{{ $item->nama }}</td>
-                </tr>
-            @endforeach
+                                    ?>
+                                    @foreach ($tertinggi as $item)
+    <tr>
+                                            <td>{{ $item->nama }}</td>
+                                        </tr>
+    @endforeach
 
-        </tbody>
-    </table>
+                                </tbody>
+                            </table>
+
+                        -->
 @endsection

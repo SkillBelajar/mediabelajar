@@ -22,10 +22,20 @@ class siswa2 extends Controller
     {
         $harapan = $request->harapan;
         $level = $request->level;
+        $kesiapan = $request->kesiapan;
+        $minat = $request->minat;
+
+        //dd($minat);
         $nama = \Session::get('nama');
 
-        DB::update("UPDATE `data_peserta` SET `harapan` = ?, `level` = ? WHERE `data_peserta`.`nama` = ?", [
-            $harapan, $level, $nama
+        /*
+        DB::update("UPDATE `data_peserta` SET `harapan` = ?, `level` = ? , `kesiapan` = ? , `minat` = ? WHERE `data_peserta`.`nama` = ?", [
+            $harapan, $level, $nama, $kesiapan, $minat
+        ]);
+        */
+
+        DB::update("UPDATE `data_peserta` SET `harapan` = ? , `level` = ? , `kesiapan` = ? , `minat` = ?  WHERE `data_peserta`.`nama` = ?", [
+            $harapan, $level, $kesiapan, $minat, $nama
         ]);
 
         return redirect("/mediabelajar");

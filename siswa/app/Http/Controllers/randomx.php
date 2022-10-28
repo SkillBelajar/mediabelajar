@@ -21,12 +21,15 @@ class randomx extends Controller
         // echo "ok";
         $nama = $peserta[0]->nama;
         //dd($nama);
+        $data_peserta = DB::select("SELECT * FROM `data_peserta` WHERE `nama` LIKE ? limit 1;", [$nama]);
+        $emosi = $data_peserta[0]->emosi;
 
         //update live jadi materi
         //  DB::update("UPDATE `live` SET `aksi` = 'Materi' WHERE `live`.`id_live` = 1;");
 
         return view("terpilih", [
-            'nama' => $nama
+            'nama' => $nama,
+            'emosi' => $emosi
         ]);
     }
 }

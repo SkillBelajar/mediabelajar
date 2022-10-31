@@ -8,8 +8,9 @@
 
 @section('isi')
     <h3>Silahkan Di Jawab Dengan Jujur ya </h3>
-    <h1>Apa yang anda ketahui tentang {{ $judul }} ?</h1>
-
+    <!--
+        <h1>Apa yang anda ketahui tentang {{ $judul }} ?</h1>
+        -->
     <hr>
     <form method="POST">
         @csrf

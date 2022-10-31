@@ -56,7 +56,8 @@
                 <th>Emosi</th>
                 <th>Harapan</th>
                 <th>Level</th>
-                <th>Terpilih</th>
+                <th>Kesiapan</th>
+                <th>Minat</th>
             </tr>
         </thead>
         <tbody>
@@ -80,15 +81,10 @@
                         {{ $n }}
                     </td>
                     <td>
-                        <?php
-                        $tp = \DB::select('SELECT * FROM `terpilih` WHERE `nama` LIKE ?', [$item->nama]);
-                        $ht = count($tp);
-
-                        ?>
-
-                        @if ($ht == 1)
-                            YA
-                        @endif
+                        {{ $item->kesiapan }}
+                    </td>
+                    <td>
+                        {{ $item->minat }}
                     </td>
                 </tr>
             @endforeach

@@ -76,7 +76,10 @@ class guru extends Controller
         // DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);
         DB::update("UPDATE `live` SET `aksi` = 'Materi', `id_materi` = ? WHERE `live`.`id_live` = 1;", [$aksi]);
         //tambah peserta acak
-        DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi`, `harapan`, `level`) VALUES (NULL, 'user', 'user', 'user', '1');");
+
+        /*nanti aktifkan
+        */
+        //  DB::insert("INSERT INTO `data_peserta` (`id_data_peserta`, `nama`, `emosi`, `harapan`, `level`) VALUES (NULL, 'user', 'user', 'user', '1');");
 
         echo "<script>window.location='" . url('/materilive') . "/" . $id . "'</script>";
         /*

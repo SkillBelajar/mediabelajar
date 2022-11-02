@@ -23,8 +23,8 @@ file_put_contents($file, $image_base64);
 //print_r($fileName);
 
 include "kn.php";
-
-mysqli_query($con, "INSERT INTO `foto` (`id_foto`, `file_name`, `nama`) VALUES (NULL, '$fileName', '-');");
+$tgl_jam = date("d-m-Y H:i:s");
+mysqli_query($con, "INSERT INTO `foto` (`id_foto`, `file_name`, `nama` , `tgl_jam`) VALUES (NULL, '$fileName', '-' , '$tgl_jam');");
 
 ?>
 

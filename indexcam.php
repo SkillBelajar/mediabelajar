@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Capture webcam image with php and jquery - ItSolutionStuff.com</title>
+    <title>Absensi Digital</title>
     <script src="jquery.min.js"></script>
     <script src="webcam.min.js"></script>
     <link rel="stylesheet" href="bootstrap.min.css" />
@@ -18,7 +18,7 @@
 <body>
 
     <div class="container">
-        <h1 class="text-center">Silahkan Anda Foto Selfie Ya .... </h1>
+        <h1 class="text-center">Silahkan Anda Foto Selfie Ya, Sebagai Absensi Digital </h1>
 
         <form method="POST" action="storeImage.php?id=<?php echo $_GET["id"] ?>">
             <div class="row">

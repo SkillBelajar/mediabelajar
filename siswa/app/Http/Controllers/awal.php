@@ -19,6 +19,10 @@ class awal extends Controller
 
     public function simpanpeserta(Request $request)
     {
+
+        $id_baru = $_GET["id"] . ".png";
+        // dd($id_baru);
+
         $nama1 = $request->nama1;
         $nama2 = $request->nama2;
 
@@ -42,6 +46,10 @@ class awal extends Controller
         //hapys user nbiasa
 
         DB::delete("DELETE FROM `data_peserta` WHERE `nama` LIKE 'user'");
+
+
+        //update foto
+        DB::update("UPDATE `foto` SET `nama` = ? WHERE `foto`.`file_name` = ?;", [$nama, $id_baru]);
 
         return redirect("/emosi30");
     }

@@ -10,12 +10,12 @@
     <h2>Silahkan Isikan Nama Anda, Untuk Memulai Media Belajar</h2>
     <form method="POST">
         <!--
-                                                                                                                <label>Nama Anda</label>
+                                                                                                                                <label>Nama Anda</label>
 
-                                                                                                <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
+                                                                                                                <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
 
-                                                                                    <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
-                                                                                    -->
+                                                                                                    <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
+                                                                                                    -->
 
         <label>Nama Anda </label>
         <select class="js-example-basic-single" name="nama1">
@@ -52,4 +52,16 @@
         <input type="submit" class="btn btn-info" value="Simpan Nama">
         @csrf
     </form>
+
+    <br>
+    <hr>
+    <?php
+    $id = $_GET['id'] . '.png';
+    $foto = \DB::select('SELECT * FROM `foto` WHERE `file_name` LIKE ?', [$id]);
+    $file = $foto[0]->file_name;
+
+    ?>
+
+
+    <img src="../../upload/{{ $file }}" class="img-rounded">
 @endsection

@@ -11,12 +11,18 @@ class awal extends Controller
     //
     public function awal()
     {
-        return view("awal");
+        $siswa = DB::select("SELECT * FROM `siswa` ORDER BY `siswa`.`kelas` ASC");
+        return view("awal", [
+            'siswa' => $siswa
+        ]);
     }
 
     public function simpanpeserta(Request $request)
     {
-        $nama = $request->nama;
+        $nama1 = $request->nama1;
+        $nama2 = $request->nama2;
+
+        $nama = $nama1 . " - " . $nama2;
         //echo $nama;
         //buat session laravel
         $request->session()->put("nama", $nama);

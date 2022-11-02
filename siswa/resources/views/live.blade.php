@@ -58,6 +58,7 @@
                 <th>Level</th>
                 <th>Kesiapan</th>
                 <th>Minat</th>
+                <th>Hapus</th>
             </tr>
         </thead>
         <tbody>
@@ -86,10 +87,28 @@
                     <td>
                         {{ $item->minat }}
                     </td>
+                    <td><a href='{{ url('/hapuspeserta') }}/{{ $item->id_data_peserta }}' class="btn btn-danger">Hapus</a>
+                    </td>
                 </tr>
+
+                <?php
+                //simpan ke database minat siswa
+                $tgl = date('d-m-Y');
+
+                //cek ada
+                $ada = \DB::select('SELECT * FROM `minat_siswa` WHERE `nama` LIKE ? AND `tgl` LIKE ?', [$item->nama, $tgl]);
+                $ax = count($ada);
+
+                if ($ax < 1) {
+                    \DB::insert('INSERT INTO `minat_siswa` (`id_minat_siswa`, `nama`, `emosi`, `harapan`, `level`, `kesiapan`, `minat`, `tgl`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);', [$item->nama, $item->emosi, $item->harapan, $item->level, $item->kesiapan, $item->minat, $tgl]);
+                }
+                ?>
             @endforeach
 
 
         </tbody>
     </table>
+    <!--
+                                        <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
+                                    -->
 @endsection

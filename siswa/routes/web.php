@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\awal;
 use App\Http\Controllers\guru;
+use App\Http\Controllers\gurulive2;
 use App\Http\Controllers\randomx;
 use App\Http\Controllers\siswa2;
 use App\Http\Controllers\ulangan;
@@ -70,3 +71,5 @@ Route::get('/simpanemosi/{emosi}', [awal::class, 'simpanemosi']);
 
 Route::get('/kemampuan', [siswa2::class, 'kemampuan']);
 Route::post('/kemampuan', [siswa2::class, 'skemampuan']);
+
+Route::get('/hapuspeserta/{id_peserta}', [gurulive2::class, 'hapuspeserta']);

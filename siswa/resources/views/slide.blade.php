@@ -107,8 +107,16 @@
                             <!-- Modal content-->
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">{{ $item->judul }}</h4>
+                                    <div class="row">
+                                        <div class="col-sm-4"><img src="../../../app/files/{{ $logo }}"
+                                                class="img-rounded" width="30" height="30"><small> |
+                                                {{ $tempat_kerja }} | {{ $nama_guru }}</small></div>
+                                        <div class="col-sm-8"><button type="button" class="close"
+                                                data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">{{ $item->judul }}</h4>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <div class="modal-body">
                                     <object data="/mediabelajar/app/files/{{ $item->file_pdf }}#page=1"
@@ -138,10 +146,20 @@
                             <!-- Modal content-->
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">{{ $item->judul }}</h4>
+                                    <div class="row">
+                                        <div class="col-sm-4"><img src="../../../app/files/{{ $logo }}"
+                                                class="img-rounded" width="30" height="30"><small> |
+                                                {{ $tempat_kerja }} | {{ $nama_guru }}</small></div>
+                                        <div class="col-sm-8"><button type="button" class="close"
+                                                data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">{{ $item->judul }}</h4>
+                                        </div>
+                                    </div>
                                 </div>
-                                {!! $item->isi !!}
+                                <div class="container">
+                                    <div class="row"> {!! $item->isi !!}
+                                    </div>
+                                </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                 </div>

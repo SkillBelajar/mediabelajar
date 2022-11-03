@@ -74,7 +74,7 @@ class guru extends Controller
         //
         */
         // DB::update("UPDATE `live` SET `id_materi` = ?  WHERE `live`.`id_live` = 1;", [$aksi]);
-        DB::update("UPDATE `live` SET `aksi` = 'Materi', `id_materi` = ? WHERE `live`.`id_live` = 1;", [$aksi]);
+        DB::update("UPDATE `live` SET `aksi` = 'rencana_pembelajaran', `id_materi` = ? WHERE `live`.`id_live` = 1;", [$aksi]);
         //tambah peserta acak
 
         /*nanti aktifkan

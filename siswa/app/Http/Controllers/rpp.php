@@ -31,6 +31,12 @@ class rpp extends Controller
         //materi semua
         $semua = DB::select("SELECT * FROM `rencana_pembelajaran` WHERE `id_materi` = ? ORDER BY `rencana_pembelajaran`.`id_rencana_pembelajaran` ASC", [$id_materi]);
 
+
+        //pdf mater
+        $pdf_materi = DB::select("SELECT * FROM `pdf_materi` WHERE `id_materi` = ? ORDER BY `pdf_materi`.`id_pdf_materi` ASC", [$id_materi]);
+
+        $artikel = DB::select("SELECT * FROM `artikel_materi` WHERE `id_materi` = ? ORDER BY `artikel_materi`.`id_artikel_materi` ASC", [$id_materi]);
+
         return view("slide", [
             'slide' => $rpp,
             'nama_guru' => $nama_guru,
@@ -38,7 +44,11 @@ class rpp extends Controller
             'logo' => $logo,
             'judul_materi' => $judul_materi,
             'semua' => $semua,
-            'kode' => $slide
+            'kode' => $slide,
+            'pdf_materi' => $pdf_materi,
+            'artikel' => $artikel
         ]);
     }
+
+    //public function
 }

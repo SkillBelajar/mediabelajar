@@ -80,7 +80,7 @@ $Page->showMessage();
     if (in_array("materi", explode(",", $Page->getCurrentDetailTable())) && $materi->DetailView) {
 ?>
 <?php if ($Page->getCurrentDetailTable() != "") { ?>
-<h4 class="ew-detail-caption"><?= $Language->tablePhrase("materi", "TblCaption") ?></h4>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("materi", "TblCaption") ?>&nbsp;<?= str_replace("%c", $Page->materi_Count, $Language->phrase("DetailCount")) ?></h4>
 <?php } ?>
 <?php include_once "MateriGrid.php" ?>
 <?php } ?>

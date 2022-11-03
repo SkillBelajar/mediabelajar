@@ -223,6 +223,10 @@ class Materi extends DbTable
             $detailUrl = Container("evaluasi")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
             $detailUrl .= "&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue);
         }
+        if ($this->getCurrentDetailTable() == "rencana_pembelajaran") {
+            $detailUrl = Container("rencana_pembelajaran")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
+            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue);
+        }
         if ($detailUrl == "") {
             $detailUrl = "MateriList";
         }

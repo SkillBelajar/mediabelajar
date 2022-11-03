@@ -103,6 +103,142 @@ return function (App $app) {
         }
     );
 
+    // data_peserta
+    $app->any('/DataPesertaList[/{id_data_peserta}]', DataPesertaController::class . ':list')->add(PermissionMiddleware::class)->setName('DataPesertaList-data_peserta-list'); // list
+    $app->any('/DataPesertaAdd[/{id_data_peserta}]', DataPesertaController::class . ':add')->add(PermissionMiddleware::class)->setName('DataPesertaAdd-data_peserta-add'); // add
+    $app->any('/DataPesertaView[/{id_data_peserta}]', DataPesertaController::class . ':view')->add(PermissionMiddleware::class)->setName('DataPesertaView-data_peserta-view'); // view
+    $app->any('/DataPesertaEdit[/{id_data_peserta}]', DataPesertaController::class . ':edit')->add(PermissionMiddleware::class)->setName('DataPesertaEdit-data_peserta-edit'); // edit
+    $app->any('/DataPesertaDelete[/{id_data_peserta}]', DataPesertaController::class . ':delete')->add(PermissionMiddleware::class)->setName('DataPesertaDelete-data_peserta-delete'); // delete
+    $app->group(
+        '/data_peserta',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_data_peserta}]', DataPesertaController::class . ':list')->add(PermissionMiddleware::class)->setName('data_peserta/list-data_peserta-list-2'); // list
+            $group->any('/add[/{id_data_peserta}]', DataPesertaController::class . ':add')->add(PermissionMiddleware::class)->setName('data_peserta/add-data_peserta-add-2'); // add
+            $group->any('/view[/{id_data_peserta}]', DataPesertaController::class . ':view')->add(PermissionMiddleware::class)->setName('data_peserta/view-data_peserta-view-2'); // view
+            $group->any('/edit[/{id_data_peserta}]', DataPesertaController::class . ':edit')->add(PermissionMiddleware::class)->setName('data_peserta/edit-data_peserta-edit-2'); // edit
+            $group->any('/delete[/{id_data_peserta}]', DataPesertaController::class . ':delete')->add(PermissionMiddleware::class)->setName('data_peserta/delete-data_peserta-delete-2'); // delete
+        }
+    );
+
+    // history_ulangan
+    $app->any('/HistoryUlanganList[/{id_history_ulangan}]', HistoryUlanganController::class . ':list')->add(PermissionMiddleware::class)->setName('HistoryUlanganList-history_ulangan-list'); // list
+    $app->any('/HistoryUlanganAdd[/{id_history_ulangan}]', HistoryUlanganController::class . ':add')->add(PermissionMiddleware::class)->setName('HistoryUlanganAdd-history_ulangan-add'); // add
+    $app->any('/HistoryUlanganView[/{id_history_ulangan}]', HistoryUlanganController::class . ':view')->add(PermissionMiddleware::class)->setName('HistoryUlanganView-history_ulangan-view'); // view
+    $app->any('/HistoryUlanganEdit[/{id_history_ulangan}]', HistoryUlanganController::class . ':edit')->add(PermissionMiddleware::class)->setName('HistoryUlanganEdit-history_ulangan-edit'); // edit
+    $app->any('/HistoryUlanganDelete[/{id_history_ulangan}]', HistoryUlanganController::class . ':delete')->add(PermissionMiddleware::class)->setName('HistoryUlanganDelete-history_ulangan-delete'); // delete
+    $app->group(
+        '/history_ulangan',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_history_ulangan}]', HistoryUlanganController::class . ':list')->add(PermissionMiddleware::class)->setName('history_ulangan/list-history_ulangan-list-2'); // list
+            $group->any('/add[/{id_history_ulangan}]', HistoryUlanganController::class . ':add')->add(PermissionMiddleware::class)->setName('history_ulangan/add-history_ulangan-add-2'); // add
+            $group->any('/view[/{id_history_ulangan}]', HistoryUlanganController::class . ':view')->add(PermissionMiddleware::class)->setName('history_ulangan/view-history_ulangan-view-2'); // view
+            $group->any('/edit[/{id_history_ulangan}]', HistoryUlanganController::class . ':edit')->add(PermissionMiddleware::class)->setName('history_ulangan/edit-history_ulangan-edit-2'); // edit
+            $group->any('/delete[/{id_history_ulangan}]', HistoryUlanganController::class . ':delete')->add(PermissionMiddleware::class)->setName('history_ulangan/delete-history_ulangan-delete-2'); // delete
+        }
+    );
+
+    // indikator_rencana_belajar
+    $app->any('/IndikatorRencanaBelajarList[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':list')->add(PermissionMiddleware::class)->setName('IndikatorRencanaBelajarList-indikator_rencana_belajar-list'); // list
+    $app->any('/IndikatorRencanaBelajarAdd[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':add')->add(PermissionMiddleware::class)->setName('IndikatorRencanaBelajarAdd-indikator_rencana_belajar-add'); // add
+    $app->any('/IndikatorRencanaBelajarView[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':view')->add(PermissionMiddleware::class)->setName('IndikatorRencanaBelajarView-indikator_rencana_belajar-view'); // view
+    $app->any('/IndikatorRencanaBelajarEdit[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':edit')->add(PermissionMiddleware::class)->setName('IndikatorRencanaBelajarEdit-indikator_rencana_belajar-edit'); // edit
+    $app->any('/IndikatorRencanaBelajarDelete[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':delete')->add(PermissionMiddleware::class)->setName('IndikatorRencanaBelajarDelete-indikator_rencana_belajar-delete'); // delete
+    $app->group(
+        '/indikator_rencana_belajar',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':list')->add(PermissionMiddleware::class)->setName('indikator_rencana_belajar/list-indikator_rencana_belajar-list-2'); // list
+            $group->any('/add[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':add')->add(PermissionMiddleware::class)->setName('indikator_rencana_belajar/add-indikator_rencana_belajar-add-2'); // add
+            $group->any('/view[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':view')->add(PermissionMiddleware::class)->setName('indikator_rencana_belajar/view-indikator_rencana_belajar-view-2'); // view
+            $group->any('/edit[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':edit')->add(PermissionMiddleware::class)->setName('indikator_rencana_belajar/edit-indikator_rencana_belajar-edit-2'); // edit
+            $group->any('/delete[/{id_indikator}]', IndikatorRencanaBelajarController::class . ':delete')->add(PermissionMiddleware::class)->setName('indikator_rencana_belajar/delete-indikator_rencana_belajar-delete-2'); // delete
+        }
+    );
+
+    // minat_siswa
+    $app->any('/MinatSiswaList[/{id_minat_siswa}]', MinatSiswaController::class . ':list')->add(PermissionMiddleware::class)->setName('MinatSiswaList-minat_siswa-list'); // list
+    $app->any('/MinatSiswaAdd[/{id_minat_siswa}]', MinatSiswaController::class . ':add')->add(PermissionMiddleware::class)->setName('MinatSiswaAdd-minat_siswa-add'); // add
+    $app->any('/MinatSiswaView[/{id_minat_siswa}]', MinatSiswaController::class . ':view')->add(PermissionMiddleware::class)->setName('MinatSiswaView-minat_siswa-view'); // view
+    $app->any('/MinatSiswaEdit[/{id_minat_siswa}]', MinatSiswaController::class . ':edit')->add(PermissionMiddleware::class)->setName('MinatSiswaEdit-minat_siswa-edit'); // edit
+    $app->any('/MinatSiswaDelete[/{id_minat_siswa}]', MinatSiswaController::class . ':delete')->add(PermissionMiddleware::class)->setName('MinatSiswaDelete-minat_siswa-delete'); // delete
+    $app->group(
+        '/minat_siswa',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_minat_siswa}]', MinatSiswaController::class . ':list')->add(PermissionMiddleware::class)->setName('minat_siswa/list-minat_siswa-list-2'); // list
+            $group->any('/add[/{id_minat_siswa}]', MinatSiswaController::class . ':add')->add(PermissionMiddleware::class)->setName('minat_siswa/add-minat_siswa-add-2'); // add
+            $group->any('/view[/{id_minat_siswa}]', MinatSiswaController::class . ':view')->add(PermissionMiddleware::class)->setName('minat_siswa/view-minat_siswa-view-2'); // view
+            $group->any('/edit[/{id_minat_siswa}]', MinatSiswaController::class . ':edit')->add(PermissionMiddleware::class)->setName('minat_siswa/edit-minat_siswa-edit-2'); // edit
+            $group->any('/delete[/{id_minat_siswa}]', MinatSiswaController::class . ':delete')->add(PermissionMiddleware::class)->setName('minat_siswa/delete-minat_siswa-delete-2'); // delete
+        }
+    );
+
+    // rencana_pembelajaran
+    $app->any('/RencanaPembelajaranList[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':list')->add(PermissionMiddleware::class)->setName('RencanaPembelajaranList-rencana_pembelajaran-list'); // list
+    $app->any('/RencanaPembelajaranAdd[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':add')->add(PermissionMiddleware::class)->setName('RencanaPembelajaranAdd-rencana_pembelajaran-add'); // add
+    $app->any('/RencanaPembelajaranView[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':view')->add(PermissionMiddleware::class)->setName('RencanaPembelajaranView-rencana_pembelajaran-view'); // view
+    $app->any('/RencanaPembelajaranEdit[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':edit')->add(PermissionMiddleware::class)->setName('RencanaPembelajaranEdit-rencana_pembelajaran-edit'); // edit
+    $app->any('/RencanaPembelajaranDelete[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':delete')->add(PermissionMiddleware::class)->setName('RencanaPembelajaranDelete-rencana_pembelajaran-delete'); // delete
+    $app->group(
+        '/rencana_pembelajaran',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':list')->add(PermissionMiddleware::class)->setName('rencana_pembelajaran/list-rencana_pembelajaran-list-2'); // list
+            $group->any('/add[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':add')->add(PermissionMiddleware::class)->setName('rencana_pembelajaran/add-rencana_pembelajaran-add-2'); // add
+            $group->any('/view[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':view')->add(PermissionMiddleware::class)->setName('rencana_pembelajaran/view-rencana_pembelajaran-view-2'); // view
+            $group->any('/edit[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':edit')->add(PermissionMiddleware::class)->setName('rencana_pembelajaran/edit-rencana_pembelajaran-edit-2'); // edit
+            $group->any('/delete[/{id_rencana_pembelajaran}]', RencanaPembelajaranController::class . ':delete')->add(PermissionMiddleware::class)->setName('rencana_pembelajaran/delete-rencana_pembelajaran-delete-2'); // delete
+        }
+    );
+
+    // siswa
+    $app->any('/SiswaList[/{id_siswa}]', SiswaController::class . ':list')->add(PermissionMiddleware::class)->setName('SiswaList-siswa-list'); // list
+    $app->any('/SiswaAdd[/{id_siswa}]', SiswaController::class . ':add')->add(PermissionMiddleware::class)->setName('SiswaAdd-siswa-add'); // add
+    $app->any('/SiswaView[/{id_siswa}]', SiswaController::class . ':view')->add(PermissionMiddleware::class)->setName('SiswaView-siswa-view'); // view
+    $app->any('/SiswaEdit[/{id_siswa}]', SiswaController::class . ':edit')->add(PermissionMiddleware::class)->setName('SiswaEdit-siswa-edit'); // edit
+    $app->any('/SiswaDelete[/{id_siswa}]', SiswaController::class . ':delete')->add(PermissionMiddleware::class)->setName('SiswaDelete-siswa-delete'); // delete
+    $app->group(
+        '/siswa',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_siswa}]', SiswaController::class . ':list')->add(PermissionMiddleware::class)->setName('siswa/list-siswa-list-2'); // list
+            $group->any('/add[/{id_siswa}]', SiswaController::class . ':add')->add(PermissionMiddleware::class)->setName('siswa/add-siswa-add-2'); // add
+            $group->any('/view[/{id_siswa}]', SiswaController::class . ':view')->add(PermissionMiddleware::class)->setName('siswa/view-siswa-view-2'); // view
+            $group->any('/edit[/{id_siswa}]', SiswaController::class . ':edit')->add(PermissionMiddleware::class)->setName('siswa/edit-siswa-edit-2'); // edit
+            $group->any('/delete[/{id_siswa}]', SiswaController::class . ':delete')->add(PermissionMiddleware::class)->setName('siswa/delete-siswa-delete-2'); // delete
+        }
+    );
+
+    // skor_ulangan
+    $app->any('/SkorUlanganList[/{id_skor_ulangan}]', SkorUlanganController::class . ':list')->add(PermissionMiddleware::class)->setName('SkorUlanganList-skor_ulangan-list'); // list
+    $app->any('/SkorUlanganAdd[/{id_skor_ulangan}]', SkorUlanganController::class . ':add')->add(PermissionMiddleware::class)->setName('SkorUlanganAdd-skor_ulangan-add'); // add
+    $app->any('/SkorUlanganView[/{id_skor_ulangan}]', SkorUlanganController::class . ':view')->add(PermissionMiddleware::class)->setName('SkorUlanganView-skor_ulangan-view'); // view
+    $app->any('/SkorUlanganEdit[/{id_skor_ulangan}]', SkorUlanganController::class . ':edit')->add(PermissionMiddleware::class)->setName('SkorUlanganEdit-skor_ulangan-edit'); // edit
+    $app->any('/SkorUlanganDelete[/{id_skor_ulangan}]', SkorUlanganController::class . ':delete')->add(PermissionMiddleware::class)->setName('SkorUlanganDelete-skor_ulangan-delete'); // delete
+    $app->group(
+        '/skor_ulangan',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_skor_ulangan}]', SkorUlanganController::class . ':list')->add(PermissionMiddleware::class)->setName('skor_ulangan/list-skor_ulangan-list-2'); // list
+            $group->any('/add[/{id_skor_ulangan}]', SkorUlanganController::class . ':add')->add(PermissionMiddleware::class)->setName('skor_ulangan/add-skor_ulangan-add-2'); // add
+            $group->any('/view[/{id_skor_ulangan}]', SkorUlanganController::class . ':view')->add(PermissionMiddleware::class)->setName('skor_ulangan/view-skor_ulangan-view-2'); // view
+            $group->any('/edit[/{id_skor_ulangan}]', SkorUlanganController::class . ':edit')->add(PermissionMiddleware::class)->setName('skor_ulangan/edit-skor_ulangan-edit-2'); // edit
+            $group->any('/delete[/{id_skor_ulangan}]', SkorUlanganController::class . ':delete')->add(PermissionMiddleware::class)->setName('skor_ulangan/delete-skor_ulangan-delete-2'); // delete
+        }
+    );
+
+    // ulangan
+    $app->any('/UlanganList[/{id_ulangan}]', UlanganController::class . ':list')->add(PermissionMiddleware::class)->setName('UlanganList-ulangan-list'); // list
+    $app->any('/UlanganAdd[/{id_ulangan}]', UlanganController::class . ':add')->add(PermissionMiddleware::class)->setName('UlanganAdd-ulangan-add'); // add
+    $app->any('/UlanganView[/{id_ulangan}]', UlanganController::class . ':view')->add(PermissionMiddleware::class)->setName('UlanganView-ulangan-view'); // view
+    $app->any('/UlanganEdit[/{id_ulangan}]', UlanganController::class . ':edit')->add(PermissionMiddleware::class)->setName('UlanganEdit-ulangan-edit'); // edit
+    $app->any('/UlanganDelete[/{id_ulangan}]', UlanganController::class . ':delete')->add(PermissionMiddleware::class)->setName('UlanganDelete-ulangan-delete'); // delete
+    $app->group(
+        '/ulangan',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_ulangan}]', UlanganController::class . ':list')->add(PermissionMiddleware::class)->setName('ulangan/list-ulangan-list-2'); // list
+            $group->any('/add[/{id_ulangan}]', UlanganController::class . ':add')->add(PermissionMiddleware::class)->setName('ulangan/add-ulangan-add-2'); // add
+            $group->any('/view[/{id_ulangan}]', UlanganController::class . ':view')->add(PermissionMiddleware::class)->setName('ulangan/view-ulangan-view-2'); // view
+            $group->any('/edit[/{id_ulangan}]', UlanganController::class . ':edit')->add(PermissionMiddleware::class)->setName('ulangan/edit-ulangan-edit-2'); // edit
+            $group->any('/delete[/{id_ulangan}]', UlanganController::class . ':delete')->add(PermissionMiddleware::class)->setName('ulangan/delete-ulangan-delete-2'); // delete
+        }
+    );
+
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
 

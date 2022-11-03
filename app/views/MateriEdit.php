@@ -231,6 +231,14 @@ loadjs.ready(["fmateriedit", "editor"], function() {
 <?php } ?>
 <?php include_once "EvaluasiGrid.php" ?>
 <?php } ?>
+<?php
+    if (in_array("rencana_pembelajaran", explode(",", $Page->getCurrentDetailTable())) && $rencana_pembelajaran->DetailEdit) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("rencana_pembelajaran", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "RencanaPembelajaranGrid.php" ?>
+<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <div class="form-group row"><!-- buttons .form-group -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->

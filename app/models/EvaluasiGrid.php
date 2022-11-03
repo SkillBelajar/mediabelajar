@@ -649,6 +649,7 @@ class EvaluasiGrid extends Evaluasi
     public $MultiSelectKey;
     public $Command;
     public $RestoreSearch = false;
+            public $peserta_Count;
     public $DetailPages;
     public $OldRecordset;
 

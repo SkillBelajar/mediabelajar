@@ -27,9 +27,17 @@ class randomx extends Controller
         //update live jadi materi
         //  DB::update("UPDATE `live` SET `aksi` = 'Materi' WHERE `live`.`id_live` = 1;");
 
+        //ambil foto peserta
+        $foto = DB::select("SELECT * FROM `foto` WHERE `nama` LIKE ? ORDER BY `foto`.`id_foto` DESC limit 1", [$nama]);
+        $ft = $foto[0]->file_name;
+        // dd($ft);
+        //dd($ft);
+
+
         return view("terpilih", [
             'nama' => $nama,
-            'emosi' => $emosi
+            'emosi' => $emosi,
+            'foto' => $ft
         ]);
     }
 }

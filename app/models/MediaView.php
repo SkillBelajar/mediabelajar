@@ -665,6 +665,7 @@ class MediaView extends Media
     public $RecordRange = 10;
     public $RecKey = [];
     public $IsModal = false;
+    public $materi_Count;
 
     /**
      * Page run
@@ -849,6 +850,7 @@ class MediaView extends Media
         // "detail_materi"
         $item = &$option->add("detail_materi");
         $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("materi", "TblCaption");
+        $body .= "&nbsp;" . str_replace("%c", $this->materi_Count, $Language->phrase("DetailCount"));
         $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("MateriList?" . Config("TABLE_SHOW_MASTER") . "=media&" . GetForeignKeyUrl("fk_id_media", $this->id_media->CurrentValue) . "")) . "\">" . $body . "</a>";
         $links = "";
         $detailPageObj = Container("MateriGrid");
@@ -984,6 +986,12 @@ class MediaView extends Media
         $this->id_media->setDbValue($row['id_media']);
         $this->nama_media->setDbValue($row['nama_media']);
         $this->aktif->setDbValue($row['aktif']);
+        $detailTbl = Container("materi");
+        $detailFilter = $detailTbl->sqlDetailFilter_media();
+        $detailFilter = str_replace("@id_media@", AdjustSql($this->id_media->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("media");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->materi_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values

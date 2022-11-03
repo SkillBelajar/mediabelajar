@@ -52,7 +52,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Nama</th>
+                <th> Nama
+                </th>
                 <th>Emosi</th>
                 <th>Harapan</th>
                 <th>Level</th>
@@ -65,7 +66,13 @@
 
             @foreach ($peserta as $item)
                 <tr>
-                    <td>{{ $item->nama }} </td>
+                    <td>{{ $item->nama }} <br>
+                        <?php
+                        $ft = \DB::select('SELECT * FROM `foto` WHERE `nama` LIKE ?', [$item->nama]);
+                        $ftx = $ft[0]->file_name;
+                        ?>
+                        <img src="../../../upload/{{ $ftx }}" class="img-rounded" width="90" height="90">
+                    </td>
                     <td>{{ $item->emosi }}</td>
                     <td>{{ $item->harapan }}</td>
                     <td><?php
@@ -109,6 +116,6 @@
         </tbody>
     </table>
     <!--
-                                        <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
-                                    -->
+                                                                                <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
+                                                                            -->
 @endsection

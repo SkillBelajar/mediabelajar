@@ -665,6 +665,8 @@ class MateriView extends Materi
     public $RecordRange = 10;
     public $RecKey = [];
     public $IsModal = false;
+    public $evaluasi_Count;
+    public $rencana_pembelajaran_Count;
 
     /**
      * Page run
@@ -855,6 +857,7 @@ class MateriView extends Materi
         // "detail_evaluasi"
         $item = &$option->add("detail_evaluasi");
         $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("evaluasi", "TblCaption");
+        $body .= "&nbsp;" . str_replace("%c", $this->evaluasi_Count, $Language->phrase("DetailCount"));
         $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("EvaluasiList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "")) . "\">" . $body . "</a>";
         $links = "";
         $detailPageObj = Container("EvaluasiGrid");
@@ -891,6 +894,51 @@ class MateriView extends Materi
                 $detailTableLink .= ",";
             }
             $detailTableLink .= "evaluasi";
+        }
+        if ($this->ShowMultipleDetails) {
+            $item->Visible = false;
+        }
+
+        // "detail_rencana_pembelajaran"
+        $item = &$option->add("detail_rencana_pembelajaran");
+        $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("rencana_pembelajaran", "TblCaption");
+        $body .= "&nbsp;" . str_replace("%c", $this->rencana_pembelajaran_Count, $Language->phrase("DetailCount"));
+        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("RencanaPembelajaranList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "")) . "\">" . $body . "</a>";
+        $links = "";
+        $detailPageObj = Container("RencanaPembelajaranGrid");
+        if ($detailPageObj->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'materi')) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
+            if ($detailViewTblVar != "") {
+                $detailViewTblVar .= ",";
+            }
+            $detailViewTblVar .= "rencana_pembelajaran";
+        }
+        if ($detailPageObj->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'materi')) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
+            if ($detailEditTblVar != "") {
+                $detailEditTblVar .= ",";
+            }
+            $detailEditTblVar .= "rencana_pembelajaran";
+        }
+        if ($detailPageObj->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'materi')) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
+            if ($detailCopyTblVar != "") {
+                $detailCopyTblVar .= ",";
+            }
+            $detailCopyTblVar .= "rencana_pembelajaran";
+        }
+        if ($links != "") {
+            $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
+            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
+        }
+        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
+        $item->Body = $body;
+        $item->Visible = $Security->allowList(CurrentProjectID() . 'rencana_pembelajaran');
+        if ($item->Visible) {
+            if ($detailTableLink != "") {
+                $detailTableLink .= ",";
+            }
+            $detailTableLink .= "rencana_pembelajaran";
         }
         if ($this->ShowMultipleDetails) {
             $item->Visible = false;
@@ -993,6 +1041,18 @@ class MateriView extends Materi
         $this->isi->setDbValue($row['isi']);
         $this->pdf->Upload->DbValue = $row['pdf'];
         $this->pdf->setDbValue($this->pdf->Upload->DbValue);
+        $detailTbl = Container("evaluasi");
+        $detailFilter = $detailTbl->sqlDetailFilter_materi();
+        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("materi");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->evaluasi_Count = $detailTbl->loadRecordCount($detailFilter);
+        $detailTbl = Container("rencana_pembelajaran");
+        $detailFilter = $detailTbl->sqlDetailFilter_materi();
+        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("materi");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->rencana_pembelajaran_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values
@@ -1202,6 +1262,20 @@ class MateriView extends Materi
                     $detailPageObj->id_materi->IsDetailKey = true;
                     $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
                     $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
+                }
+            }
+            if (in_array("rencana_pembelajaran", $detailTblVar)) {
+                $detailPageObj = Container("RencanaPembelajaranGrid");
+                if ($detailPageObj->DetailView) {
+                    $detailPageObj->CurrentMode = "view";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_materi->IsDetailKey = true;
+                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
+                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
+                    $detailPageObj->id_indikator->setSessionValue(""); // Clear session key
                 }
             }
         }

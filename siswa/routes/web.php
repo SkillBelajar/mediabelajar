@@ -1,4 +1,5 @@
 <?php
+error_reporting(0);
 
 use App\Http\Controllers\awal;
 use App\Http\Controllers\guru;

@@ -649,6 +649,8 @@ class MateriGrid extends Materi
     public $MultiSelectKey;
     public $Command;
     public $RestoreSearch = false;
+            public $evaluasi_Count;
+            public $rencana_pembelajaran_Count;
     public $DetailPages;
     public $OldRecordset;
 

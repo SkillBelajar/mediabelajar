@@ -710,6 +710,8 @@ class MateriList extends Materi
     public $MultiSelectKey;
     public $Command;
     public $RestoreSearch = false;
+            public $evaluasi_Count;
+            public $rencana_pembelajaran_Count;
     public $DetailPages;
     public $OldRecordset;
 
@@ -1419,6 +1421,13 @@ class MateriList extends Materi
         $item->OnLeft = false;
         $item->ShowInButtonGroup = false;
 
+        // "detail_rencana_pembelajaran"
+        $item = &$this->ListOptions->add("detail_rencana_pembelajaran");
+        $item->CssClass = "text-nowrap";
+        $item->Visible = $Security->allowList(CurrentProjectID() . 'rencana_pembelajaran') && !$this->ShowMultipleDetails;
+        $item->OnLeft = false;
+        $item->ShowInButtonGroup = false;
+
         // Multiple details
         if ($this->ShowMultipleDetails) {
             $item = &$this->ListOptions->add("details");
@@ -1431,6 +1440,7 @@ class MateriList extends Materi
         // Set up detail pages
         $pages = new SubPages();
         $pages->add("evaluasi");
+        $pages->add("rencana_pembelajaran");
         $this->DetailPages = $pages;
 
         // List actions
@@ -1550,6 +1560,7 @@ class MateriList extends Materi
         $opt = $this->ListOptions["detail_evaluasi"];
         if ($Security->allowList(CurrentProjectID() . 'evaluasi')) {
             $body = $Language->phrase("DetailLink") . $Language->TablePhrase("evaluasi", "TblCaption");
+            $body .= "&nbsp;" . str_replace("%c", $this->evaluasi_Count, $Language->phrase("DetailCount"));
             $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode("EvaluasiList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "") . "\">" . $body . "</a>";
             $links = "";
             $detailPage = Container("EvaluasiGrid");
@@ -1579,6 +1590,52 @@ class MateriList extends Materi
                     $detailCopyTblVar .= ",";
                 }
                 $detailCopyTblVar .= "evaluasi";
+            }
+            if ($links != "") {
+                $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
+                $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
+            }
+            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
+            $opt->Body = $body;
+            if ($this->ShowMultipleDetails) {
+                $opt->Visible = false;
+            }
+        }
+
+        // "detail_rencana_pembelajaran"
+        $opt = $this->ListOptions["detail_rencana_pembelajaran"];
+        if ($Security->allowList(CurrentProjectID() . 'rencana_pembelajaran')) {
+            $body = $Language->phrase("DetailLink") . $Language->TablePhrase("rencana_pembelajaran", "TblCaption");
+            $body .= "&nbsp;" . str_replace("%c", $this->rencana_pembelajaran_Count, $Language->phrase("DetailCount"));
+            $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode("RencanaPembelajaranList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "") . "\">" . $body . "</a>";
+            $links = "";
+            $detailPage = Container("RencanaPembelajaranGrid");
+            if ($detailPage->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'materi')) {
+                $caption = $Language->phrase("MasterDetailViewLink");
+                $url = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
+                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
+                if ($detailViewTblVar != "") {
+                    $detailViewTblVar .= ",";
+                }
+                $detailViewTblVar .= "rencana_pembelajaran";
+            }
+            if ($detailPage->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'materi')) {
+                $caption = $Language->phrase("MasterDetailEditLink");
+                $url = $this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
+                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
+                if ($detailEditTblVar != "") {
+                    $detailEditTblVar .= ",";
+                }
+                $detailEditTblVar .= "rencana_pembelajaran";
+            }
+            if ($detailPage->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'materi')) {
+                $caption = $Language->phrase("MasterDetailCopyLink");
+                $url = $this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
+                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
+                if ($detailCopyTblVar != "") {
+                    $detailCopyTblVar .= ",";
+                }
+                $detailCopyTblVar .= "rencana_pembelajaran";
             }
             if ($links != "") {
                 $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
@@ -1646,6 +1703,18 @@ class MateriList extends Materi
                         $detailTableLink .= ",";
                     }
                     $detailTableLink .= "evaluasi";
+                }
+                $item = &$option->add("detailadd_rencana_pembelajaran");
+                $url = $this->getAddUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
+                $detailPage = Container("RencanaPembelajaranGrid");
+                $caption = $Language->phrase("Add") . "&nbsp;" . $this->tableCaption() . "/" . $detailPage->tableCaption();
+                $item->Body = "<a class=\"ew-detail-add-group ew-detail-add\" title=\"" . HtmlTitle($caption) . "\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode(GetUrl($url)) . "\">" . $caption . "</a>";
+                $item->Visible = ($detailPage->DetailAdd && $Security->allowAdd(CurrentProjectID() . 'materi') && $Security->canAdd());
+                if ($item->Visible) {
+                    if ($detailTableLink != "") {
+                        $detailTableLink .= ",";
+                    }
+                    $detailTableLink .= "rencana_pembelajaran";
                 }
 
         // Add multiple details
@@ -1901,6 +1970,18 @@ class MateriList extends Materi
         $this->isi->setDbValue($row['isi']);
         $this->pdf->Upload->DbValue = $row['pdf'];
         $this->pdf->setDbValue($this->pdf->Upload->DbValue);
+        $detailTbl = Container("evaluasi");
+        $detailFilter = $detailTbl->sqlDetailFilter_materi();
+        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("materi");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->evaluasi_Count = $detailTbl->loadRecordCount($detailFilter);
+        $detailTbl = Container("rencana_pembelajaran");
+        $detailFilter = $detailTbl->sqlDetailFilter_materi();
+        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("materi");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->rencana_pembelajaran_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values

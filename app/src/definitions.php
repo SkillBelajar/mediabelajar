@@ -57,9 +57,20 @@ return [
     "gambar" => \DI\create(Gambar::class),
     "slide" => \DI\create(Slide::class),
     "video" => \DI\create(Video::class),
+    "data_peserta" => \DI\create(DataPeserta::class),
+    "foto" => \DI\create(Foto::class),
+    "history_ulangan" => \DI\create(HistoryUlangan::class),
+    "indikator_rencana_belajar" => \DI\create(IndikatorRencanaBelajar::class),
+    "minat_siswa" => \DI\create(MinatSiswa::class),
+    "rencana_pembelajaran" => \DI\create(RencanaPembelajaran::class),
+    "siswa" => \DI\create(Siswa::class),
+    "skor_ulangan" => \DI\create(SkorUlangan::class),
+    "terpilih" => \DI\create(Terpilih::class),
+    "ulangan" => \DI\create(Ulangan::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),
     "EvaluasiGrid" => \DI\create(EvaluasiGrid::class),
     "PesertaGrid" => \DI\create(PesertaGrid::class),
+    "RencanaPembelajaranGrid" => \DI\create(RencanaPembelajaranGrid::class),
 ];

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2022/10/16" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
+<ew-language date="2022/11/3" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
   <!--
     *** Important Notes:
     1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -923,17 +923,17 @@
     <menu id="5">
       <phrase id="menutext" value="live" />
     </menu>
-    <menu id="6">
-      <phrase id="menutext" value="gambar" />
-    </menu>
-    <menu id="7">
-      <phrase id="menutext" value="slide" />
-    </menu>
     <menu id="3">
       <phrase id="menutext" value="media" />
     </menu>
     <menu id="2">
       <phrase id="menutext" value="materi" />
+    </menu>
+    <menu id="19">
+      <phrase id="menutext" value="rencana pembelajaran" />
+    </menu>
+    <menu id="17">
+      <phrase id="menutext" value="indikator rencana belajar" />
     </menu>
     <menu id="1">
       <phrase id="menutext" value="evaluasi" />
@@ -941,8 +941,38 @@
     <menu id="4">
       <phrase id="menutext" value="peserta" />
     </menu>
+    <menu id="20">
+      <phrase id="menutext" value="siswa" />
+    </menu>
+    <menu id="14">
+      <phrase id="menutext" value="data peserta" />
+    </menu>
+    <menu id="6">
+      <phrase id="menutext" value="gambar" />
+    </menu>
+    <menu id="16">
+      <phrase id="menutext" value="history ulangan" />
+    </menu>
+    <menu id="18">
+      <phrase id="menutext" value="minat siswa" />
+    </menu>
+    <menu id="21">
+      <phrase id="menutext" value="skor ulangan" />
+    </menu>
+    <menu id="22">
+      <phrase id="menutext" value="terpilih" />
+    </menu>
+    <menu id="23">
+      <phrase id="menutext" value="ulangan" />
+    </menu>
+    <menu id="7">
+      <phrase id="menutext" value="slide" />
+    </menu>
     <menu id="13">
       <phrase id="menutext" value="video" />
+    </menu>
+    <menu id="15">
+      <phrase id="menutext" value="foto" />
     </menu>
     <table id="evaluasi">
       <phrase id="tblcaption" value="evaluasi" />
@@ -1145,6 +1175,190 @@
       </field>
       <field id="nama">
         <phrase id="fldcaption" value="nama" />
+      </field>
+    </table>
+    <table id="data_peserta">
+      <phrase id="tblcaption" value="data peserta" />
+      <field id="id_data_peserta">
+        <phrase id="fldcaption" value="id data peserta" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="emosi">
+        <phrase id="fldcaption" value="emosi" />
+      </field>
+      <field id="harapan">
+        <phrase id="fldcaption" value="harapan" />
+      </field>
+      <field id="level">
+        <phrase id="fldcaption" value="level" />
+      </field>
+      <field id="kesiapan">
+        <phrase id="fldcaption" value="kesiapan" />
+      </field>
+      <field id="minat">
+        <phrase id="fldcaption" value="minat" />
+      </field>
+    </table>
+    <table id="foto">
+      <phrase id="tblcaption" value="foto" />
+      <field id="id_foto">
+        <phrase id="fldcaption" value="id foto" />
+      </field>
+      <field id="file_name">
+        <phrase id="fldcaption" value="file name" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="tgl_jam">
+        <phrase id="fldcaption" value="tgl jam" />
+      </field>
+    </table>
+    <table id="history_ulangan">
+      <phrase id="tblcaption" value="history ulangan" />
+      <field id="id_history_ulangan">
+        <phrase id="fldcaption" value="id history ulangan" />
+      </field>
+      <field id="media">
+        <phrase id="fldcaption" value="media" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="nilai">
+        <phrase id="fldcaption" value="nilai" />
+      </field>
+      <field id="tanggal">
+        <phrase id="fldcaption" value="tanggal" />
+      </field>
+    </table>
+    <table id="indikator_rencana_belajar">
+      <phrase id="tblcaption" value="indikator rencana belajar" />
+      <field id="id_indikator">
+        <phrase id="fldcaption" value="id indikator" />
+      </field>
+      <field id="kategori">
+        <phrase id="fldcaption" value="kategori" />
+        <phrase id="fldtagvalue1" value="Kegiatan Pendahuluan" />
+        <phrase id="fldtagcaption1" value="Kegiatan Pendahuluan" />
+        <phrase id="fldtagvalue2" value="Kegiatan Inti Pembelajaran ( Eksplorasi )" />
+        <phrase id="fldtagcaption2" value="Kegiatan Inti Pembelajaran ( Eksplorasi )" />
+        <phrase id="fldtagvalue3" value="Kegiatan Inti Pembelajaran ( Elaborasi )" />
+        <phrase id="fldtagcaption3" value="Kegiatan Inti Pembelajaran ( Elaborasi )" />
+        <phrase id="fldtagvalue4" value="Kegiatan Inti Pembelajaran ( Konfirmasi )" />
+        <phrase id="fldtagcaption4" value="Kegiatan Inti Pembelajaran ( Konfirmasi )" />
+        <phrase id="fldtagvalue5" value="Penutup" />
+        <phrase id="fldtagcaption5" value="Penutup" />
+      </field>
+      <field id="indikator">
+        <phrase id="fldcaption" value="indikator" />
+      </field>
+    </table>
+    <table id="minat_siswa">
+      <phrase id="tblcaption" value="minat siswa" />
+      <field id="id_minat_siswa">
+        <phrase id="fldcaption" value="id minat siswa" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="emosi">
+        <phrase id="fldcaption" value="emosi" />
+      </field>
+      <field id="harapan">
+        <phrase id="fldcaption" value="harapan" />
+      </field>
+      <field id="level">
+        <phrase id="fldcaption" value="level" />
+      </field>
+      <field id="kesiapan">
+        <phrase id="fldcaption" value="kesiapan" />
+      </field>
+      <field id="minat">
+        <phrase id="fldcaption" value="minat" />
+      </field>
+      <field id="tgl">
+        <phrase id="fldcaption" value="tgl" />
+      </field>
+    </table>
+    <table id="rencana_pembelajaran">
+      <phrase id="tblcaption" value="rencana pembelajaran" />
+      <field id="id_rencana_pembelajaran">
+        <phrase id="fldcaption" value="id rencana pembelajaran" />
+      </field>
+      <field id="id_indikator">
+        <phrase id="fldcaption" value="id indikator" />
+      </field>
+      <field id="id_materi">
+        <phrase id="fldcaption" value="id materi" />
+      </field>
+      <field id="kegiatan">
+        <phrase id="fldcaption" value="kegiatan" />
+      </field>
+      <field id="waktu">
+        <phrase id="fldcaption" value="waktu" />
+        <phrase id="fldtagvalue1" value="3" />
+        <phrase id="fldtagcaption1" value="" />
+      </field>
+      <field id="tampilkan">
+        <phrase id="fldcaption" value="tampilkan" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="Tidak" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="Ya" />
+      </field>
+    </table>
+    <table id="siswa">
+      <phrase id="tblcaption" value="siswa" />
+      <field id="id_siswa">
+        <phrase id="fldcaption" value="id siswa" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="kelas">
+        <phrase id="fldcaption" value="kelas" />
+      </field>
+    </table>
+    <table id="skor_ulangan">
+      <phrase id="tblcaption" value="skor ulangan" />
+      <field id="id_skor_ulangan">
+        <phrase id="fldcaption" value="id skor ulangan" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="skor">
+        <phrase id="fldcaption" value="skor" />
+      </field>
+    </table>
+    <table id="terpilih">
+      <phrase id="tblcaption" value="terpilih" />
+      <field id="id_terpilih">
+        <phrase id="fldcaption" value="id terpilih" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+    </table>
+    <table id="ulangan">
+      <phrase id="tblcaption" value="ulangan" />
+      <field id="id_ulangan">
+        <phrase id="fldcaption" value="id ulangan" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="nomor_soal">
+        <phrase id="fldcaption" value="nomor soal" />
+      </field>
+      <field id="skor">
+        <phrase id="fldcaption" value="skor" />
+      </field>
+      <field id="jawaban">
+        <phrase id="fldcaption" value="jawaban" />
       </field>
     </table>
   </project>

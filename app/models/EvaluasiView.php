@@ -665,6 +665,7 @@ class EvaluasiView extends Evaluasi
     public $RecordRange = 10;
     public $RecKey = [];
     public $IsModal = false;
+    public $peserta_Count;
 
     /**
      * Page run
@@ -854,6 +855,7 @@ class EvaluasiView extends Evaluasi
         // "detail_peserta"
         $item = &$option->add("detail_peserta");
         $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("peserta", "TblCaption");
+        $body .= "&nbsp;" . str_replace("%c", $this->peserta_Count, $Language->phrase("DetailCount"));
         $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("PesertaList?" . Config("TABLE_SHOW_MASTER") . "=evaluasi&" . GetForeignKeyUrl("fk_id_evaluasi", $this->id_evaluasi->CurrentValue) . "")) . "\">" . $body . "</a>";
         $links = "";
         $detailPageObj = Container("PesertaGrid");
@@ -990,6 +992,12 @@ class EvaluasiView extends Evaluasi
         $this->id_materi->setDbValue($row['id_materi']);
         $this->soal->setDbValue($row['soal']);
         $this->jawaban->setDbValue($row['jawaban']);
+        $detailTbl = Container("peserta");
+        $detailFilter = $detailTbl->sqlDetailFilter_evaluasi();
+        $detailFilter = str_replace("@id_evaluasi@", AdjustSql($this->id_evaluasi->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("evaluasi");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->peserta_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values

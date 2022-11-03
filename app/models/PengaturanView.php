@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class RencanaPembelajaranView extends RencanaPembelajaran
+class PengaturanView extends Pengaturan
 {
     // Page ID
     public $PageID = "view";
@@ -16,10 +16,10 @@ class RencanaPembelajaranView extends RencanaPembelajaran
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'rencana_pembelajaran';
+    public $TableName = 'pengaturan';
 
     // Page object name
-    public $PageObjName = "RencanaPembelajaranView";
+    public $PageObjName = "PengaturanView";
 
     // Rendering View
     public $RenderingView = false;
@@ -342,15 +342,15 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         // Parent constuctor
         parent::__construct();
 
-        // Table object (rencana_pembelajaran)
-        if (!isset($GLOBALS["rencana_pembelajaran"]) || get_class($GLOBALS["rencana_pembelajaran"]) == PROJECT_NAMESPACE . "rencana_pembelajaran") {
-            $GLOBALS["rencana_pembelajaran"] = &$this;
+        // Table object (pengaturan)
+        if (!isset($GLOBALS["pengaturan"]) || get_class($GLOBALS["pengaturan"]) == PROJECT_NAMESPACE . "pengaturan") {
+            $GLOBALS["pengaturan"] = &$this;
         }
 
         // Page URL
         $pageUrl = $this->pageUrl();
-        if (($keyValue = Get("id_rencana_pembelajaran") ?? Route("id_rencana_pembelajaran")) !== null) {
-            $this->RecKey["id_rencana_pembelajaran"] = $keyValue;
+        if (($keyValue = Get("id_pengaturan") ?? Route("id_pengaturan")) !== null) {
+            $this->RecKey["id_pengaturan"] = $keyValue;
         }
         $this->ExportPrintUrl = $pageUrl . "export=print";
         $this->ExportHtmlUrl = $pageUrl . "export=html";
@@ -362,7 +362,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'rencana_pembelajaran');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'pengaturan');
         }
 
         // Start timer
@@ -433,7 +433,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("rencana_pembelajaran"));
+                $doc = new $class(Container("pengaturan"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -472,7 +472,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
                 $pageName = GetPageName($url);
                 if ($pageName != $this->getListUrl()) { // Not List page
                     $row["caption"] = $this->getModalCaption($pageName);
-                    if ($pageName == "RencanaPembelajaranView") {
+                    if ($pageName == "PengaturanView") {
                         $row["view"] = "1";
                     }
                 } else { // List page should not be shown as modal => error
@@ -563,7 +563,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_rencana_pembelajaran'];
+            $key .= @$ar['id_pengaturan'];
         }
         return $key;
     }
@@ -576,7 +576,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_rencana_pembelajaran->Visible = false;
+            $this->id_pengaturan->Visible = false;
         }
     }
 
@@ -679,13 +679,10 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         // Is modal
         $this->IsModal = Param("modal") == "1";
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_rencana_pembelajaran->setVisibility();
-        $this->id_indikator->setVisibility();
-        $this->id_materi->setVisibility();
-        $this->judul->setVisibility();
-        $this->kegiatan->setVisibility();
-        $this->waktu->setVisibility();
-        $this->tampilkan->setVisibility();
+        $this->id_pengaturan->setVisibility();
+        $this->nama_guru->setVisibility();
+        $this->tempat_kerja->setVisibility();
+        $this->logo->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -700,8 +697,6 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         }
 
         // Set up lookup cache
-        $this->setupLookupOptions($this->id_indikator);
-        $this->setupLookupOptions($this->id_materi);
 
         // Check modal
         if ($this->IsModal) {
@@ -712,21 +707,18 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         $loadCurrentRecord = false;
         $returnUrl = "";
         $matchRecord = false;
-
-        // Set up master/detail parameters
-        $this->setupMasterParms();
         if ($this->isPageRequest()) { // Validate request
-            if (($keyValue = Get("id_rencana_pembelajaran") ?? Route("id_rencana_pembelajaran")) !== null) {
-                $this->id_rencana_pembelajaran->setQueryStringValue($keyValue);
-                $this->RecKey["id_rencana_pembelajaran"] = $this->id_rencana_pembelajaran->QueryStringValue;
-            } elseif (Post("id_rencana_pembelajaran") !== null) {
-                $this->id_rencana_pembelajaran->setFormValue(Post("id_rencana_pembelajaran"));
-                $this->RecKey["id_rencana_pembelajaran"] = $this->id_rencana_pembelajaran->FormValue;
+            if (($keyValue = Get("id_pengaturan") ?? Route("id_pengaturan")) !== null) {
+                $this->id_pengaturan->setQueryStringValue($keyValue);
+                $this->RecKey["id_pengaturan"] = $this->id_pengaturan->QueryStringValue;
+            } elseif (Post("id_pengaturan") !== null) {
+                $this->id_pengaturan->setFormValue(Post("id_pengaturan"));
+                $this->RecKey["id_pengaturan"] = $this->id_pengaturan->FormValue;
             } elseif (IsApi() && ($keyValue = Key(0) ?? Route(2)) !== null) {
-                $this->id_rencana_pembelajaran->setQueryStringValue($keyValue);
-                $this->RecKey["id_rencana_pembelajaran"] = $this->id_rencana_pembelajaran->QueryStringValue;
+                $this->id_pengaturan->setQueryStringValue($keyValue);
+                $this->RecKey["id_pengaturan"] = $this->id_pengaturan->QueryStringValue;
             } else {
-                $returnUrl = "RencanaPembelajaranList"; // Return to list
+                $returnUrl = "PengaturanList"; // Return to list
             }
 
             // Get action
@@ -749,12 +741,12 @@ class RencanaPembelajaranView extends RencanaPembelajaran
                         if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
                             $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
                         }
-                        $returnUrl = "RencanaPembelajaranList"; // No matching record, return to list
+                        $returnUrl = "PengaturanList"; // No matching record, return to list
                     }
                     break;
             }
         } else {
-            $returnUrl = "RencanaPembelajaranList"; // Not page request, return to list
+            $returnUrl = "PengaturanList"; // Not page request, return to list
         }
         if ($returnUrl != "") {
             $this->terminate($returnUrl);
@@ -808,16 +800,6 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         $options = &$this->OtherOptions;
         $option = $options["action"];
 
-        // Add
-        $item = &$option->add("add");
-        $addcaption = HtmlTitle($Language->phrase("ViewPageAddLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,url:'" . HtmlEncode(GetUrl($this->AddUrl)) . "'});\">" . $Language->phrase("ViewPageAddLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
-        }
-        $item->Visible = ($this->AddUrl != "" && $Security->canAdd());
-
         // Edit
         $item = &$option->add("edit");
         $editcaption = HtmlTitle($Language->phrase("ViewPageEditLink"));
@@ -827,25 +809,6 @@ class RencanaPembelajaranView extends RencanaPembelajaran
             $item->Body = "<a class=\"ew-action ew-edit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("ViewPageEditLink") . "</a>";
         }
         $item->Visible = ($this->EditUrl != "" && $Security->canEdit());
-
-        // Copy
-        $item = &$option->add("copy");
-        $copycaption = HtmlTitle($Language->phrase("ViewPageCopyLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,btn:'AddBtn',url:'" . HtmlEncode(GetUrl($this->CopyUrl)) . "'});\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
-        }
-        $item->Visible = ($this->CopyUrl != "" && $Security->canAdd());
-
-        // Delete
-        $item = &$option->add("delete");
-        if ($this->IsModal) { // Handle as inline delete
-            $item->Body = "<a onclick=\"return ew.confirmDelete(this);\" class=\"ew-action ew-delete\" title=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" href=\"" . HtmlEncode(UrlAddQuery(GetUrl($this->DeleteUrl), "action=1")) . "\">" . $Language->phrase("ViewPageDeleteLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-delete\" title=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("ViewPageDeleteLink") . "</a>";
-        }
-        $item->Visible = ($this->DeleteUrl != "" && $Security->canDelete());
 
         // Set up action default
         $option = $options["action"];
@@ -904,26 +867,21 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         if (!$rs) {
             return;
         }
-        $this->id_rencana_pembelajaran->setDbValue($row['id_rencana_pembelajaran']);
-        $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->id_materi->setDbValue($row['id_materi']);
-        $this->judul->setDbValue($row['judul']);
-        $this->kegiatan->setDbValue($row['kegiatan']);
-        $this->waktu->setDbValue($row['waktu']);
-        $this->tampilkan->setDbValue($row['tampilkan']);
+        $this->id_pengaturan->setDbValue($row['id_pengaturan']);
+        $this->nama_guru->setDbValue($row['nama_guru']);
+        $this->tempat_kerja->setDbValue($row['tempat_kerja']);
+        $this->logo->Upload->DbValue = $row['logo'];
+        $this->logo->setDbValue($this->logo->Upload->DbValue);
     }
 
     // Return a row with default values
     protected function newRow()
     {
         $row = [];
-        $row['id_rencana_pembelajaran'] = null;
-        $row['id_indikator'] = null;
-        $row['id_materi'] = null;
-        $row['judul'] = null;
-        $row['kegiatan'] = null;
-        $row['waktu'] = null;
-        $row['tampilkan'] = null;
+        $row['id_pengaturan'] = null;
+        $row['nama_guru'] = null;
+        $row['tempat_kerja'] = null;
+        $row['logo'] = null;
         return $row;
     }
 
@@ -945,121 +903,70 @@ class RencanaPembelajaranView extends RencanaPembelajaran
 
         // Common render codes for all row types
 
-        // id_rencana_pembelajaran
+        // id_pengaturan
 
-        // id_indikator
+        // nama_guru
 
-        // id_materi
+        // tempat_kerja
 
-        // judul
-
-        // kegiatan
-
-        // waktu
-
-        // tampilkan
+        // logo
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_rencana_pembelajaran
-            $this->id_rencana_pembelajaran->ViewValue = $this->id_rencana_pembelajaran->CurrentValue;
-            $this->id_rencana_pembelajaran->ViewCustomAttributes = "";
+            // id_pengaturan
+            $this->id_pengaturan->ViewValue = $this->id_pengaturan->CurrentValue;
+            $this->id_pengaturan->ViewCustomAttributes = "";
 
-            // id_indikator
-            $curVal = strval($this->id_indikator->CurrentValue);
-            if ($curVal != "") {
-                $this->id_indikator->ViewValue = $this->id_indikator->lookupCacheOption($curVal);
-                if ($this->id_indikator->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_indikator`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_indikator->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_indikator->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_indikator->ViewValue = $this->id_indikator->displayValue($arwrk);
-                    } else {
-                        $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
-                    }
+            // nama_guru
+            $this->nama_guru->ViewValue = $this->nama_guru->CurrentValue;
+            $this->nama_guru->ViewCustomAttributes = "";
+
+            // tempat_kerja
+            $this->tempat_kerja->ViewValue = $this->tempat_kerja->CurrentValue;
+            $this->tempat_kerja->ViewCustomAttributes = "";
+
+            // logo
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->ImageAlt = $this->logo->alt();
+                $this->logo->ViewValue = $this->logo->Upload->DbValue;
+            } else {
+                $this->logo->ViewValue = "";
+            }
+            $this->logo->ViewCustomAttributes = "";
+
+            // id_pengaturan
+            $this->id_pengaturan->LinkCustomAttributes = "";
+            $this->id_pengaturan->HrefValue = "";
+            $this->id_pengaturan->TooltipValue = "";
+
+            // nama_guru
+            $this->nama_guru->LinkCustomAttributes = "";
+            $this->nama_guru->HrefValue = "";
+            $this->nama_guru->TooltipValue = "";
+
+            // tempat_kerja
+            $this->tempat_kerja->LinkCustomAttributes = "";
+            $this->tempat_kerja->HrefValue = "";
+            $this->tempat_kerja->TooltipValue = "";
+
+            // logo
+            $this->logo->LinkCustomAttributes = "";
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->HrefValue = GetFileUploadUrl($this->logo, $this->logo->htmlDecode($this->logo->Upload->DbValue)); // Add prefix/suffix
+                $this->logo->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->logo->HrefValue = FullUrl($this->logo->HrefValue, "href");
                 }
             } else {
-                $this->id_indikator->ViewValue = null;
+                $this->logo->HrefValue = "";
             }
-            $this->id_indikator->ViewCustomAttributes = "";
-
-            // id_materi
-            $curVal = strval($this->id_materi->CurrentValue);
-            if ($curVal != "") {
-                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
-                if ($this->id_materi->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
-                    } else {
-                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-                    }
+            $this->logo->ExportHrefValue = $this->logo->UploadPath . $this->logo->Upload->DbValue;
+            $this->logo->TooltipValue = "";
+            if ($this->logo->UseColorbox) {
+                if (EmptyValue($this->logo->TooltipValue)) {
+                    $this->logo->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
                 }
-            } else {
-                $this->id_materi->ViewValue = null;
+                $this->logo->LinkAttrs["data-rel"] = "pengaturan_x_logo";
+                $this->logo->LinkAttrs->appendClass("ew-lightbox");
             }
-            $this->id_materi->ViewCustomAttributes = "";
-
-            // judul
-            $this->judul->ViewValue = $this->judul->CurrentValue;
-            $this->judul->ViewCustomAttributes = "";
-
-            // kegiatan
-            $this->kegiatan->ViewValue = $this->kegiatan->CurrentValue;
-            $this->kegiatan->ViewCustomAttributes = "";
-
-            // waktu
-            $this->waktu->ViewValue = $this->waktu->CurrentValue;
-            $this->waktu->ViewValue = FormatNumber($this->waktu->ViewValue, 0, -2, -2, -2);
-            $this->waktu->ViewCustomAttributes = "";
-
-            // tampilkan
-            if (strval($this->tampilkan->CurrentValue) != "") {
-                $this->tampilkan->ViewValue = $this->tampilkan->optionCaption($this->tampilkan->CurrentValue);
-            } else {
-                $this->tampilkan->ViewValue = null;
-            }
-            $this->tampilkan->ViewCustomAttributes = "";
-
-            // id_rencana_pembelajaran
-            $this->id_rencana_pembelajaran->LinkCustomAttributes = "";
-            $this->id_rencana_pembelajaran->HrefValue = "";
-            $this->id_rencana_pembelajaran->TooltipValue = "";
-
-            // id_indikator
-            $this->id_indikator->LinkCustomAttributes = "";
-            $this->id_indikator->HrefValue = "";
-            $this->id_indikator->TooltipValue = "";
-
-            // id_materi
-            $this->id_materi->LinkCustomAttributes = "";
-            $this->id_materi->HrefValue = "";
-            $this->id_materi->TooltipValue = "";
-
-            // judul
-            $this->judul->LinkCustomAttributes = "";
-            $this->judul->HrefValue = "";
-            $this->judul->TooltipValue = "";
-
-            // kegiatan
-            $this->kegiatan->LinkCustomAttributes = "";
-            $this->kegiatan->HrefValue = "";
-            $this->kegiatan->TooltipValue = "";
-
-            // waktu
-            $this->waktu->LinkCustomAttributes = "";
-            $this->waktu->HrefValue = "";
-            $this->waktu->TooltipValue = "";
-
-            // tampilkan
-            $this->tampilkan->LinkCustomAttributes = "";
-            $this->tampilkan->HrefValue = "";
-            $this->tampilkan->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1068,116 +975,13 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         }
     }
 
-    // Set up master/detail based on QueryString
-    protected function setupMasterParms()
-    {
-        $validMaster = false;
-        // Get the keys for master table
-        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
-            $masterTblVar = $master;
-            if ($masterTblVar == "") {
-                $validMaster = true;
-                $this->DbMasterFilter = "";
-                $this->DbDetailFilter = "";
-            }
-            if ($masterTblVar == "indikator_rencana_belajar") {
-                $validMaster = true;
-                $masterTbl = Container("indikator_rencana_belajar");
-                if (($parm = Get("fk_id_indikator", Get("id_indikator"))) !== null) {
-                    $masterTbl->id_indikator->setQueryStringValue($parm);
-                    $this->id_indikator->setQueryStringValue($masterTbl->id_indikator->QueryStringValue);
-                    $this->id_indikator->setSessionValue($this->id_indikator->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_indikator->QueryStringValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-            if ($masterTblVar == "materi") {
-                $validMaster = true;
-                $masterTbl = Container("materi");
-                if (($parm = Get("fk_id_materi", Get("id_materi"))) !== null) {
-                    $masterTbl->id_materi->setQueryStringValue($parm);
-                    $this->id_materi->setQueryStringValue($masterTbl->id_materi->QueryStringValue);
-                    $this->id_materi->setSessionValue($this->id_materi->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_materi->QueryStringValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
-            $masterTblVar = $master;
-            if ($masterTblVar == "") {
-                    $validMaster = true;
-                    $this->DbMasterFilter = "";
-                    $this->DbDetailFilter = "";
-            }
-            if ($masterTblVar == "indikator_rencana_belajar") {
-                $validMaster = true;
-                $masterTbl = Container("indikator_rencana_belajar");
-                if (($parm = Post("fk_id_indikator", Post("id_indikator"))) !== null) {
-                    $masterTbl->id_indikator->setFormValue($parm);
-                    $this->id_indikator->setFormValue($masterTbl->id_indikator->FormValue);
-                    $this->id_indikator->setSessionValue($this->id_indikator->FormValue);
-                    if (!is_numeric($masterTbl->id_indikator->FormValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-            if ($masterTblVar == "materi") {
-                $validMaster = true;
-                $masterTbl = Container("materi");
-                if (($parm = Post("fk_id_materi", Post("id_materi"))) !== null) {
-                    $masterTbl->id_materi->setFormValue($parm);
-                    $this->id_materi->setFormValue($masterTbl->id_materi->FormValue);
-                    $this->id_materi->setSessionValue($this->id_materi->FormValue);
-                    if (!is_numeric($masterTbl->id_materi->FormValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-        }
-        if ($validMaster) {
-            // Save current master table
-            $this->setCurrentMasterTable($masterTblVar);
-            $this->setSessionWhere($this->getDetailFilter());
-
-            // Reset start record counter (new master key)
-            if (!$this->isAddOrEdit()) {
-                $this->StartRecord = 1;
-                $this->setStartRecordNumber($this->StartRecord);
-            }
-
-            // Clear previous master key from Session
-            if ($masterTblVar != "indikator_rencana_belajar") {
-                if ($this->id_indikator->CurrentValue == "") {
-                    $this->id_indikator->setSessionValue("");
-                }
-            }
-            if ($masterTblVar != "materi") {
-                if ($this->id_materi->CurrentValue == "") {
-                    $this->id_materi->setSessionValue("");
-                }
-            }
-        }
-        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
-        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
-    }
-
     // Set up Breadcrumb
     protected function setupBreadcrumb()
     {
         global $Breadcrumb, $Language;
         $Breadcrumb = new Breadcrumb("index");
         $url = CurrentUrl();
-        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("RencanaPembelajaranList"), "", $this->TableVar, true);
+        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("PengaturanList"), "", $this->TableVar, true);
         $pageId = "view";
         $Breadcrumb->add("view", $pageId, $url);
     }
@@ -1195,12 +999,6 @@ class RencanaPembelajaranView extends RencanaPembelajaran
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_id_indikator":
-                    break;
-                case "x_id_materi":
-                    break;
-                case "x_tampilkan":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;

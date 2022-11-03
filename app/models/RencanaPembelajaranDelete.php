@@ -528,6 +528,7 @@ class RencanaPembelajaranDelete extends RencanaPembelajaran
         $this->id_rencana_pembelajaran->setVisibility();
         $this->id_indikator->setVisibility();
         $this->id_materi->setVisibility();
+        $this->judul->setVisibility();
         $this->kegiatan->Visible = false;
         $this->waktu->setVisibility();
         $this->tampilkan->setVisibility();
@@ -701,6 +702,7 @@ class RencanaPembelajaranDelete extends RencanaPembelajaran
         $this->id_rencana_pembelajaran->setDbValue($row['id_rencana_pembelajaran']);
         $this->id_indikator->setDbValue($row['id_indikator']);
         $this->id_materi->setDbValue($row['id_materi']);
+        $this->judul->setDbValue($row['judul']);
         $this->kegiatan->setDbValue($row['kegiatan']);
         $this->waktu->setDbValue($row['waktu']);
         $this->tampilkan->setDbValue($row['tampilkan']);
@@ -713,6 +715,7 @@ class RencanaPembelajaranDelete extends RencanaPembelajaran
         $row['id_rencana_pembelajaran'] = null;
         $row['id_indikator'] = null;
         $row['id_materi'] = null;
+        $row['judul'] = null;
         $row['kegiatan'] = null;
         $row['waktu'] = null;
         $row['tampilkan'] = null;
@@ -736,6 +739,8 @@ class RencanaPembelajaranDelete extends RencanaPembelajaran
         // id_indikator
 
         // id_materi
+
+        // judul
 
         // kegiatan
 
@@ -789,6 +794,10 @@ class RencanaPembelajaranDelete extends RencanaPembelajaran
             }
             $this->id_materi->ViewCustomAttributes = "";
 
+            // judul
+            $this->judul->ViewValue = $this->judul->CurrentValue;
+            $this->judul->ViewCustomAttributes = "";
+
             // waktu
             $this->waktu->ViewValue = $this->waktu->CurrentValue;
             $this->waktu->ViewValue = FormatNumber($this->waktu->ViewValue, 0, -2, -2, -2);
@@ -816,6 +825,11 @@ class RencanaPembelajaranDelete extends RencanaPembelajaran
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
             $this->id_materi->TooltipValue = "";
+
+            // judul
+            $this->judul->LinkCustomAttributes = "";
+            $this->judul->HrefValue = "";
+            $this->judul->TooltipValue = "";
 
             // waktu
             $this->waktu->LinkCustomAttributes = "";

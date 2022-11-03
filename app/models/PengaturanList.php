@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class RencanaPembelajaranList extends RencanaPembelajaran
+class PengaturanList extends Pengaturan
 {
     // Page ID
     public $PageID = "list";
@@ -16,10 +16,10 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'rencana_pembelajaran';
+    public $TableName = 'pengaturan';
 
     // Page object name
-    public $PageObjName = "RencanaPembelajaranList";
+    public $PageObjName = "PengaturanList";
 
     // Rendering View
     public $RenderingView = false;
@@ -28,7 +28,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     public $UseCustomTemplate = false;
 
     // Grid form hidden field names
-    public $FormName = "frencana_pembelajaranlist";
+    public $FormName = "fpengaturanlist";
     public $FormActionName = "k_action";
     public $FormKeyName = "k_key";
     public $FormOldKeyName = "k_oldkey";
@@ -350,9 +350,9 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         // Parent constuctor
         parent::__construct();
 
-        // Table object (rencana_pembelajaran)
-        if (!isset($GLOBALS["rencana_pembelajaran"]) || get_class($GLOBALS["rencana_pembelajaran"]) == PROJECT_NAMESPACE . "rencana_pembelajaran") {
-            $GLOBALS["rencana_pembelajaran"] = &$this;
+        // Table object (pengaturan)
+        if (!isset($GLOBALS["pengaturan"]) || get_class($GLOBALS["pengaturan"]) == PROJECT_NAMESPACE . "pengaturan") {
+            $GLOBALS["pengaturan"] = &$this;
         }
 
         // Page URL
@@ -366,16 +366,16 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         $this->ExportHtmlUrl = $pageUrl . "export=html";
         $this->ExportXmlUrl = $pageUrl . "export=xml";
         $this->ExportCsvUrl = $pageUrl . "export=csv";
-        $this->AddUrl = "RencanaPembelajaranAdd";
+        $this->AddUrl = "PengaturanAdd";
         $this->InlineAddUrl = $pageUrl . "action=add";
         $this->GridAddUrl = $pageUrl . "action=gridadd";
         $this->GridEditUrl = $pageUrl . "action=gridedit";
-        $this->MultiDeleteUrl = "RencanaPembelajaranDelete";
-        $this->MultiUpdateUrl = "RencanaPembelajaranUpdate";
+        $this->MultiDeleteUrl = "PengaturanDelete";
+        $this->MultiUpdateUrl = "PengaturanUpdate";
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'rencana_pembelajaran');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'pengaturan');
         }
 
         // Start timer
@@ -412,7 +412,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
         // Filter options
         $this->FilterOptions = new ListOptions("div");
-        $this->FilterOptions->TagClassName = "ew-filter-option frencana_pembelajaranlistsrch";
+        $this->FilterOptions->TagClassName = "ew-filter-option fpengaturanlistsrch";
 
         // List actions
         $this->ListActions = new ListActions();
@@ -463,7 +463,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("rencana_pembelajaran"));
+                $doc = new $class(Container("pengaturan"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -579,7 +579,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_rencana_pembelajaran'];
+            $key .= @$ar['id_pengaturan'];
         }
         return $key;
     }
@@ -592,7 +592,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_rencana_pembelajaran->Visible = false;
+            $this->id_pengaturan->Visible = false;
         }
     }
 
@@ -731,13 +731,10 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
         // Set up list options
         $this->setupListOptions();
-        $this->id_rencana_pembelajaran->setVisibility();
-        $this->id_indikator->setVisibility();
-        $this->id_materi->setVisibility();
-        $this->judul->setVisibility();
-        $this->kegiatan->Visible = false;
-        $this->waktu->setVisibility();
-        $this->tampilkan->setVisibility();
+        $this->id_pengaturan->setVisibility();
+        $this->nama_guru->setVisibility();
+        $this->tempat_kerja->Visible = false;
+        $this->logo->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Global Page Loading event (in userfn*.php)
@@ -747,9 +744,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         if (method_exists($this, "pageLoad")) {
             $this->pageLoad();
         }
-
-        // Set up master detail parameters
-        $this->setupMasterParms();
 
         // Setup other options
         $this->setupOtherOptions();
@@ -768,8 +762,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         }
 
         // Set up lookup cache
-        $this->setupLookupOptions($this->id_indikator);
-        $this->setupLookupOptions($this->id_materi);
 
         // Search filters
         $srchAdvanced = ""; // Advanced search filter
@@ -888,44 +880,8 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
         // Build filter
         $filter = "";
-
-        // Restore master/detail filter
-        $this->DbMasterFilter = $this->getMasterFilter(); // Restore master filter
-        $this->DbDetailFilter = $this->getDetailFilter(); // Restore detail filter
         AddFilter($filter, $this->DbDetailFilter);
         AddFilter($filter, $this->SearchWhere);
-
-        // Load master record
-        if ($this->CurrentMode != "add" && $this->getMasterFilter() != "" && $this->getCurrentMasterTable() == "indikator_rencana_belajar") {
-            $masterTbl = Container("indikator_rencana_belajar");
-            $rsmaster = $masterTbl->loadRs($this->DbMasterFilter)->fetch(\PDO::FETCH_ASSOC);
-            $this->MasterRecordExists = $rsmaster !== false;
-            if (!$this->MasterRecordExists) {
-                $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record found
-                $this->terminate("IndikatorRencanaBelajarList"); // Return to master page
-                return;
-            } else {
-                $masterTbl->loadListRowValues($rsmaster);
-                $masterTbl->RowType = ROWTYPE_MASTER; // Master row
-                $masterTbl->renderListRow();
-            }
-        }
-
-        // Load master record
-        if ($this->CurrentMode != "add" && $this->getMasterFilter() != "" && $this->getCurrentMasterTable() == "materi") {
-            $masterTbl = Container("materi");
-            $rsmaster = $masterTbl->loadRs($this->DbMasterFilter)->fetch(\PDO::FETCH_ASSOC);
-            $this->MasterRecordExists = $rsmaster !== false;
-            if (!$this->MasterRecordExists) {
-                $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record found
-                $this->terminate("MateriList"); // Return to master page
-                return;
-            } else {
-                $masterTbl->loadListRowValues($rsmaster);
-                $masterTbl->RowType = ROWTYPE_MASTER; // Master row
-                $masterTbl->renderListRow();
-            }
-        }
 
         // Set up filter
         if ($this->Command == "json") {
@@ -1059,8 +1015,8 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     {
         $arKeyFlds = explode(Config("COMPOSITE_KEY_SEPARATOR"), $key);
         if (count($arKeyFlds) >= 1) {
-            $this->id_rencana_pembelajaran->setOldValue($arKeyFlds[0]);
-            if (!is_numeric($this->id_rencana_pembelajaran->OldValue)) {
+            $this->id_pengaturan->setOldValue($arKeyFlds[0]);
+            if (!is_numeric($this->id_pengaturan->OldValue)) {
                 return false;
             }
         }
@@ -1075,13 +1031,10 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         // Initialize
         $filterList = "";
         $savedFilterList = "";
-        $filterList = Concat($filterList, $this->id_rencana_pembelajaran->AdvancedSearch->toJson(), ","); // Field id_rencana_pembelajaran
-        $filterList = Concat($filterList, $this->id_indikator->AdvancedSearch->toJson(), ","); // Field id_indikator
-        $filterList = Concat($filterList, $this->id_materi->AdvancedSearch->toJson(), ","); // Field id_materi
-        $filterList = Concat($filterList, $this->judul->AdvancedSearch->toJson(), ","); // Field judul
-        $filterList = Concat($filterList, $this->kegiatan->AdvancedSearch->toJson(), ","); // Field kegiatan
-        $filterList = Concat($filterList, $this->waktu->AdvancedSearch->toJson(), ","); // Field waktu
-        $filterList = Concat($filterList, $this->tampilkan->AdvancedSearch->toJson(), ","); // Field tampilkan
+        $filterList = Concat($filterList, $this->id_pengaturan->AdvancedSearch->toJson(), ","); // Field id_pengaturan
+        $filterList = Concat($filterList, $this->nama_guru->AdvancedSearch->toJson(), ","); // Field nama_guru
+        $filterList = Concat($filterList, $this->tempat_kerja->AdvancedSearch->toJson(), ","); // Field tempat_kerja
+        $filterList = Concat($filterList, $this->logo->AdvancedSearch->toJson(), ","); // Field logo
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1103,7 +1056,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         global $UserProfile;
         if (Post("ajax") == "savefilters") { // Save filter request (Ajax)
             $filters = Post("filters");
-            $UserProfile->setSearchFilters(CurrentUserName(), "frencana_pembelajaranlistsrch", $filters);
+            $UserProfile->setSearchFilters(CurrentUserName(), "fpengaturanlistsrch", $filters);
             WriteJson([["success" => true]]); // Success
             return true;
         } elseif (Post("cmd") == "resetfilter") {
@@ -1122,61 +1075,37 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         $filter = json_decode(Post("filter"), true);
         $this->Command = "search";
 
-        // Field id_rencana_pembelajaran
-        $this->id_rencana_pembelajaran->AdvancedSearch->SearchValue = @$filter["x_id_rencana_pembelajaran"];
-        $this->id_rencana_pembelajaran->AdvancedSearch->SearchOperator = @$filter["z_id_rencana_pembelajaran"];
-        $this->id_rencana_pembelajaran->AdvancedSearch->SearchCondition = @$filter["v_id_rencana_pembelajaran"];
-        $this->id_rencana_pembelajaran->AdvancedSearch->SearchValue2 = @$filter["y_id_rencana_pembelajaran"];
-        $this->id_rencana_pembelajaran->AdvancedSearch->SearchOperator2 = @$filter["w_id_rencana_pembelajaran"];
-        $this->id_rencana_pembelajaran->AdvancedSearch->save();
+        // Field id_pengaturan
+        $this->id_pengaturan->AdvancedSearch->SearchValue = @$filter["x_id_pengaturan"];
+        $this->id_pengaturan->AdvancedSearch->SearchOperator = @$filter["z_id_pengaturan"];
+        $this->id_pengaturan->AdvancedSearch->SearchCondition = @$filter["v_id_pengaturan"];
+        $this->id_pengaturan->AdvancedSearch->SearchValue2 = @$filter["y_id_pengaturan"];
+        $this->id_pengaturan->AdvancedSearch->SearchOperator2 = @$filter["w_id_pengaturan"];
+        $this->id_pengaturan->AdvancedSearch->save();
 
-        // Field id_indikator
-        $this->id_indikator->AdvancedSearch->SearchValue = @$filter["x_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchOperator = @$filter["z_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchCondition = @$filter["v_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchValue2 = @$filter["y_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchOperator2 = @$filter["w_id_indikator"];
-        $this->id_indikator->AdvancedSearch->save();
+        // Field nama_guru
+        $this->nama_guru->AdvancedSearch->SearchValue = @$filter["x_nama_guru"];
+        $this->nama_guru->AdvancedSearch->SearchOperator = @$filter["z_nama_guru"];
+        $this->nama_guru->AdvancedSearch->SearchCondition = @$filter["v_nama_guru"];
+        $this->nama_guru->AdvancedSearch->SearchValue2 = @$filter["y_nama_guru"];
+        $this->nama_guru->AdvancedSearch->SearchOperator2 = @$filter["w_nama_guru"];
+        $this->nama_guru->AdvancedSearch->save();
 
-        // Field id_materi
-        $this->id_materi->AdvancedSearch->SearchValue = @$filter["x_id_materi"];
-        $this->id_materi->AdvancedSearch->SearchOperator = @$filter["z_id_materi"];
-        $this->id_materi->AdvancedSearch->SearchCondition = @$filter["v_id_materi"];
-        $this->id_materi->AdvancedSearch->SearchValue2 = @$filter["y_id_materi"];
-        $this->id_materi->AdvancedSearch->SearchOperator2 = @$filter["w_id_materi"];
-        $this->id_materi->AdvancedSearch->save();
+        // Field tempat_kerja
+        $this->tempat_kerja->AdvancedSearch->SearchValue = @$filter["x_tempat_kerja"];
+        $this->tempat_kerja->AdvancedSearch->SearchOperator = @$filter["z_tempat_kerja"];
+        $this->tempat_kerja->AdvancedSearch->SearchCondition = @$filter["v_tempat_kerja"];
+        $this->tempat_kerja->AdvancedSearch->SearchValue2 = @$filter["y_tempat_kerja"];
+        $this->tempat_kerja->AdvancedSearch->SearchOperator2 = @$filter["w_tempat_kerja"];
+        $this->tempat_kerja->AdvancedSearch->save();
 
-        // Field judul
-        $this->judul->AdvancedSearch->SearchValue = @$filter["x_judul"];
-        $this->judul->AdvancedSearch->SearchOperator = @$filter["z_judul"];
-        $this->judul->AdvancedSearch->SearchCondition = @$filter["v_judul"];
-        $this->judul->AdvancedSearch->SearchValue2 = @$filter["y_judul"];
-        $this->judul->AdvancedSearch->SearchOperator2 = @$filter["w_judul"];
-        $this->judul->AdvancedSearch->save();
-
-        // Field kegiatan
-        $this->kegiatan->AdvancedSearch->SearchValue = @$filter["x_kegiatan"];
-        $this->kegiatan->AdvancedSearch->SearchOperator = @$filter["z_kegiatan"];
-        $this->kegiatan->AdvancedSearch->SearchCondition = @$filter["v_kegiatan"];
-        $this->kegiatan->AdvancedSearch->SearchValue2 = @$filter["y_kegiatan"];
-        $this->kegiatan->AdvancedSearch->SearchOperator2 = @$filter["w_kegiatan"];
-        $this->kegiatan->AdvancedSearch->save();
-
-        // Field waktu
-        $this->waktu->AdvancedSearch->SearchValue = @$filter["x_waktu"];
-        $this->waktu->AdvancedSearch->SearchOperator = @$filter["z_waktu"];
-        $this->waktu->AdvancedSearch->SearchCondition = @$filter["v_waktu"];
-        $this->waktu->AdvancedSearch->SearchValue2 = @$filter["y_waktu"];
-        $this->waktu->AdvancedSearch->SearchOperator2 = @$filter["w_waktu"];
-        $this->waktu->AdvancedSearch->save();
-
-        // Field tampilkan
-        $this->tampilkan->AdvancedSearch->SearchValue = @$filter["x_tampilkan"];
-        $this->tampilkan->AdvancedSearch->SearchOperator = @$filter["z_tampilkan"];
-        $this->tampilkan->AdvancedSearch->SearchCondition = @$filter["v_tampilkan"];
-        $this->tampilkan->AdvancedSearch->SearchValue2 = @$filter["y_tampilkan"];
-        $this->tampilkan->AdvancedSearch->SearchOperator2 = @$filter["w_tampilkan"];
-        $this->tampilkan->AdvancedSearch->save();
+        // Field logo
+        $this->logo->AdvancedSearch->SearchValue = @$filter["x_logo"];
+        $this->logo->AdvancedSearch->SearchOperator = @$filter["z_logo"];
+        $this->logo->AdvancedSearch->SearchCondition = @$filter["v_logo"];
+        $this->logo->AdvancedSearch->SearchValue2 = @$filter["y_logo"];
+        $this->logo->AdvancedSearch->SearchOperator2 = @$filter["w_logo"];
+        $this->logo->AdvancedSearch->save();
         $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
         $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
     }
@@ -1185,8 +1114,9 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     protected function basicSearchSql($arKeywords, $type)
     {
         $where = "";
-        $this->buildBasicSearchSql($where, $this->judul, $arKeywords, $type);
-        $this->buildBasicSearchSql($where, $this->kegiatan, $arKeywords, $type);
+        $this->buildBasicSearchSql($where, $this->nama_guru, $arKeywords, $type);
+        $this->buildBasicSearchSql($where, $this->tempat_kerja, $arKeywords, $type);
+        $this->buildBasicSearchSql($where, $this->logo, $arKeywords, $type);
         return $where;
     }
 
@@ -1346,12 +1276,9 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id_rencana_pembelajaran); // id_rencana_pembelajaran
-            $this->updateSort($this->id_indikator); // id_indikator
-            $this->updateSort($this->id_materi); // id_materi
-            $this->updateSort($this->judul); // judul
-            $this->updateSort($this->waktu); // waktu
-            $this->updateSort($this->tampilkan); // tampilkan
+            $this->updateSort($this->id_pengaturan); // id_pengaturan
+            $this->updateSort($this->nama_guru); // nama_guru
+            $this->updateSort($this->logo); // logo
             $this->setStartRecordNumber(1); // Reset start position
         }
     }
@@ -1387,26 +1314,14 @@ class RencanaPembelajaranList extends RencanaPembelajaran
                 $this->resetSearchParms();
             }
 
-            // Reset master/detail keys
-            if ($this->Command == "resetall") {
-                $this->setCurrentMasterTable(""); // Clear master table
-                $this->DbMasterFilter = "";
-                $this->DbDetailFilter = "";
-                        $this->id_indikator->setSessionValue("");
-                        $this->id_materi->setSessionValue("");
-            }
-
             // Reset (clear) sorting order
             if ($this->Command == "resetsort") {
                 $orderBy = "";
                 $this->setSessionOrderBy($orderBy);
-                $this->id_rencana_pembelajaran->setSort("");
-                $this->id_indikator->setSort("");
-                $this->id_materi->setSort("");
-                $this->judul->setSort("");
-                $this->kegiatan->setSort("");
-                $this->waktu->setSort("");
-                $this->tampilkan->setSort("");
+                $this->id_pengaturan->setSort("");
+                $this->nama_guru->setSort("");
+                $this->tempat_kerja->setSort("");
+                $this->logo->setSort("");
             }
 
             // Reset start position
@@ -1436,18 +1351,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         $item = &$this->ListOptions->add("edit");
         $item->CssClass = "text-nowrap";
         $item->Visible = $Security->canEdit();
-        $item->OnLeft = false;
-
-        // "copy"
-        $item = &$this->ListOptions->add("copy");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->canAdd();
-        $item->OnLeft = false;
-
-        // "delete"
-        $item = &$this->ListOptions->add("delete");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->canDelete();
         $item->OnLeft = false;
 
         // List actions
@@ -1510,23 +1413,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
             } else {
                 $opt->Body = "";
             }
-
-            // "copy"
-            $opt = $this->ListOptions["copy"];
-            $copycaption = HtmlTitle($Language->phrase("CopyLink"));
-            if ($Security->canAdd()) {
-                $opt->Body = "<a class=\"ew-row-link ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("CopyLink") . "</a>";
-            } else {
-                $opt->Body = "";
-            }
-
-            // "delete"
-            $opt = $this->ListOptions["delete"];
-            if ($Security->canDelete()) {
-            $opt->Body = "<a class=\"ew-row-link ew-delete\"" . "" . " title=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("DeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("DeleteLink") . "</a>";
-            } else {
-                $opt->Body = "";
-            }
         } // End View mode
 
         // Set up list action buttons
@@ -1562,7 +1448,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
         // "checkbox"
         $opt = $this->ListOptions["checkbox"];
-        $opt->Body = "<div class=\"custom-control custom-checkbox d-inline-block\"><input type=\"checkbox\" id=\"key_m_" . $this->RowCount . "\" name=\"key_m[]\" class=\"custom-control-input ew-multi-select\" value=\"" . HtmlEncode($this->id_rencana_pembelajaran->CurrentValue) . "\" onclick=\"ew.clickMultiCheckbox(event);\"><label class=\"custom-control-label\" for=\"key_m_" . $this->RowCount . "\"></label></div>";
+        $opt->Body = "<div class=\"custom-control custom-checkbox d-inline-block\"><input type=\"checkbox\" id=\"key_m_" . $this->RowCount . "\" name=\"key_m[]\" class=\"custom-control-input ew-multi-select\" value=\"" . HtmlEncode($this->id_pengaturan->CurrentValue) . "\" onclick=\"ew.clickMultiCheckbox(event);\"><label class=\"custom-control-label\" for=\"key_m_" . $this->RowCount . "\"></label></div>";
         $this->renderListOptionsExt();
 
         // Call ListOptions_Rendered event
@@ -1574,13 +1460,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     {
         global $Language, $Security;
         $options = &$this->OtherOptions;
-        $option = $options["addedit"];
-
-        // Add
-        $item = &$option->add("add");
-        $addcaption = HtmlTitle($Language->phrase("AddLink"));
-        $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
-        $item->Visible = $this->AddUrl != "" && $Security->canAdd();
         $option = $options["action"];
 
         // Set up options default
@@ -1598,10 +1477,10 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
         // Filter button
         $item = &$this->FilterOptions->add("savecurrentfilter");
-        $item->Body = "<a class=\"ew-save-filter\" data-form=\"frencana_pembelajaranlistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("SaveCurrentFilter") . "</a>";
+        $item->Body = "<a class=\"ew-save-filter\" data-form=\"fpengaturanlistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("SaveCurrentFilter") . "</a>";
         $item->Visible = true;
         $item = &$this->FilterOptions->add("deletefilter");
-        $item->Body = "<a class=\"ew-delete-filter\" data-form=\"frencana_pembelajaranlistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("DeleteFilter") . "</a>";
+        $item->Body = "<a class=\"ew-delete-filter\" data-form=\"fpengaturanlistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("DeleteFilter") . "</a>";
         $item->Visible = true;
         $this->FilterOptions->UseDropDownButton = true;
         $this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
@@ -1625,7 +1504,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
                 $item = &$option->add("custom_" . $listaction->Action);
                 $caption = $listaction->Caption;
                 $icon = ($listaction->Icon != "") ? '<i class="' . HtmlEncode($listaction->Icon) . '" data-caption="' . HtmlEncode($caption) . '"></i>' . $caption : $caption;
-                $item->Body = '<a class="ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" href="#" onclick="return ew.submitAction(event,jQuery.extend({f:document.frencana_pembelajaranlist},' . $listaction->toJson(true) . '));">' . $icon . '</a>';
+                $item->Body = '<a class="ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" href="#" onclick="return ew.submitAction(event,jQuery.extend({f:document.fpengaturanlist},' . $listaction->toJson(true) . '));">' . $icon . '</a>';
                 $item->Visible = $listaction->Allow;
             }
         }
@@ -1812,26 +1691,21 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         if (!$rs) {
             return;
         }
-        $this->id_rencana_pembelajaran->setDbValue($row['id_rencana_pembelajaran']);
-        $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->id_materi->setDbValue($row['id_materi']);
-        $this->judul->setDbValue($row['judul']);
-        $this->kegiatan->setDbValue($row['kegiatan']);
-        $this->waktu->setDbValue($row['waktu']);
-        $this->tampilkan->setDbValue($row['tampilkan']);
+        $this->id_pengaturan->setDbValue($row['id_pengaturan']);
+        $this->nama_guru->setDbValue($row['nama_guru']);
+        $this->tempat_kerja->setDbValue($row['tempat_kerja']);
+        $this->logo->Upload->DbValue = $row['logo'];
+        $this->logo->setDbValue($this->logo->Upload->DbValue);
     }
 
     // Return a row with default values
     protected function newRow()
     {
         $row = [];
-        $row['id_rencana_pembelajaran'] = null;
-        $row['id_indikator'] = null;
-        $row['id_materi'] = null;
-        $row['judul'] = null;
-        $row['kegiatan'] = null;
-        $row['waktu'] = null;
-        $row['tampilkan'] = null;
+        $row['id_pengaturan'] = null;
+        $row['nama_guru'] = null;
+        $row['tempat_kerja'] = null;
+        $row['logo'] = null;
         return $row;
     }
 
@@ -1840,8 +1714,8 @@ class RencanaPembelajaranList extends RencanaPembelajaran
     {
         // Load key values from Session
         $validKey = true;
-        if (strval($this->getKey("id_rencana_pembelajaran")) != "") {
-            $this->id_rencana_pembelajaran->OldValue = $this->getKey("id_rencana_pembelajaran"); // id_rencana_pembelajaran
+        if (strval($this->getKey("id_pengaturan")) != "") {
+            $this->id_pengaturan->OldValue = $this->getKey("id_pengaturan"); // id_pengaturan
         } else {
             $validKey = false;
         }
@@ -1876,112 +1750,61 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
         // Common render codes for all row types
 
-        // id_rencana_pembelajaran
+        // id_pengaturan
 
-        // id_indikator
+        // nama_guru
 
-        // id_materi
+        // tempat_kerja
 
-        // judul
-
-        // kegiatan
-
-        // waktu
-
-        // tampilkan
+        // logo
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_rencana_pembelajaran
-            $this->id_rencana_pembelajaran->ViewValue = $this->id_rencana_pembelajaran->CurrentValue;
-            $this->id_rencana_pembelajaran->ViewCustomAttributes = "";
+            // id_pengaturan
+            $this->id_pengaturan->ViewValue = $this->id_pengaturan->CurrentValue;
+            $this->id_pengaturan->ViewCustomAttributes = "";
 
-            // id_indikator
-            $curVal = strval($this->id_indikator->CurrentValue);
-            if ($curVal != "") {
-                $this->id_indikator->ViewValue = $this->id_indikator->lookupCacheOption($curVal);
-                if ($this->id_indikator->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_indikator`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_indikator->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_indikator->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_indikator->ViewValue = $this->id_indikator->displayValue($arwrk);
-                    } else {
-                        $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
-                    }
+            // nama_guru
+            $this->nama_guru->ViewValue = $this->nama_guru->CurrentValue;
+            $this->nama_guru->ViewCustomAttributes = "";
+
+            // logo
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->ImageAlt = $this->logo->alt();
+                $this->logo->ViewValue = $this->logo->Upload->DbValue;
+            } else {
+                $this->logo->ViewValue = "";
+            }
+            $this->logo->ViewCustomAttributes = "";
+
+            // id_pengaturan
+            $this->id_pengaturan->LinkCustomAttributes = "";
+            $this->id_pengaturan->HrefValue = "";
+            $this->id_pengaturan->TooltipValue = "";
+
+            // nama_guru
+            $this->nama_guru->LinkCustomAttributes = "";
+            $this->nama_guru->HrefValue = "";
+            $this->nama_guru->TooltipValue = "";
+
+            // logo
+            $this->logo->LinkCustomAttributes = "";
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->HrefValue = GetFileUploadUrl($this->logo, $this->logo->htmlDecode($this->logo->Upload->DbValue)); // Add prefix/suffix
+                $this->logo->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->logo->HrefValue = FullUrl($this->logo->HrefValue, "href");
                 }
             } else {
-                $this->id_indikator->ViewValue = null;
+                $this->logo->HrefValue = "";
             }
-            $this->id_indikator->ViewCustomAttributes = "";
-
-            // id_materi
-            $curVal = strval($this->id_materi->CurrentValue);
-            if ($curVal != "") {
-                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
-                if ($this->id_materi->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
-                    } else {
-                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-                    }
+            $this->logo->ExportHrefValue = $this->logo->UploadPath . $this->logo->Upload->DbValue;
+            $this->logo->TooltipValue = "";
+            if ($this->logo->UseColorbox) {
+                if (EmptyValue($this->logo->TooltipValue)) {
+                    $this->logo->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
                 }
-            } else {
-                $this->id_materi->ViewValue = null;
+                $this->logo->LinkAttrs["data-rel"] = "pengaturan_x" . $this->RowCount . "_logo";
+                $this->logo->LinkAttrs->appendClass("ew-lightbox");
             }
-            $this->id_materi->ViewCustomAttributes = "";
-
-            // judul
-            $this->judul->ViewValue = $this->judul->CurrentValue;
-            $this->judul->ViewCustomAttributes = "";
-
-            // waktu
-            $this->waktu->ViewValue = $this->waktu->CurrentValue;
-            $this->waktu->ViewValue = FormatNumber($this->waktu->ViewValue, 0, -2, -2, -2);
-            $this->waktu->ViewCustomAttributes = "";
-
-            // tampilkan
-            if (strval($this->tampilkan->CurrentValue) != "") {
-                $this->tampilkan->ViewValue = $this->tampilkan->optionCaption($this->tampilkan->CurrentValue);
-            } else {
-                $this->tampilkan->ViewValue = null;
-            }
-            $this->tampilkan->ViewCustomAttributes = "";
-
-            // id_rencana_pembelajaran
-            $this->id_rencana_pembelajaran->LinkCustomAttributes = "";
-            $this->id_rencana_pembelajaran->HrefValue = "";
-            $this->id_rencana_pembelajaran->TooltipValue = "";
-
-            // id_indikator
-            $this->id_indikator->LinkCustomAttributes = "";
-            $this->id_indikator->HrefValue = "";
-            $this->id_indikator->TooltipValue = "";
-
-            // id_materi
-            $this->id_materi->LinkCustomAttributes = "";
-            $this->id_materi->HrefValue = "";
-            $this->id_materi->TooltipValue = "";
-
-            // judul
-            $this->judul->LinkCustomAttributes = "";
-            $this->judul->HrefValue = "";
-            $this->judul->TooltipValue = "";
-
-            // waktu
-            $this->waktu->LinkCustomAttributes = "";
-            $this->waktu->HrefValue = "";
-            $this->waktu->TooltipValue = "";
-
-            // tampilkan
-            $this->tampilkan->LinkCustomAttributes = "";
-            $this->tampilkan->HrefValue = "";
-            $this->tampilkan->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -2001,7 +1824,7 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         // Search button
         $item = &$this->SearchOptions->add("searchtoggle");
         $searchToggleClass = ($this->SearchWhere != "") ? " active" : " active";
-        $item->Body = "<a class=\"btn btn-default ew-search-toggle" . $searchToggleClass . "\" href=\"#\" role=\"button\" title=\"" . $Language->phrase("SearchPanel") . "\" data-caption=\"" . $Language->phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"frencana_pembelajaranlistsrch\" aria-pressed=\"" . ($searchToggleClass == " active" ? "true" : "false") . "\">" . $Language->phrase("SearchLink") . "</a>";
+        $item->Body = "<a class=\"btn btn-default ew-search-toggle" . $searchToggleClass . "\" href=\"#\" role=\"button\" title=\"" . $Language->phrase("SearchPanel") . "\" data-caption=\"" . $Language->phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"fpengaturanlistsrch\" aria-pressed=\"" . ($searchToggleClass == " active" ? "true" : "false") . "\">" . $Language->phrase("SearchLink") . "</a>";
         $item->Visible = true;
 
         // Show all button
@@ -2023,114 +1846,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
         if ($this->isExport() || $this->CurrentAction) {
             $this->SearchOptions->hideAllOptions();
         }
-    }
-
-    // Set up master/detail based on QueryString
-    protected function setupMasterParms()
-    {
-        $validMaster = false;
-        // Get the keys for master table
-        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
-            $masterTblVar = $master;
-            if ($masterTblVar == "") {
-                $validMaster = true;
-                $this->DbMasterFilter = "";
-                $this->DbDetailFilter = "";
-            }
-            if ($masterTblVar == "indikator_rencana_belajar") {
-                $validMaster = true;
-                $masterTbl = Container("indikator_rencana_belajar");
-                if (($parm = Get("fk_id_indikator", Get("id_indikator"))) !== null) {
-                    $masterTbl->id_indikator->setQueryStringValue($parm);
-                    $this->id_indikator->setQueryStringValue($masterTbl->id_indikator->QueryStringValue);
-                    $this->id_indikator->setSessionValue($this->id_indikator->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_indikator->QueryStringValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-            if ($masterTblVar == "materi") {
-                $validMaster = true;
-                $masterTbl = Container("materi");
-                if (($parm = Get("fk_id_materi", Get("id_materi"))) !== null) {
-                    $masterTbl->id_materi->setQueryStringValue($parm);
-                    $this->id_materi->setQueryStringValue($masterTbl->id_materi->QueryStringValue);
-                    $this->id_materi->setSessionValue($this->id_materi->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_materi->QueryStringValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
-            $masterTblVar = $master;
-            if ($masterTblVar == "") {
-                    $validMaster = true;
-                    $this->DbMasterFilter = "";
-                    $this->DbDetailFilter = "";
-            }
-            if ($masterTblVar == "indikator_rencana_belajar") {
-                $validMaster = true;
-                $masterTbl = Container("indikator_rencana_belajar");
-                if (($parm = Post("fk_id_indikator", Post("id_indikator"))) !== null) {
-                    $masterTbl->id_indikator->setFormValue($parm);
-                    $this->id_indikator->setFormValue($masterTbl->id_indikator->FormValue);
-                    $this->id_indikator->setSessionValue($this->id_indikator->FormValue);
-                    if (!is_numeric($masterTbl->id_indikator->FormValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-            if ($masterTblVar == "materi") {
-                $validMaster = true;
-                $masterTbl = Container("materi");
-                if (($parm = Post("fk_id_materi", Post("id_materi"))) !== null) {
-                    $masterTbl->id_materi->setFormValue($parm);
-                    $this->id_materi->setFormValue($masterTbl->id_materi->FormValue);
-                    $this->id_materi->setSessionValue($this->id_materi->FormValue);
-                    if (!is_numeric($masterTbl->id_materi->FormValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-        }
-        if ($validMaster) {
-            // Update URL
-            $this->AddUrl = $this->addMasterUrl($this->AddUrl);
-            $this->InlineAddUrl = $this->addMasterUrl($this->InlineAddUrl);
-            $this->GridAddUrl = $this->addMasterUrl($this->GridAddUrl);
-            $this->GridEditUrl = $this->addMasterUrl($this->GridEditUrl);
-
-            // Save current master table
-            $this->setCurrentMasterTable($masterTblVar);
-
-            // Reset start record counter (new master key)
-            if (!$this->isAddOrEdit()) {
-                $this->StartRecord = 1;
-                $this->setStartRecordNumber($this->StartRecord);
-            }
-
-            // Clear previous master key from Session
-            if ($masterTblVar != "indikator_rencana_belajar") {
-                if ($this->id_indikator->CurrentValue == "") {
-                    $this->id_indikator->setSessionValue("");
-                }
-            }
-            if ($masterTblVar != "materi") {
-                if ($this->id_materi->CurrentValue == "") {
-                    $this->id_materi->setSessionValue("");
-                }
-            }
-        }
-        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
-        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
     }
 
     // Set up Breadcrumb
@@ -2156,12 +1871,6 @@ class RencanaPembelajaranList extends RencanaPembelajaran
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_id_indikator":
-                    break;
-                case "x_id_materi":
-                    break;
-                case "x_tampilkan":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;

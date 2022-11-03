@@ -22,6 +22,7 @@ loadjs.ready("head", function () {
         ["id_rencana_pembelajaran", [fields.id_rencana_pembelajaran.required ? ew.Validators.required(fields.id_rencana_pembelajaran.caption) : null], fields.id_rencana_pembelajaran.isInvalid],
         ["id_indikator", [fields.id_indikator.required ? ew.Validators.required(fields.id_indikator.caption) : null], fields.id_indikator.isInvalid],
         ["id_materi", [fields.id_materi.required ? ew.Validators.required(fields.id_materi.caption) : null], fields.id_materi.isInvalid],
+        ["judul", [fields.judul.required ? ew.Validators.required(fields.judul.caption) : null], fields.judul.isInvalid],
         ["waktu", [fields.waktu.required ? ew.Validators.required(fields.waktu.caption) : null], fields.waktu.isInvalid],
         ["tampilkan", [fields.tampilkan.required ? ew.Validators.required(fields.tampilkan.caption) : null], fields.tampilkan.isInvalid]
     ]);
@@ -81,6 +82,8 @@ loadjs.ready("head", function () {
             return false;
         if (ew.valueChanged(fobj, rowIndex, "id_materi", false))
             return false;
+        if (ew.valueChanged(fobj, rowIndex, "judul", false))
+            return false;
         if (ew.valueChanged(fobj, rowIndex, "waktu", false))
             return false;
         if (ew.valueChanged(fobj, rowIndex, "tampilkan", false))
@@ -133,6 +136,9 @@ $Grid->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Grid->id_materi->Visible) { // id_materi ?>
         <th data-name="id_materi" class="<?= $Grid->id_materi->headerCellClass() ?>"><div id="elh_rencana_pembelajaran_id_materi" class="rencana_pembelajaran_id_materi"><?= $Grid->renderSort($Grid->id_materi) ?></div></th>
+<?php } ?>
+<?php if ($Grid->judul->Visible) { // judul ?>
+        <th data-name="judul" class="<?= $Grid->judul->headerCellClass() ?>"><div id="elh_rencana_pembelajaran_judul" class="rencana_pembelajaran_judul"><?= $Grid->renderSort($Grid->judul) ?></div></th>
 <?php } ?>
 <?php if ($Grid->waktu->Visible) { // waktu ?>
         <th data-name="waktu" class="<?= $Grid->waktu->headerCellClass() ?>"><div id="elh_rencana_pembelajaran_waktu" class="rencana_pembelajaran_waktu"><?= $Grid->renderSort($Grid->waktu) ?></div></th>
@@ -446,6 +452,33 @@ loadjs.ready("head", function() {
 <?php } ?>
 </td>
     <?php } ?>
+    <?php if ($Grid->judul->Visible) { // judul ?>
+        <td data-name="judul" <?= $Grid->judul->cellAttributes() ?>>
+<?php if ($Grid->RowType == ROWTYPE_ADD) { // Add record ?>
+<span id="el<?= $Grid->RowCount ?>_rencana_pembelajaran_judul" class="form-group">
+<input type="<?= $Grid->judul->getInputTextType() ?>" data-table="rencana_pembelajaran" data-field="x_judul" name="x<?= $Grid->RowIndex ?>_judul" id="x<?= $Grid->RowIndex ?>_judul" size="30" maxlength="255" placeholder="<?= HtmlEncode($Grid->judul->getPlaceHolder()) ?>" value="<?= $Grid->judul->EditValue ?>"<?= $Grid->judul->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Grid->judul->getErrorMessage() ?></div>
+</span>
+<input type="hidden" data-table="rencana_pembelajaran" data-field="x_judul" name="o<?= $Grid->RowIndex ?>_judul" id="o<?= $Grid->RowIndex ?>_judul" value="<?= HtmlEncode($Grid->judul->OldValue) ?>">
+<?php } ?>
+<?php if ($Grid->RowType == ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?= $Grid->RowCount ?>_rencana_pembelajaran_judul" class="form-group">
+<input type="<?= $Grid->judul->getInputTextType() ?>" data-table="rencana_pembelajaran" data-field="x_judul" name="x<?= $Grid->RowIndex ?>_judul" id="x<?= $Grid->RowIndex ?>_judul" size="30" maxlength="255" placeholder="<?= HtmlEncode($Grid->judul->getPlaceHolder()) ?>" value="<?= $Grid->judul->EditValue ?>"<?= $Grid->judul->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Grid->judul->getErrorMessage() ?></div>
+</span>
+<?php } ?>
+<?php if ($Grid->RowType == ROWTYPE_VIEW) { // View record ?>
+<span id="el<?= $Grid->RowCount ?>_rencana_pembelajaran_judul">
+<span<?= $Grid->judul->viewAttributes() ?>>
+<?= $Grid->judul->getViewValue() ?></span>
+</span>
+<?php if ($Grid->isConfirm()) { ?>
+<input type="hidden" data-table="rencana_pembelajaran" data-field="x_judul" name="frencana_pembelajarangrid$x<?= $Grid->RowIndex ?>_judul" id="frencana_pembelajarangrid$x<?= $Grid->RowIndex ?>_judul" value="<?= HtmlEncode($Grid->judul->FormValue) ?>">
+<input type="hidden" data-table="rencana_pembelajaran" data-field="x_judul" name="frencana_pembelajarangrid$o<?= $Grid->RowIndex ?>_judul" id="frencana_pembelajarangrid$o<?= $Grid->RowIndex ?>_judul" value="<?= HtmlEncode($Grid->judul->OldValue) ?>">
+<?php } ?>
+<?php } ?>
+</td>
+    <?php } ?>
     <?php if ($Grid->waktu->Visible) { // waktu ?>
         <td data-name="waktu" <?= $Grid->waktu->cellAttributes() ?>>
 <?php if ($Grid->RowType == ROWTYPE_ADD) { // Add record ?>
@@ -690,6 +723,23 @@ loadjs.ready("head", function() {
 <input type="hidden" data-table="rencana_pembelajaran" data-field="x_id_materi" name="x<?= $Grid->RowIndex ?>_id_materi" id="x<?= $Grid->RowIndex ?>_id_materi" value="<?= HtmlEncode($Grid->id_materi->FormValue) ?>">
 <?php } ?>
 <input type="hidden" data-table="rencana_pembelajaran" data-field="x_id_materi" name="o<?= $Grid->RowIndex ?>_id_materi" id="o<?= $Grid->RowIndex ?>_id_materi" value="<?= HtmlEncode($Grid->id_materi->OldValue) ?>">
+</td>
+    <?php } ?>
+    <?php if ($Grid->judul->Visible) { // judul ?>
+        <td data-name="judul">
+<?php if (!$Grid->isConfirm()) { ?>
+<span id="el$rowindex$_rencana_pembelajaran_judul" class="form-group rencana_pembelajaran_judul">
+<input type="<?= $Grid->judul->getInputTextType() ?>" data-table="rencana_pembelajaran" data-field="x_judul" name="x<?= $Grid->RowIndex ?>_judul" id="x<?= $Grid->RowIndex ?>_judul" size="30" maxlength="255" placeholder="<?= HtmlEncode($Grid->judul->getPlaceHolder()) ?>" value="<?= $Grid->judul->EditValue ?>"<?= $Grid->judul->editAttributes() ?>>
+<div class="invalid-feedback"><?= $Grid->judul->getErrorMessage() ?></div>
+</span>
+<?php } else { ?>
+<span id="el$rowindex$_rencana_pembelajaran_judul" class="form-group rencana_pembelajaran_judul">
+<span<?= $Grid->judul->viewAttributes() ?>>
+<input type="text" readonly class="form-control-plaintext" value="<?= HtmlEncode(RemoveHtml($Grid->judul->ViewValue)) ?>"></span>
+</span>
+<input type="hidden" data-table="rencana_pembelajaran" data-field="x_judul" name="x<?= $Grid->RowIndex ?>_judul" id="x<?= $Grid->RowIndex ?>_judul" value="<?= HtmlEncode($Grid->judul->FormValue) ?>">
+<?php } ?>
+<input type="hidden" data-table="rencana_pembelajaran" data-field="x_judul" name="o<?= $Grid->RowIndex ?>_judul" id="o<?= $Grid->RowIndex ?>_judul" value="<?= HtmlEncode($Grid->judul->OldValue) ?>">
 </td>
     <?php } ?>
     <?php if ($Grid->waktu->Visible) { // waktu ?>

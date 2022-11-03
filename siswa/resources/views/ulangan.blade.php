@@ -141,25 +141,25 @@
     <br>
 
     <!--
-                                                                                    <table class="table table-bordered">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th>3 Terendah</th>
-                                                                                            </tr>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <?php
-                                                                                            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
-
-                                                                                            ?>
-                                                                                            @foreach ($tertinggi as $item)
-    <tr>
-                                                                                                    <td>{{ $item->nama }}</td>
+                                                                                        <table class="table table-bordered">
+                                                                                            <thead>
+                                                                                                <tr>
+                                                                                                    <th>3 Terendah</th>
                                                                                                 </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                <?php
+                                                                                                $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
+
+                                                                                                ?>
+                                                                                                @foreach ($tertinggi as $item)
+    <tr>
+                                                                                                        <td>{{ $item->nama }}</td>
+                                                                                                    </tr>
     @endforeach
 
-                                                                                        </tbody>
-                                                                                    </table>
+                                                                                            </tbody>
+                                                                                        </table>
 
-                                                                                -->
+                                                                                    -->
 @endsection

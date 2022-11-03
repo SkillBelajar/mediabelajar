@@ -24,7 +24,8 @@ $USER_LEVEL_PRIVS = [["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}evaluasi","-2","0"]
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}siswa","-2","0"],
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}skor_ulangan","-2","0"],
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}terpilih","-2","0"],
-    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}ulangan","-2","0"]];
+    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}ulangan","-2","0"],
+    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}pengaturan","-2","0"]];
 // User level table info
 $USER_LEVEL_TABLES = [["evaluasi","evaluasi","evaluasi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["materi","materi","materi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
@@ -43,4 +44,5 @@ $USER_LEVEL_TABLES = [["evaluasi","evaluasi","evaluasi",true,"{08AC9454-AE1D-4A1
     ["siswa","siswa","siswa",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["skor_ulangan","skor_ulangan","skor ulangan",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["terpilih","terpilih","terpilih",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
-    ["ulangan","ulangan","ulangan",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"]];
+    ["ulangan","ulangan","ulangan",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
+    ["pengaturan","pengaturan","pengaturan",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"]];

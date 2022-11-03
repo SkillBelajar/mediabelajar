@@ -75,6 +75,17 @@ $Page->showMessage();
 </td>
     </tr>
 <?php } ?>
+<?php if ($Page->judul->Visible) { // judul ?>
+    <tr id="r_judul">
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_rencana_pembelajaran_judul"><?= $Page->judul->caption() ?></span></td>
+        <td data-name="judul" <?= $Page->judul->cellAttributes() ?>>
+<span id="el_rencana_pembelajaran_judul">
+<span<?= $Page->judul->viewAttributes() ?>>
+<?= $Page->judul->getViewValue() ?></span>
+</span>
+</td>
+    </tr>
+<?php } ?>
 <?php if ($Page->kegiatan->Visible) { // kegiatan ?>
     <tr id="r_kegiatan">
         <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_rencana_pembelajaran_kegiatan"><?= $Page->kegiatan->caption() ?></span></td>

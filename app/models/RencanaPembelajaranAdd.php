@@ -628,6 +628,7 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         $this->id_rencana_pembelajaran->Visible = false;
         $this->id_indikator->setVisibility();
         $this->id_materi->setVisibility();
+        $this->judul->setVisibility();
         $this->kegiatan->setVisibility();
         $this->waktu->setVisibility();
         $this->tampilkan->setVisibility();
@@ -791,6 +792,8 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         $this->id_indikator->OldValue = $this->id_indikator->CurrentValue;
         $this->id_materi->CurrentValue = null;
         $this->id_materi->OldValue = $this->id_materi->CurrentValue;
+        $this->judul->CurrentValue = null;
+        $this->judul->OldValue = $this->judul->CurrentValue;
         $this->kegiatan->CurrentValue = null;
         $this->kegiatan->OldValue = $this->kegiatan->CurrentValue;
         $this->waktu->CurrentValue = null;
@@ -822,6 +825,16 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
                 $this->id_materi->Visible = false; // Disable update for API request
             } else {
                 $this->id_materi->setFormValue($val);
+            }
+        }
+
+        // Check field name 'judul' first before field var 'x_judul'
+        $val = $CurrentForm->hasValue("judul") ? $CurrentForm->getValue("judul") : $CurrentForm->getValue("x_judul");
+        if (!$this->judul->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->judul->Visible = false; // Disable update for API request
+            } else {
+                $this->judul->setFormValue($val);
             }
         }
 
@@ -865,6 +878,7 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         global $CurrentForm;
         $this->id_indikator->CurrentValue = $this->id_indikator->FormValue;
         $this->id_materi->CurrentValue = $this->id_materi->FormValue;
+        $this->judul->CurrentValue = $this->judul->FormValue;
         $this->kegiatan->CurrentValue = $this->kegiatan->FormValue;
         $this->waktu->CurrentValue = $this->waktu->FormValue;
         $this->tampilkan->CurrentValue = $this->tampilkan->FormValue;
@@ -920,6 +934,7 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         $this->id_rencana_pembelajaran->setDbValue($row['id_rencana_pembelajaran']);
         $this->id_indikator->setDbValue($row['id_indikator']);
         $this->id_materi->setDbValue($row['id_materi']);
+        $this->judul->setDbValue($row['judul']);
         $this->kegiatan->setDbValue($row['kegiatan']);
         $this->waktu->setDbValue($row['waktu']);
         $this->tampilkan->setDbValue($row['tampilkan']);
@@ -933,6 +948,7 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         $row['id_rencana_pembelajaran'] = $this->id_rencana_pembelajaran->CurrentValue;
         $row['id_indikator'] = $this->id_indikator->CurrentValue;
         $row['id_materi'] = $this->id_materi->CurrentValue;
+        $row['judul'] = $this->judul->CurrentValue;
         $row['kegiatan'] = $this->kegiatan->CurrentValue;
         $row['waktu'] = $this->waktu->CurrentValue;
         $row['tampilkan'] = $this->tampilkan->CurrentValue;
@@ -979,6 +995,8 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         // id_indikator
 
         // id_materi
+
+        // judul
 
         // kegiatan
 
@@ -1032,6 +1050,10 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
             }
             $this->id_materi->ViewCustomAttributes = "";
 
+            // judul
+            $this->judul->ViewValue = $this->judul->CurrentValue;
+            $this->judul->ViewCustomAttributes = "";
+
             // kegiatan
             $this->kegiatan->ViewValue = $this->kegiatan->CurrentValue;
             $this->kegiatan->ViewCustomAttributes = "";
@@ -1058,6 +1080,11 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
             $this->id_materi->TooltipValue = "";
+
+            // judul
+            $this->judul->LinkCustomAttributes = "";
+            $this->judul->HrefValue = "";
+            $this->judul->TooltipValue = "";
 
             // kegiatan
             $this->kegiatan->LinkCustomAttributes = "";
@@ -1170,6 +1197,15 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
                 $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
             }
 
+            // judul
+            $this->judul->EditAttrs["class"] = "form-control";
+            $this->judul->EditCustomAttributes = "";
+            if (!$this->judul->Raw) {
+                $this->judul->CurrentValue = HtmlDecode($this->judul->CurrentValue);
+            }
+            $this->judul->EditValue = HtmlEncode($this->judul->CurrentValue);
+            $this->judul->PlaceHolder = RemoveHtml($this->judul->caption());
+
             // kegiatan
             $this->kegiatan->EditAttrs["class"] = "form-control";
             $this->kegiatan->EditCustomAttributes = "";
@@ -1197,6 +1233,10 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
+
+            // judul
+            $this->judul->LinkCustomAttributes = "";
+            $this->judul->HrefValue = "";
 
             // kegiatan
             $this->kegiatan->LinkCustomAttributes = "";
@@ -1237,6 +1277,11 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
         if ($this->id_materi->Required) {
             if (!$this->id_materi->IsDetailKey && EmptyValue($this->id_materi->FormValue)) {
                 $this->id_materi->addErrorMessage(str_replace("%s", $this->id_materi->caption(), $this->id_materi->RequiredErrorMessage));
+            }
+        }
+        if ($this->judul->Required) {
+            if (!$this->judul->IsDetailKey && EmptyValue($this->judul->FormValue)) {
+                $this->judul->addErrorMessage(str_replace("%s", $this->judul->caption(), $this->judul->RequiredErrorMessage));
             }
         }
         if ($this->kegiatan->Required) {
@@ -1287,6 +1332,9 @@ class RencanaPembelajaranAdd extends RencanaPembelajaran
 
         // id_materi
         $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, false);
+
+        // judul
+        $this->judul->setDbValueDef($rsnew, $this->judul->CurrentValue, "", false);
 
         // kegiatan
         $this->kegiatan->setDbValueDef($rsnew, $this->kegiatan->CurrentValue, "", false);

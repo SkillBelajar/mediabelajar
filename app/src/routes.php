@@ -239,6 +239,19 @@ return function (App $app) {
         }
     );
 
+    // pengaturan
+    $app->any('/PengaturanList[/{id_pengaturan}]', PengaturanController::class . ':list')->add(PermissionMiddleware::class)->setName('PengaturanList-pengaturan-list'); // list
+    $app->any('/PengaturanView[/{id_pengaturan}]', PengaturanController::class . ':view')->add(PermissionMiddleware::class)->setName('PengaturanView-pengaturan-view'); // view
+    $app->any('/PengaturanEdit[/{id_pengaturan}]', PengaturanController::class . ':edit')->add(PermissionMiddleware::class)->setName('PengaturanEdit-pengaturan-edit'); // edit
+    $app->group(
+        '/pengaturan',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_pengaturan}]', PengaturanController::class . ':list')->add(PermissionMiddleware::class)->setName('pengaturan/list-pengaturan-list-2'); // list
+            $group->any('/view[/{id_pengaturan}]', PengaturanController::class . ':view')->add(PermissionMiddleware::class)->setName('pengaturan/view-pengaturan-view-2'); // view
+            $group->any('/edit[/{id_pengaturan}]', PengaturanController::class . ':edit')->add(PermissionMiddleware::class)->setName('pengaturan/edit-pengaturan-edit-2'); // edit
+        }
+    );
+
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
 

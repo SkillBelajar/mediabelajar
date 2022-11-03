@@ -29,4 +29,5 @@ $sideMenu->addMenuItem(4, "mi_peserta", $MenuLanguage->MenuPhrase("4", "MenuText
 $sideMenu->addMenuItem(20, "mi_siswa", $MenuLanguage->MenuPhrase("20", "MenuText"), $MenuRelativePath . "SiswaList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}siswa'), false, false, "", "", false);
 $sideMenu->addMenuItem(14, "mi_data_peserta", $MenuLanguage->MenuPhrase("14", "MenuText"), $MenuRelativePath . "DataPesertaList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}data_peserta'), false, false, "", "", false);
 $sideMenu->addMenuItem(6, "mi_gambar", $MenuLanguage->MenuPhrase("6", "MenuText"), $MenuRelativePath . "GambarList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}gambar'), false, false, "", "", false);
+$sideMenu->addMenuItem(24, "mi_pengaturan", $MenuLanguage->MenuPhrase("24", "MenuText"), $MenuRelativePath . "PengaturanList", -1, "", IsLoggedIn() || AllowListMenu('{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}pengaturan'), false, false, "", "", false);
 echo $sideMenu->toScript();

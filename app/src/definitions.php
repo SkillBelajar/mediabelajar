@@ -67,6 +67,7 @@ return [
     "skor_ulangan" => \DI\create(SkorUlangan::class),
     "terpilih" => \DI\create(Terpilih::class),
     "ulangan" => \DI\create(Ulangan::class),
+    "pengaturan" => \DI\create(Pengaturan::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),

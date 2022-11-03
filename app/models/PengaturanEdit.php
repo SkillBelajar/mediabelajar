@@ -7,57 +7,25 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class RencanaPembelajaranView extends RencanaPembelajaran
+class PengaturanEdit extends Pengaturan
 {
     // Page ID
-    public $PageID = "view";
+    public $PageID = "edit";
 
     // Project ID
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'rencana_pembelajaran';
+    public $TableName = 'pengaturan';
 
     // Page object name
-    public $PageObjName = "RencanaPembelajaranView";
+    public $PageObjName = "PengaturanEdit";
 
     // Rendering View
     public $RenderingView = false;
 
     // Custom template
     public $UseCustomTemplate = false;
-
-    // Page URLs
-    public $AddUrl;
-    public $EditUrl;
-    public $CopyUrl;
-    public $DeleteUrl;
-    public $ViewUrl;
-    public $ListUrl;
-
-    // Export URLs
-    public $ExportPrintUrl;
-    public $ExportHtmlUrl;
-    public $ExportExcelUrl;
-    public $ExportWordUrl;
-    public $ExportXmlUrl;
-    public $ExportCsvUrl;
-    public $ExportPdfUrl;
-
-    // Custom export
-    public $ExportExcelCustom = false;
-    public $ExportWordCustom = false;
-    public $ExportPdfCustom = false;
-    public $ExportEmailCustom = false;
-
-    // Update URLs
-    public $InlineAddUrl;
-    public $InlineCopyUrl;
-    public $InlineEditUrl;
-    public $GridAddUrl;
-    public $GridEditUrl;
-    public $MultiDeleteUrl;
-    public $MultiUpdateUrl;
 
     // Page headings
     public $Heading = "";
@@ -342,27 +310,17 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         // Parent constuctor
         parent::__construct();
 
-        // Table object (rencana_pembelajaran)
-        if (!isset($GLOBALS["rencana_pembelajaran"]) || get_class($GLOBALS["rencana_pembelajaran"]) == PROJECT_NAMESPACE . "rencana_pembelajaran") {
-            $GLOBALS["rencana_pembelajaran"] = &$this;
+        // Table object (pengaturan)
+        if (!isset($GLOBALS["pengaturan"]) || get_class($GLOBALS["pengaturan"]) == PROJECT_NAMESPACE . "pengaturan") {
+            $GLOBALS["pengaturan"] = &$this;
         }
 
         // Page URL
         $pageUrl = $this->pageUrl();
-        if (($keyValue = Get("id_rencana_pembelajaran") ?? Route("id_rencana_pembelajaran")) !== null) {
-            $this->RecKey["id_rencana_pembelajaran"] = $keyValue;
-        }
-        $this->ExportPrintUrl = $pageUrl . "export=print";
-        $this->ExportHtmlUrl = $pageUrl . "export=html";
-        $this->ExportExcelUrl = $pageUrl . "export=excel";
-        $this->ExportWordUrl = $pageUrl . "export=word";
-        $this->ExportXmlUrl = $pageUrl . "export=xml";
-        $this->ExportCsvUrl = $pageUrl . "export=csv";
-        $this->ExportPdfUrl = $pageUrl . "export=pdf";
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'rencana_pembelajaran');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'pengaturan');
         }
 
         // Start timer
@@ -373,19 +331,6 @@ class RencanaPembelajaranView extends RencanaPembelajaran
 
         // Open connection
         $GLOBALS["Conn"] = $GLOBALS["Conn"] ?? $this->getConnection();
-
-        // Export options
-        $this->ExportOptions = new ListOptions("div");
-        $this->ExportOptions->TagClassName = "ew-export-option";
-
-        // Other options
-        if (!$this->OtherOptions) {
-            $this->OtherOptions = new ListOptionsArray();
-        }
-        $this->OtherOptions["action"] = new ListOptions("div");
-        $this->OtherOptions["action"]->TagClassName = "ew-action-option";
-        $this->OtherOptions["detail"] = new ListOptions("div");
-        $this->OtherOptions["detail"]->TagClassName = "ew-detail-option";
     }
 
     // Get content from stream
@@ -433,7 +378,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("rencana_pembelajaran"));
+                $doc = new $class(Container("pengaturan"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -472,7 +417,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
                 $pageName = GetPageName($url);
                 if ($pageName != $this->getListUrl()) { // Not List page
                     $row["caption"] = $this->getModalCaption($pageName);
-                    if ($pageName == "RencanaPembelajaranView") {
+                    if ($pageName == "PengaturanView") {
                         $row["view"] = "1";
                     }
                 } else { // List page should not be shown as modal => error
@@ -563,7 +508,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_rencana_pembelajaran'];
+            $key .= @$ar['id_pengaturan'];
         }
         return $key;
     }
@@ -576,7 +521,7 @@ class RencanaPembelajaranView extends RencanaPembelajaran
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_rencana_pembelajaran->Visible = false;
+            $this->id_pengaturan->Visible = false;
         }
     }
 
@@ -654,17 +599,11 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         }
         $lookup->toJson($this); // Use settings from current page
     }
-    public $ExportOptions; // Export options
-    public $OtherOptions; // Other options
-    public $DisplayRecords = 1;
+    public $FormClassName = "ew-horizontal ew-form ew-edit-form";
+    public $IsModal = false;
+    public $IsMobileOrModal = false;
     public $DbMasterFilter;
     public $DbDetailFilter;
-    public $StartRecord;
-    public $StopRecord;
-    public $TotalRecords = 0;
-    public $RecordRange = 10;
-    public $RecKey = [];
-    public $IsModal = false;
 
     /**
      * Page run
@@ -678,14 +617,14 @@ class RencanaPembelajaranView extends RencanaPembelajaran
 
         // Is modal
         $this->IsModal = Param("modal") == "1";
+
+        // Create form object
+        $CurrentForm = new HttpForm();
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_rencana_pembelajaran->setVisibility();
-        $this->id_indikator->setVisibility();
-        $this->id_materi->setVisibility();
-        $this->judul->setVisibility();
-        $this->kegiatan->setVisibility();
-        $this->waktu->setVisibility();
-        $this->tampilkan->setVisibility();
+        $this->id_pengaturan->setVisibility();
+        $this->nama_guru->setVisibility();
+        $this->tempat_kerja->setVisibility();
+        $this->logo->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -700,85 +639,135 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         }
 
         // Set up lookup cache
-        $this->setupLookupOptions($this->id_indikator);
-        $this->setupLookupOptions($this->id_materi);
 
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
         }
+        $this->IsMobileOrModal = IsMobile() || $this->IsModal;
+        $this->FormClassName = "ew-form ew-edit-form ew-horizontal";
+        $loaded = false;
+        $postBack = false;
 
-        // Load current record
-        $loadCurrentRecord = false;
-        $returnUrl = "";
-        $matchRecord = false;
-
-        // Set up master/detail parameters
-        $this->setupMasterParms();
-        if ($this->isPageRequest()) { // Validate request
-            if (($keyValue = Get("id_rencana_pembelajaran") ?? Route("id_rencana_pembelajaran")) !== null) {
-                $this->id_rencana_pembelajaran->setQueryStringValue($keyValue);
-                $this->RecKey["id_rencana_pembelajaran"] = $this->id_rencana_pembelajaran->QueryStringValue;
-            } elseif (Post("id_rencana_pembelajaran") !== null) {
-                $this->id_rencana_pembelajaran->setFormValue(Post("id_rencana_pembelajaran"));
-                $this->RecKey["id_rencana_pembelajaran"] = $this->id_rencana_pembelajaran->FormValue;
-            } elseif (IsApi() && ($keyValue = Key(0) ?? Route(2)) !== null) {
-                $this->id_rencana_pembelajaran->setQueryStringValue($keyValue);
-                $this->RecKey["id_rencana_pembelajaran"] = $this->id_rencana_pembelajaran->QueryStringValue;
+        // Set up current action and primary key
+        if (IsApi()) {
+            // Load key values
+            $loaded = true;
+            if (($keyValue = Get("id_pengaturan") ?? Key(0) ?? Route(2)) !== null) {
+                $this->id_pengaturan->setQueryStringValue($keyValue);
+                $this->id_pengaturan->setOldValue($this->id_pengaturan->QueryStringValue);
+            } elseif (Post("id_pengaturan") !== null) {
+                $this->id_pengaturan->setFormValue(Post("id_pengaturan"));
+                $this->id_pengaturan->setOldValue($this->id_pengaturan->FormValue);
             } else {
-                $returnUrl = "RencanaPembelajaranList"; // Return to list
+                $loaded = false; // Unable to load key
             }
 
-            // Get action
-            $this->CurrentAction = "show"; // Display
-            switch ($this->CurrentAction) {
-                case "show": // Get a record to display
-
-                    // Load record based on key
-                    if (IsApi()) {
-                        $filter = $this->getRecordFilter();
-                        $this->CurrentFilter = $filter;
-                        $sql = $this->getCurrentSql();
-                        $conn = $this->getConnection();
-                        $this->Recordset = LoadRecordset($sql, $conn);
-                        $res = $this->Recordset && !$this->Recordset->EOF;
-                    } else {
-                        $res = $this->loadRow();
-                    }
-                    if (!$res) { // Load record based on key
-                        if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
-                            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-                        }
-                        $returnUrl = "RencanaPembelajaranList"; // No matching record, return to list
-                    }
-                    break;
+            // Load record
+            if ($loaded) {
+                $loaded = $this->loadRow();
             }
+            if (!$loaded) {
+                $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
+                $this->terminate();
+                return;
+            }
+            $this->CurrentAction = "update"; // Update record directly
+            $postBack = true;
         } else {
-            $returnUrl = "RencanaPembelajaranList"; // Not page request, return to list
+            if (Post("action") !== null) {
+                $this->CurrentAction = Post("action"); // Get action code
+                if (!$this->isShow()) { // Not reload record, handle as postback
+                    $postBack = true;
+                }
+
+                // Load key from Form
+                if ($CurrentForm->hasValue("x_id_pengaturan")) {
+                    $this->id_pengaturan->setFormValue($CurrentForm->getValue("x_id_pengaturan"));
+                }
+            } else {
+                $this->CurrentAction = "show"; // Default action is display
+
+                // Load key from QueryString
+                $loadByQuery = false;
+                if (($keyValue = Get("id_pengaturan") ?? Route("id_pengaturan")) !== null) {
+                    $this->id_pengaturan->setQueryStringValue($keyValue);
+                    $loadByQuery = true;
+                } else {
+                    $this->id_pengaturan->CurrentValue = null;
+                }
+            }
+
+            // Load current record
+            $loaded = $this->loadRow();
         }
-        if ($returnUrl != "") {
-            $this->terminate($returnUrl);
-            return;
+
+        // Process form if post back
+        if ($postBack) {
+            $this->loadFormValues(); // Get form values
+        }
+
+        // Validate form if post back
+        if ($postBack) {
+            if (!$this->validateForm()) {
+                $this->EventCancelled = true; // Event cancelled
+                $this->restoreFormValues();
+                if (IsApi()) {
+                    $this->terminate();
+                    return;
+                } else {
+                    $this->CurrentAction = ""; // Form error, reset action
+                }
+            }
+        }
+
+        // Perform current action
+        switch ($this->CurrentAction) {
+            case "show": // Get a record to display
+                if (!$loaded) { // Load record based on key
+                    if ($this->getFailureMessage() == "") {
+                        $this->setFailureMessage($Language->phrase("NoRecord")); // No record found
+                    }
+                    $this->terminate("PengaturanList"); // No matching record, return to list
+                    return;
+                }
+                break;
+            case "update": // Update
+                $returnUrl = $this->getReturnUrl();
+                if (GetPageName($returnUrl) == "PengaturanList") {
+                    $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
+                }
+                $this->SendEmail = true; // Send email on update success
+                if ($this->editRow()) { // Update record based on key
+                    if ($this->getSuccessMessage() == "") {
+                        $this->setSuccessMessage($Language->phrase("UpdateSuccess")); // Update success
+                    }
+                    if (IsApi()) {
+                        $this->terminate(true);
+                        return;
+                    } else {
+                        $this->terminate($returnUrl); // Return to caller
+                        return;
+                    }
+                } elseif (IsApi()) { // API request, return
+                    $this->terminate();
+                    return;
+                } elseif ($this->getFailureMessage() == $Language->phrase("NoRecord")) {
+                    $this->terminate($returnUrl); // Return to caller
+                    return;
+                } else {
+                    $this->EventCancelled = true; // Event cancelled
+                    $this->restoreFormValues(); // Restore form values if update failed
+                }
         }
 
         // Set up Breadcrumb
-        if (!$this->isExport()) {
-            $this->setupBreadcrumb();
-        }
+        $this->setupBreadcrumb();
 
-        // Render row
-        $this->RowType = ROWTYPE_VIEW;
+        // Render the record
+        $this->RowType = ROWTYPE_EDIT; // Render as Edit
         $this->resetAttributes();
         $this->renderRow();
-
-        // Normal return
-        if (IsApi()) {
-            $rows = $this->getRecordsFromRecordset($this->Recordset, true); // Get current record only
-            $this->Recordset->close();
-            WriteJson(["success" => true, $this->TableVar => $rows]);
-            $this->terminate(true);
-            return;
-        }
 
         // Set LoginStatus / Page_Rendering / Page_Render
         if (!IsApi() && !$this->isTerminated()) {
@@ -801,60 +790,56 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         }
     }
 
-    // Set up other options
-    protected function setupOtherOptions()
+    // Get upload files
+    protected function getUploadFiles()
     {
-        global $Language, $Security;
-        $options = &$this->OtherOptions;
-        $option = $options["action"];
+        global $CurrentForm, $Language;
+        $this->logo->Upload->Index = $CurrentForm->Index;
+        $this->logo->Upload->uploadFile();
+        $this->logo->CurrentValue = $this->logo->Upload->FileName;
+    }
 
-        // Add
-        $item = &$option->add("add");
-        $addcaption = HtmlTitle($Language->phrase("ViewPageAddLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,url:'" . HtmlEncode(GetUrl($this->AddUrl)) . "'});\">" . $Language->phrase("ViewPageAddLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("ViewPageAddLink") . "</a>";
+    // Load form values
+    protected function loadFormValues()
+    {
+        // Load from form
+        global $CurrentForm;
+        $this->getUploadFiles(); // Get upload files
+
+        // Check field name 'id_pengaturan' first before field var 'x_id_pengaturan'
+        $val = $CurrentForm->hasValue("id_pengaturan") ? $CurrentForm->getValue("id_pengaturan") : $CurrentForm->getValue("x_id_pengaturan");
+        if (!$this->id_pengaturan->IsDetailKey) {
+            $this->id_pengaturan->setFormValue($val);
         }
-        $item->Visible = ($this->AddUrl != "" && $Security->canAdd());
 
-        // Edit
-        $item = &$option->add("edit");
-        $editcaption = HtmlTitle($Language->phrase("ViewPageEditLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-edit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,url:'" . HtmlEncode(GetUrl($this->EditUrl)) . "'});\">" . $Language->phrase("ViewPageEditLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-edit\" title=\"" . $editcaption . "\" data-caption=\"" . $editcaption . "\" href=\"" . HtmlEncode(GetUrl($this->EditUrl)) . "\">" . $Language->phrase("ViewPageEditLink") . "</a>";
+        // Check field name 'nama_guru' first before field var 'x_nama_guru'
+        $val = $CurrentForm->hasValue("nama_guru") ? $CurrentForm->getValue("nama_guru") : $CurrentForm->getValue("x_nama_guru");
+        if (!$this->nama_guru->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->nama_guru->Visible = false; // Disable update for API request
+            } else {
+                $this->nama_guru->setFormValue($val);
+            }
         }
-        $item->Visible = ($this->EditUrl != "" && $Security->canEdit());
 
-        // Copy
-        $item = &$option->add("copy");
-        $copycaption = HtmlTitle($Language->phrase("ViewPageCopyLink"));
-        if ($this->IsModal) {
-            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"#\" onclick=\"return ew.modalDialogShow({lnk:this,btn:'AddBtn',url:'" . HtmlEncode(GetUrl($this->CopyUrl)) . "'});\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-copy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . HtmlEncode(GetUrl($this->CopyUrl)) . "\">" . $Language->phrase("ViewPageCopyLink") . "</a>";
+        // Check field name 'tempat_kerja' first before field var 'x_tempat_kerja'
+        $val = $CurrentForm->hasValue("tempat_kerja") ? $CurrentForm->getValue("tempat_kerja") : $CurrentForm->getValue("x_tempat_kerja");
+        if (!$this->tempat_kerja->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->tempat_kerja->Visible = false; // Disable update for API request
+            } else {
+                $this->tempat_kerja->setFormValue($val);
+            }
         }
-        $item->Visible = ($this->CopyUrl != "" && $Security->canAdd());
+    }
 
-        // Delete
-        $item = &$option->add("delete");
-        if ($this->IsModal) { // Handle as inline delete
-            $item->Body = "<a onclick=\"return ew.confirmDelete(this);\" class=\"ew-action ew-delete\" title=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" href=\"" . HtmlEncode(UrlAddQuery(GetUrl($this->DeleteUrl), "action=1")) . "\">" . $Language->phrase("ViewPageDeleteLink") . "</a>";
-        } else {
-            $item->Body = "<a class=\"ew-action ew-delete\" title=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("ViewPageDeleteLink") . "</a>";
-        }
-        $item->Visible = ($this->DeleteUrl != "" && $Security->canDelete());
-
-        // Set up action default
-        $option = $options["action"];
-        $option->DropDownButtonPhrase = $Language->phrase("ButtonActions");
-        $option->UseDropDownButton = false;
-        $option->UseButtonGroup = true;
-        $item = &$option->add($option->GroupOptionName);
-        $item->Body = "";
-        $item->Visible = false;
+    // Restore form values
+    public function restoreFormValues()
+    {
+        global $CurrentForm;
+        $this->id_pengaturan->CurrentValue = $this->id_pengaturan->FormValue;
+        $this->nama_guru->CurrentValue = $this->nama_guru->FormValue;
+        $this->tempat_kerja->CurrentValue = $this->tempat_kerja->FormValue;
     }
 
     /**
@@ -904,27 +889,45 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         if (!$rs) {
             return;
         }
-        $this->id_rencana_pembelajaran->setDbValue($row['id_rencana_pembelajaran']);
-        $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->id_materi->setDbValue($row['id_materi']);
-        $this->judul->setDbValue($row['judul']);
-        $this->kegiatan->setDbValue($row['kegiatan']);
-        $this->waktu->setDbValue($row['waktu']);
-        $this->tampilkan->setDbValue($row['tampilkan']);
+        $this->id_pengaturan->setDbValue($row['id_pengaturan']);
+        $this->nama_guru->setDbValue($row['nama_guru']);
+        $this->tempat_kerja->setDbValue($row['tempat_kerja']);
+        $this->logo->Upload->DbValue = $row['logo'];
+        $this->logo->setDbValue($this->logo->Upload->DbValue);
     }
 
     // Return a row with default values
     protected function newRow()
     {
         $row = [];
-        $row['id_rencana_pembelajaran'] = null;
-        $row['id_indikator'] = null;
-        $row['id_materi'] = null;
-        $row['judul'] = null;
-        $row['kegiatan'] = null;
-        $row['waktu'] = null;
-        $row['tampilkan'] = null;
+        $row['id_pengaturan'] = null;
+        $row['nama_guru'] = null;
+        $row['tempat_kerja'] = null;
+        $row['logo'] = null;
         return $row;
+    }
+
+    // Load old record
+    protected function loadOldRecord()
+    {
+        // Load key values from Session
+        $validKey = true;
+        if (strval($this->getKey("id_pengaturan")) != "") {
+            $this->id_pengaturan->OldValue = $this->getKey("id_pengaturan"); // id_pengaturan
+        } else {
+            $validKey = false;
+        }
+
+        // Load old record
+        $this->OldRecordset = null;
+        if ($validKey) {
+            $this->CurrentFilter = $this->getRecordFilter();
+            $sql = $this->getCurrentSql();
+            $conn = $this->getConnection();
+            $this->OldRecordset = LoadRecordset($sql, $conn);
+        }
+        $this->loadRowValues($this->OldRecordset); // Load row values
+        return $validKey;
     }
 
     // Render row values based on field settings
@@ -933,133 +936,143 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         global $Security, $Language, $CurrentLanguage;
 
         // Initialize URLs
-        $this->AddUrl = $this->getAddUrl();
-        $this->EditUrl = $this->getEditUrl();
-        $this->CopyUrl = $this->getCopyUrl();
-        $this->DeleteUrl = $this->getDeleteUrl();
-        $this->ListUrl = $this->getListUrl();
-        $this->setupOtherOptions();
 
         // Call Row_Rendering event
         $this->rowRendering();
 
         // Common render codes for all row types
 
-        // id_rencana_pembelajaran
+        // id_pengaturan
 
-        // id_indikator
+        // nama_guru
 
-        // id_materi
+        // tempat_kerja
 
-        // judul
-
-        // kegiatan
-
-        // waktu
-
-        // tampilkan
+        // logo
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_rencana_pembelajaran
-            $this->id_rencana_pembelajaran->ViewValue = $this->id_rencana_pembelajaran->CurrentValue;
-            $this->id_rencana_pembelajaran->ViewCustomAttributes = "";
+            // id_pengaturan
+            $this->id_pengaturan->ViewValue = $this->id_pengaturan->CurrentValue;
+            $this->id_pengaturan->ViewCustomAttributes = "";
 
-            // id_indikator
-            $curVal = strval($this->id_indikator->CurrentValue);
-            if ($curVal != "") {
-                $this->id_indikator->ViewValue = $this->id_indikator->lookupCacheOption($curVal);
-                if ($this->id_indikator->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_indikator`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_indikator->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_indikator->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_indikator->ViewValue = $this->id_indikator->displayValue($arwrk);
-                    } else {
-                        $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
-                    }
+            // nama_guru
+            $this->nama_guru->ViewValue = $this->nama_guru->CurrentValue;
+            $this->nama_guru->ViewCustomAttributes = "";
+
+            // tempat_kerja
+            $this->tempat_kerja->ViewValue = $this->tempat_kerja->CurrentValue;
+            $this->tempat_kerja->ViewCustomAttributes = "";
+
+            // logo
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->ImageAlt = $this->logo->alt();
+                $this->logo->ViewValue = $this->logo->Upload->DbValue;
+            } else {
+                $this->logo->ViewValue = "";
+            }
+            $this->logo->ViewCustomAttributes = "";
+
+            // id_pengaturan
+            $this->id_pengaturan->LinkCustomAttributes = "";
+            $this->id_pengaturan->HrefValue = "";
+            $this->id_pengaturan->TooltipValue = "";
+
+            // nama_guru
+            $this->nama_guru->LinkCustomAttributes = "";
+            $this->nama_guru->HrefValue = "";
+            $this->nama_guru->TooltipValue = "";
+
+            // tempat_kerja
+            $this->tempat_kerja->LinkCustomAttributes = "";
+            $this->tempat_kerja->HrefValue = "";
+            $this->tempat_kerja->TooltipValue = "";
+
+            // logo
+            $this->logo->LinkCustomAttributes = "";
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->HrefValue = GetFileUploadUrl($this->logo, $this->logo->htmlDecode($this->logo->Upload->DbValue)); // Add prefix/suffix
+                $this->logo->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->logo->HrefValue = FullUrl($this->logo->HrefValue, "href");
                 }
             } else {
-                $this->id_indikator->ViewValue = null;
+                $this->logo->HrefValue = "";
             }
-            $this->id_indikator->ViewCustomAttributes = "";
+            $this->logo->ExportHrefValue = $this->logo->UploadPath . $this->logo->Upload->DbValue;
+            $this->logo->TooltipValue = "";
+            if ($this->logo->UseColorbox) {
+                if (EmptyValue($this->logo->TooltipValue)) {
+                    $this->logo->LinkAttrs["title"] = $Language->phrase("ViewImageGallery");
+                }
+                $this->logo->LinkAttrs["data-rel"] = "pengaturan_x_logo";
+                $this->logo->LinkAttrs->appendClass("ew-lightbox");
+            }
+        } elseif ($this->RowType == ROWTYPE_EDIT) {
+            // id_pengaturan
+            $this->id_pengaturan->EditAttrs["class"] = "form-control";
+            $this->id_pengaturan->EditCustomAttributes = "";
+            $this->id_pengaturan->EditValue = $this->id_pengaturan->CurrentValue;
+            $this->id_pengaturan->ViewCustomAttributes = "";
 
-            // id_materi
-            $curVal = strval($this->id_materi->CurrentValue);
-            if ($curVal != "") {
-                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
-                if ($this->id_materi->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
-                    } else {
-                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-                    }
+            // nama_guru
+            $this->nama_guru->EditAttrs["class"] = "form-control";
+            $this->nama_guru->EditCustomAttributes = "";
+            if (!$this->nama_guru->Raw) {
+                $this->nama_guru->CurrentValue = HtmlDecode($this->nama_guru->CurrentValue);
+            }
+            $this->nama_guru->EditValue = HtmlEncode($this->nama_guru->CurrentValue);
+            $this->nama_guru->PlaceHolder = RemoveHtml($this->nama_guru->caption());
+
+            // tempat_kerja
+            $this->tempat_kerja->EditAttrs["class"] = "form-control";
+            $this->tempat_kerja->EditCustomAttributes = "";
+            $this->tempat_kerja->EditValue = HtmlEncode($this->tempat_kerja->CurrentValue);
+            $this->tempat_kerja->PlaceHolder = RemoveHtml($this->tempat_kerja->caption());
+
+            // logo
+            $this->logo->EditAttrs["class"] = "form-control";
+            $this->logo->EditCustomAttributes = "";
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->ImageAlt = $this->logo->alt();
+                $this->logo->EditValue = $this->logo->Upload->DbValue;
+            } else {
+                $this->logo->EditValue = "";
+            }
+            if (!EmptyValue($this->logo->CurrentValue)) {
+                $this->logo->Upload->FileName = $this->logo->CurrentValue;
+            }
+            if ($this->isShow()) {
+                RenderUploadField($this->logo);
+            }
+
+            // Edit refer script
+
+            // id_pengaturan
+            $this->id_pengaturan->LinkCustomAttributes = "";
+            $this->id_pengaturan->HrefValue = "";
+
+            // nama_guru
+            $this->nama_guru->LinkCustomAttributes = "";
+            $this->nama_guru->HrefValue = "";
+
+            // tempat_kerja
+            $this->tempat_kerja->LinkCustomAttributes = "";
+            $this->tempat_kerja->HrefValue = "";
+
+            // logo
+            $this->logo->LinkCustomAttributes = "";
+            if (!EmptyValue($this->logo->Upload->DbValue)) {
+                $this->logo->HrefValue = GetFileUploadUrl($this->logo, $this->logo->htmlDecode($this->logo->Upload->DbValue)); // Add prefix/suffix
+                $this->logo->LinkAttrs["target"] = ""; // Add target
+                if ($this->isExport()) {
+                    $this->logo->HrefValue = FullUrl($this->logo->HrefValue, "href");
                 }
             } else {
-                $this->id_materi->ViewValue = null;
+                $this->logo->HrefValue = "";
             }
-            $this->id_materi->ViewCustomAttributes = "";
-
-            // judul
-            $this->judul->ViewValue = $this->judul->CurrentValue;
-            $this->judul->ViewCustomAttributes = "";
-
-            // kegiatan
-            $this->kegiatan->ViewValue = $this->kegiatan->CurrentValue;
-            $this->kegiatan->ViewCustomAttributes = "";
-
-            // waktu
-            $this->waktu->ViewValue = $this->waktu->CurrentValue;
-            $this->waktu->ViewValue = FormatNumber($this->waktu->ViewValue, 0, -2, -2, -2);
-            $this->waktu->ViewCustomAttributes = "";
-
-            // tampilkan
-            if (strval($this->tampilkan->CurrentValue) != "") {
-                $this->tampilkan->ViewValue = $this->tampilkan->optionCaption($this->tampilkan->CurrentValue);
-            } else {
-                $this->tampilkan->ViewValue = null;
-            }
-            $this->tampilkan->ViewCustomAttributes = "";
-
-            // id_rencana_pembelajaran
-            $this->id_rencana_pembelajaran->LinkCustomAttributes = "";
-            $this->id_rencana_pembelajaran->HrefValue = "";
-            $this->id_rencana_pembelajaran->TooltipValue = "";
-
-            // id_indikator
-            $this->id_indikator->LinkCustomAttributes = "";
-            $this->id_indikator->HrefValue = "";
-            $this->id_indikator->TooltipValue = "";
-
-            // id_materi
-            $this->id_materi->LinkCustomAttributes = "";
-            $this->id_materi->HrefValue = "";
-            $this->id_materi->TooltipValue = "";
-
-            // judul
-            $this->judul->LinkCustomAttributes = "";
-            $this->judul->HrefValue = "";
-            $this->judul->TooltipValue = "";
-
-            // kegiatan
-            $this->kegiatan->LinkCustomAttributes = "";
-            $this->kegiatan->HrefValue = "";
-            $this->kegiatan->TooltipValue = "";
-
-            // waktu
-            $this->waktu->LinkCustomAttributes = "";
-            $this->waktu->HrefValue = "";
-            $this->waktu->TooltipValue = "";
-
-            // tampilkan
-            $this->tampilkan->LinkCustomAttributes = "";
-            $this->tampilkan->HrefValue = "";
-            $this->tampilkan->TooltipValue = "";
+            $this->logo->ExportHrefValue = $this->logo->UploadPath . $this->logo->Upload->DbValue;
+        }
+        if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
+            $this->setupFieldTitles();
         }
 
         // Call Row Rendered event
@@ -1068,107 +1081,207 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         }
     }
 
-    // Set up master/detail based on QueryString
-    protected function setupMasterParms()
+    // Validate form
+    protected function validateForm()
     {
-        $validMaster = false;
-        // Get the keys for master table
-        if (($master = Get(Config("TABLE_SHOW_MASTER"), Get(Config("TABLE_MASTER")))) !== null) {
-            $masterTblVar = $master;
-            if ($masterTblVar == "") {
-                $validMaster = true;
-                $this->DbMasterFilter = "";
-                $this->DbDetailFilter = "";
-            }
-            if ($masterTblVar == "indikator_rencana_belajar") {
-                $validMaster = true;
-                $masterTbl = Container("indikator_rencana_belajar");
-                if (($parm = Get("fk_id_indikator", Get("id_indikator"))) !== null) {
-                    $masterTbl->id_indikator->setQueryStringValue($parm);
-                    $this->id_indikator->setQueryStringValue($masterTbl->id_indikator->QueryStringValue);
-                    $this->id_indikator->setSessionValue($this->id_indikator->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_indikator->QueryStringValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-            if ($masterTblVar == "materi") {
-                $validMaster = true;
-                $masterTbl = Container("materi");
-                if (($parm = Get("fk_id_materi", Get("id_materi"))) !== null) {
-                    $masterTbl->id_materi->setQueryStringValue($parm);
-                    $this->id_materi->setQueryStringValue($masterTbl->id_materi->QueryStringValue);
-                    $this->id_materi->setSessionValue($this->id_materi->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_materi->QueryStringValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-        } elseif (($master = Post(Config("TABLE_SHOW_MASTER"), Post(Config("TABLE_MASTER")))) !== null) {
-            $masterTblVar = $master;
-            if ($masterTblVar == "") {
-                    $validMaster = true;
-                    $this->DbMasterFilter = "";
-                    $this->DbDetailFilter = "";
-            }
-            if ($masterTblVar == "indikator_rencana_belajar") {
-                $validMaster = true;
-                $masterTbl = Container("indikator_rencana_belajar");
-                if (($parm = Post("fk_id_indikator", Post("id_indikator"))) !== null) {
-                    $masterTbl->id_indikator->setFormValue($parm);
-                    $this->id_indikator->setFormValue($masterTbl->id_indikator->FormValue);
-                    $this->id_indikator->setSessionValue($this->id_indikator->FormValue);
-                    if (!is_numeric($masterTbl->id_indikator->FormValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
-            }
-            if ($masterTblVar == "materi") {
-                $validMaster = true;
-                $masterTbl = Container("materi");
-                if (($parm = Post("fk_id_materi", Post("id_materi"))) !== null) {
-                    $masterTbl->id_materi->setFormValue($parm);
-                    $this->id_materi->setFormValue($masterTbl->id_materi->FormValue);
-                    $this->id_materi->setSessionValue($this->id_materi->FormValue);
-                    if (!is_numeric($masterTbl->id_materi->FormValue)) {
-                        $validMaster = false;
-                    }
-                } else {
-                    $validMaster = false;
-                }
+        global $Language;
+
+        // Check if validation required
+        if (!Config("SERVER_VALIDATE")) {
+            return true;
+        }
+        if ($this->id_pengaturan->Required) {
+            if (!$this->id_pengaturan->IsDetailKey && EmptyValue($this->id_pengaturan->FormValue)) {
+                $this->id_pengaturan->addErrorMessage(str_replace("%s", $this->id_pengaturan->caption(), $this->id_pengaturan->RequiredErrorMessage));
             }
         }
-        if ($validMaster) {
-            // Save current master table
-            $this->setCurrentMasterTable($masterTblVar);
-            $this->setSessionWhere($this->getDetailFilter());
-
-            // Reset start record counter (new master key)
-            if (!$this->isAddOrEdit()) {
-                $this->StartRecord = 1;
-                $this->setStartRecordNumber($this->StartRecord);
-            }
-
-            // Clear previous master key from Session
-            if ($masterTblVar != "indikator_rencana_belajar") {
-                if ($this->id_indikator->CurrentValue == "") {
-                    $this->id_indikator->setSessionValue("");
-                }
-            }
-            if ($masterTblVar != "materi") {
-                if ($this->id_materi->CurrentValue == "") {
-                    $this->id_materi->setSessionValue("");
-                }
+        if ($this->nama_guru->Required) {
+            if (!$this->nama_guru->IsDetailKey && EmptyValue($this->nama_guru->FormValue)) {
+                $this->nama_guru->addErrorMessage(str_replace("%s", $this->nama_guru->caption(), $this->nama_guru->RequiredErrorMessage));
             }
         }
-        $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
-        $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
+        if ($this->tempat_kerja->Required) {
+            if (!$this->tempat_kerja->IsDetailKey && EmptyValue($this->tempat_kerja->FormValue)) {
+                $this->tempat_kerja->addErrorMessage(str_replace("%s", $this->tempat_kerja->caption(), $this->tempat_kerja->RequiredErrorMessage));
+            }
+        }
+        if ($this->logo->Required) {
+            if ($this->logo->Upload->FileName == "" && !$this->logo->Upload->KeepFile) {
+                $this->logo->addErrorMessage(str_replace("%s", $this->logo->caption(), $this->logo->RequiredErrorMessage));
+            }
+        }
+
+        // Return validate result
+        $validateForm = !$this->hasInvalidFields();
+
+        // Call Form_CustomValidate event
+        $formCustomError = "";
+        $validateForm = $validateForm && $this->formCustomValidate($formCustomError);
+        if ($formCustomError != "") {
+            $this->setFailureMessage($formCustomError);
+        }
+        return $validateForm;
+    }
+
+    // Update record based on key values
+    protected function editRow()
+    {
+        global $Security, $Language;
+        $oldKeyFilter = $this->getRecordFilter();
+        $filter = $this->applyUserIDFilters($oldKeyFilter);
+        $conn = $this->getConnection();
+        $this->CurrentFilter = $filter;
+        $sql = $this->getCurrentSql();
+        $rsold = $conn->fetchAssoc($sql);
+        if (!$rsold) {
+            $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
+            $editRow = false; // Update Failed
+        } else {
+            // Save old values
+            $this->loadDbValues($rsold);
+            $rsnew = [];
+
+            // nama_guru
+            $this->nama_guru->setDbValueDef($rsnew, $this->nama_guru->CurrentValue, "", $this->nama_guru->ReadOnly);
+
+            // tempat_kerja
+            $this->tempat_kerja->setDbValueDef($rsnew, $this->tempat_kerja->CurrentValue, "", $this->tempat_kerja->ReadOnly);
+
+            // logo
+            if ($this->logo->Visible && !$this->logo->ReadOnly && !$this->logo->Upload->KeepFile) {
+                $this->logo->Upload->DbValue = $rsold['logo']; // Get original value
+                if ($this->logo->Upload->FileName == "") {
+                    $rsnew['logo'] = null;
+                } else {
+                    $rsnew['logo'] = $this->logo->Upload->FileName;
+                }
+            }
+            if ($this->logo->Visible && !$this->logo->Upload->KeepFile) {
+                $oldFiles = EmptyValue($this->logo->Upload->DbValue) ? [] : [$this->logo->htmlDecode($this->logo->Upload->DbValue)];
+                if (!EmptyValue($this->logo->Upload->FileName)) {
+                    $newFiles = [$this->logo->Upload->FileName];
+                    $NewFileCount = count($newFiles);
+                    for ($i = 0; $i < $NewFileCount; $i++) {
+                        if ($newFiles[$i] != "") {
+                            $file = $newFiles[$i];
+                            $tempPath = UploadTempPath($this->logo, $this->logo->Upload->Index);
+                            if (file_exists($tempPath . $file)) {
+                                if (Config("DELETE_UPLOADED_FILES")) {
+                                    $oldFileFound = false;
+                                    $oldFileCount = count($oldFiles);
+                                    for ($j = 0; $j < $oldFileCount; $j++) {
+                                        $oldFile = $oldFiles[$j];
+                                        if ($oldFile == $file) { // Old file found, no need to delete anymore
+                                            array_splice($oldFiles, $j, 1);
+                                            $oldFileFound = true;
+                                            break;
+                                        }
+                                    }
+                                    if ($oldFileFound) { // No need to check if file exists further
+                                        continue;
+                                    }
+                                }
+                                $file1 = UniqueFilename($this->logo->physicalUploadPath(), $file); // Get new file name
+                                if ($file1 != $file) { // Rename temp file
+                                    while (file_exists($tempPath . $file1) || file_exists($this->logo->physicalUploadPath() . $file1)) { // Make sure no file name clash
+                                        $file1 = UniqueFilename([$this->logo->physicalUploadPath(), $tempPath], $file1, true); // Use indexed name
+                                    }
+                                    rename($tempPath . $file, $tempPath . $file1);
+                                    $newFiles[$i] = $file1;
+                                }
+                            }
+                        }
+                    }
+                    $this->logo->Upload->DbValue = empty($oldFiles) ? "" : implode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $oldFiles);
+                    $this->logo->Upload->FileName = implode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $newFiles);
+                    $this->logo->setDbValueDef($rsnew, $this->logo->Upload->FileName, "", $this->logo->ReadOnly);
+                }
+            }
+
+            // Call Row Updating event
+            $updateRow = $this->rowUpdating($rsold, $rsnew);
+
+            // Check for duplicate key when key changed
+            if ($updateRow) {
+                $newKeyFilter = $this->getRecordFilter($rsnew);
+                if ($newKeyFilter != $oldKeyFilter) {
+                    $rsChk = $this->loadRs($newKeyFilter)->fetch();
+                    if ($rsChk !== false) {
+                        $keyErrMsg = str_replace("%f", $newKeyFilter, $Language->phrase("DupKey"));
+                        $this->setFailureMessage($keyErrMsg);
+                        $updateRow = false;
+                    }
+                }
+            }
+            if ($updateRow) {
+                if (count($rsnew) > 0) {
+                    $editRow = $this->update($rsnew, "", $rsold);
+                } else {
+                    $editRow = true; // No field to update
+                }
+                if ($editRow) {
+                    if ($this->logo->Visible && !$this->logo->Upload->KeepFile) {
+                        $oldFiles = EmptyValue($this->logo->Upload->DbValue) ? [] : [$this->logo->htmlDecode($this->logo->Upload->DbValue)];
+                        if (!EmptyValue($this->logo->Upload->FileName)) {
+                            $newFiles = [$this->logo->Upload->FileName];
+                            $newFiles2 = [$this->logo->htmlDecode($rsnew['logo'])];
+                            $newFileCount = count($newFiles);
+                            for ($i = 0; $i < $newFileCount; $i++) {
+                                if ($newFiles[$i] != "") {
+                                    $file = UploadTempPath($this->logo, $this->logo->Upload->Index) . $newFiles[$i];
+                                    if (file_exists($file)) {
+                                        if (@$newFiles2[$i] != "") { // Use correct file name
+                                            $newFiles[$i] = $newFiles2[$i];
+                                        }
+                                        if (!$this->logo->Upload->SaveToFile($newFiles[$i], true, $i)) { // Just replace
+                                            $this->setFailureMessage($Language->phrase("UploadErrMsg7"));
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            $newFiles = [];
+                        }
+                        if (Config("DELETE_UPLOADED_FILES")) {
+                            foreach ($oldFiles as $oldFile) {
+                                if ($oldFile != "" && !in_array($oldFile, $newFiles)) {
+                                    @unlink($this->logo->oldPhysicalUploadPath() . $oldFile);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
+                    // Use the message, do nothing
+                } elseif ($this->CancelMessage != "") {
+                    $this->setFailureMessage($this->CancelMessage);
+                    $this->CancelMessage = "";
+                } else {
+                    $this->setFailureMessage($Language->phrase("UpdateCancelled"));
+                }
+                $editRow = false;
+            }
+        }
+
+        // Call Row_Updated event
+        if ($editRow) {
+            $this->rowUpdated($rsold, $rsnew);
+        }
+
+        // Clean upload path if any
+        if ($editRow) {
+            // logo
+            CleanUploadTempPath($this->logo, $this->logo->Upload->Index);
+        }
+
+        // Write JSON for API request
+        if (IsApi() && $editRow) {
+            $row = $this->getRecordsFromRecordset([$rsnew], true);
+            WriteJson(["success" => true, $this->TableVar => $row]);
+        }
+        return $editRow;
     }
 
     // Set up Breadcrumb
@@ -1177,9 +1290,9 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         global $Breadcrumb, $Language;
         $Breadcrumb = new Breadcrumb("index");
         $url = CurrentUrl();
-        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("RencanaPembelajaranList"), "", $this->TableVar, true);
-        $pageId = "view";
-        $Breadcrumb->add("view", $pageId, $url);
+        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("PengaturanList"), "", $this->TableVar, true);
+        $pageId = "edit";
+        $Breadcrumb->add("edit", $pageId, $url);
     }
 
     // Setup lookup options
@@ -1195,12 +1308,6 @@ class RencanaPembelajaranView extends RencanaPembelajaran
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_id_indikator":
-                    break;
-                case "x_id_materi":
-                    break;
-                case "x_tampilkan":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;
@@ -1319,27 +1426,10 @@ class RencanaPembelajaranView extends RencanaPembelajaran
         //$footer = "your footer";
     }
 
-    // Page Exporting event
-    // $this->ExportDoc = export document object
-    public function pageExporting()
+    // Form Custom Validate event
+    public function formCustomValidate(&$customError)
     {
-        //$this->ExportDoc->Text = "my header"; // Export header
-        //return false; // Return false to skip default export and use Row_Export event
-        return true; // Return true to use default export and skip Row_Export event
-    }
-
-    // Row Export event
-    // $this->ExportDoc = export document object
-    public function rowExport($rs)
-    {
-        //$this->ExportDoc->Text .= "my content"; // Build HTML with field value: $rs["MyField"] or $this->MyField->ViewValue
-    }
-
-    // Page Exported event
-    // $this->ExportDoc = export document object
-    public function pageExported()
-    {
-        //$this->ExportDoc->Text .= "my footer"; // Export footer
-        //Log($this->ExportDoc->Text);
+        // Return error message in CustomError
+        return true;
     }
 }

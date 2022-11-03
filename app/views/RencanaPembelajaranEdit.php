@@ -20,6 +20,7 @@ loadjs.ready("head", function () {
         ["id_rencana_pembelajaran", [fields.id_rencana_pembelajaran.required ? ew.Validators.required(fields.id_rencana_pembelajaran.caption) : null], fields.id_rencana_pembelajaran.isInvalid],
         ["id_indikator", [fields.id_indikator.required ? ew.Validators.required(fields.id_indikator.caption) : null], fields.id_indikator.isInvalid],
         ["id_materi", [fields.id_materi.required ? ew.Validators.required(fields.id_materi.caption) : null], fields.id_materi.isInvalid],
+        ["judul", [fields.judul.required ? ew.Validators.required(fields.judul.caption) : null], fields.judul.isInvalid],
         ["kegiatan", [fields.kegiatan.required ? ew.Validators.required(fields.kegiatan.caption) : null], fields.kegiatan.isInvalid],
         ["waktu", [fields.waktu.required ? ew.Validators.required(fields.waktu.caption) : null], fields.waktu.isInvalid],
         ["tampilkan", [fields.tampilkan.required ? ew.Validators.required(fields.tampilkan.caption) : null], fields.tampilkan.isInvalid]
@@ -212,6 +213,18 @@ loadjs.ready("head", function() {
 </script>
 </span>
 <?php } ?>
+</div></div>
+    </div>
+<?php } ?>
+<?php if ($Page->judul->Visible) { // judul ?>
+    <div id="r_judul" class="form-group row">
+        <label id="elh_rencana_pembelajaran_judul" for="x_judul" class="<?= $Page->LeftColumnClass ?>"><?= $Page->judul->caption() ?><?= $Page->judul->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->judul->cellAttributes() ?>>
+<span id="el_rencana_pembelajaran_judul">
+<input type="<?= $Page->judul->getInputTextType() ?>" data-table="rencana_pembelajaran" data-field="x_judul" name="x_judul" id="x_judul" size="30" maxlength="255" placeholder="<?= HtmlEncode($Page->judul->getPlaceHolder()) ?>" value="<?= $Page->judul->EditValue ?>"<?= $Page->judul->editAttributes() ?> aria-describedby="x_judul_help">
+<?= $Page->judul->getCustomMessage() ?>
+<div class="invalid-feedback"><?= $Page->judul->getErrorMessage() ?></div>
+</span>
 </div></div>
     </div>
 <?php } ?>

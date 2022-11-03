@@ -50,6 +50,9 @@ $Page->showMessage();
 <?php if ($Page->id_materi->Visible) { // id_materi ?>
         <th class="<?= $Page->id_materi->headerCellClass() ?>"><span id="elh_rencana_pembelajaran_id_materi" class="rencana_pembelajaran_id_materi"><?= $Page->id_materi->caption() ?></span></th>
 <?php } ?>
+<?php if ($Page->judul->Visible) { // judul ?>
+        <th class="<?= $Page->judul->headerCellClass() ?>"><span id="elh_rencana_pembelajaran_judul" class="rencana_pembelajaran_judul"><?= $Page->judul->caption() ?></span></th>
+<?php } ?>
 <?php if ($Page->waktu->Visible) { // waktu ?>
         <th class="<?= $Page->waktu->headerCellClass() ?>"><span id="elh_rencana_pembelajaran_waktu" class="rencana_pembelajaran_waktu"><?= $Page->waktu->caption() ?></span></th>
 <?php } ?>
@@ -98,6 +101,14 @@ while (!$Page->Recordset->EOF) {
 <span id="el<?= $Page->RowCount ?>_rencana_pembelajaran_id_materi" class="rencana_pembelajaran_id_materi">
 <span<?= $Page->id_materi->viewAttributes() ?>>
 <?= $Page->id_materi->getViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($Page->judul->Visible) { // judul ?>
+        <td <?= $Page->judul->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_rencana_pembelajaran_judul" class="rencana_pembelajaran_judul">
+<span<?= $Page->judul->viewAttributes() ?>>
+<?= $Page->judul->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

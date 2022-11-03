@@ -974,6 +974,9 @@
     <menu id="15">
       <phrase id="menutext" value="foto" />
     </menu>
+    <menu id="24">
+      <phrase id="menutext" value="pengaturan" />
+    </menu>
     <table id="evaluasi">
       <phrase id="tblcaption" value="evaluasi" />
       <field id="id_evaluasi">
@@ -1294,6 +1297,9 @@
       <field id="id_materi">
         <phrase id="fldcaption" value="id materi" />
       </field>
+      <field id="judul">
+        <phrase id="fldcaption" value="judul" />
+      </field>
       <field id="kegiatan">
         <phrase id="fldcaption" value="kegiatan" />
       </field>
@@ -1359,6 +1365,21 @@
       </field>
       <field id="jawaban">
         <phrase id="fldcaption" value="jawaban" />
+      </field>
+    </table>
+    <table id="pengaturan">
+      <phrase id="tblcaption" value="pengaturan" />
+      <field id="id_pengaturan">
+        <phrase id="fldcaption" value="id pengaturan" />
+      </field>
+      <field id="nama_guru">
+        <phrase id="fldcaption" value="nama guru" />
+      </field>
+      <field id="tempat_kerja">
+        <phrase id="fldcaption" value="tempat kerja" />
+      </field>
+      <field id="logo">
+        <phrase id="fldcaption" value="logo" />
       </field>
     </table>
   </project>

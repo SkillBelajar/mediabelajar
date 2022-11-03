@@ -92,8 +92,7 @@ $Page->showMessage();
         <td data-name="pdf" <?= $Page->pdf->cellAttributes() ?>>
 <span id="el_materi_pdf">
 <span<?= $Page->pdf->viewAttributes() ?>>
-<?= GetFileViewTag($Page->pdf, $Page->pdf->getViewValue(), false) ?>
-</span>
+<?= $Page->pdf->getViewValue() ?></span>
 </span>
 </td>
     </tr>
@@ -114,6 +113,22 @@ $Page->showMessage();
 <h4 class="ew-detail-caption"><?= $Language->tablePhrase("rencana_pembelajaran", "TblCaption") ?>&nbsp;<?= str_replace("%c", $Page->rencana_pembelajaran_Count, $Language->phrase("DetailCount")) ?></h4>
 <?php } ?>
 <?php include_once "RencanaPembelajaranGrid.php" ?>
+<?php } ?>
+<?php
+    if (in_array("pdf_materi", explode(",", $Page->getCurrentDetailTable())) && $pdf_materi->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("pdf_materi", "TblCaption") ?>&nbsp;<?= str_replace("%c", $Page->pdf_materi_Count, $Language->phrase("DetailCount")) ?></h4>
+<?php } ?>
+<?php include_once "PdfMateriGrid.php" ?>
+<?php } ?>
+<?php
+    if (in_array("artikel_materi", explode(",", $Page->getCurrentDetailTable())) && $artikel_materi->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("artikel_materi", "TblCaption") ?>&nbsp;<?= str_replace("%c", $Page->artikel_materi_Count, $Language->phrase("DetailCount")) ?></h4>
+<?php } ?>
+<?php include_once "ArtikelMateriGrid.php" ?>
 <?php } ?>
 </form>
 <?php

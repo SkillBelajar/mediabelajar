@@ -30,7 +30,7 @@
                 $('.js-example-basic-single').select2();
             });
         </script>
-
+<br>
         <br>
         <label>Nama Teman </label>
         <select class="js-example-basic-single2" name="nama2">

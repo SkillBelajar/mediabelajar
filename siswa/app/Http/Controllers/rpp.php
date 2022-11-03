@@ -37,7 +37,8 @@ class rpp extends Controller
             'tempat_kerja' => $tempat_kerja,
             'logo' => $logo,
             'judul_materi' => $judul_materi,
-            'semua' => $semua
+            'semua' => $semua,
+            'kode' => $slide
         ]);
     }
 }

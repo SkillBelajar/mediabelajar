@@ -929,6 +929,12 @@
     <menu id="2">
       <phrase id="menutext" value="materi" />
     </menu>
+    <menu id="26">
+      <phrase id="menutext" value="pdf materi" />
+    </menu>
+    <menu id="25">
+      <phrase id="menutext" value="artikel materi" />
+    </menu>
     <menu id="19">
       <phrase id="menutext" value="rencana pembelajaran" />
     </menu>
@@ -1380,6 +1386,36 @@
       </field>
       <field id="logo">
         <phrase id="fldcaption" value="logo" />
+      </field>
+    </table>
+    <table id="artikel_materi">
+      <phrase id="tblcaption" value="artikel materi" />
+      <field id="id_artikel_materi">
+        <phrase id="fldcaption" value="id artikel materi" />
+      </field>
+      <field id="id_materi">
+        <phrase id="fldcaption" value="id materi" />
+      </field>
+      <field id="judul">
+        <phrase id="fldcaption" value="judul" />
+      </field>
+      <field id="isi">
+        <phrase id="fldcaption" value="isi" />
+      </field>
+    </table>
+    <table id="pdf_materi">
+      <phrase id="tblcaption" value="pdf materi" />
+      <field id="id_pdf_materi">
+        <phrase id="fldcaption" value="id pdf materi" />
+      </field>
+      <field id="id_materi">
+        <phrase id="fldcaption" value="id materi" />
+      </field>
+      <field id="judul">
+        <phrase id="fldcaption" value="judul" />
+      </field>
+      <field id="file_pdf">
+        <phrase id="fldcaption" value="file pdf" />
       </field>
     </table>
   </project>

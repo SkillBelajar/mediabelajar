@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class MateriGrid extends Materi
+class ArtikelMateriGrid extends ArtikelMateri
 {
     // Page ID
     public $PageID = "grid";
@@ -16,10 +16,10 @@ class MateriGrid extends Materi
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'materi';
+    public $TableName = 'artikel_materi';
 
     // Page object name
-    public $PageObjName = "MateriGrid";
+    public $PageObjName = "ArtikelMateriGrid";
 
     // Rendering View
     public $RenderingView = false;
@@ -28,7 +28,7 @@ class MateriGrid extends Materi
     public $UseCustomTemplate = false;
 
     // Grid form hidden field names
-    public $FormName = "fmaterigrid";
+    public $FormName = "fartikel_materigrid";
     public $FormActionName = "k_action";
     public $FormKeyName = "k_key";
     public $FormOldKeyName = "k_oldkey";
@@ -331,18 +331,18 @@ class MateriGrid extends Materi
         // Parent constuctor
         parent::__construct();
 
-        // Table object (materi)
-        if (!isset($GLOBALS["materi"]) || get_class($GLOBALS["materi"]) == PROJECT_NAMESPACE . "materi") {
-            $GLOBALS["materi"] = &$this;
+        // Table object (artikel_materi)
+        if (!isset($GLOBALS["artikel_materi"]) || get_class($GLOBALS["artikel_materi"]) == PROJECT_NAMESPACE . "artikel_materi") {
+            $GLOBALS["artikel_materi"] = &$this;
         }
 
         // Page URL
         $pageUrl = $this->pageUrl();
-        $this->AddUrl = "MateriAdd";
+        $this->AddUrl = "ArtikelMateriAdd";
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'materi');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'artikel_materi');
         }
 
         // Start timer
@@ -403,7 +403,7 @@ class MateriGrid extends Materi
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("materi"));
+                $doc = new $class(Container("artikel_materi"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -517,7 +517,7 @@ class MateriGrid extends Materi
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_materi'];
+            $key .= @$ar['id_artikel_materi'];
         }
         return $key;
     }
@@ -530,7 +530,7 @@ class MateriGrid extends Materi
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_materi->Visible = false;
+            $this->id_artikel_materi->Visible = false;
         }
     }
 
@@ -649,10 +649,6 @@ class MateriGrid extends Materi
     public $MultiSelectKey;
     public $Command;
     public $RestoreSearch = false;
-            public $evaluasi_Count;
-            public $rencana_pembelajaran_Count;
-            public $pdf_materi_Count;
-            public $artikel_materi_Count;
     public $DetailPages;
     public $OldRecordset;
 
@@ -673,11 +669,10 @@ class MateriGrid extends Materi
 
         // Set up list options
         $this->setupListOptions();
-        $this->id_materi->Visible = false;
-        $this->id_media->setVisibility();
+        $this->id_artikel_materi->setVisibility();
+        $this->id_materi->setVisibility();
         $this->judul->setVisibility();
-        $this->isi->setVisibility();
-        $this->pdf->Visible = false;
+        $this->isi->Visible = false;
         $this->hideFieldsForAddEdit();
 
         // Global Page Loading event (in userfn*.php)
@@ -695,7 +690,7 @@ class MateriGrid extends Materi
         $this->setupOtherOptions();
 
         // Set up lookup cache
-        $this->setupLookupOptions($this->id_media);
+        $this->setupLookupOptions($this->id_materi);
 
         // Search filters
         $srchAdvanced = ""; // Advanced search filter
@@ -759,13 +754,13 @@ class MateriGrid extends Materi
         AddFilter($filter, $this->SearchWhere);
 
         // Load master record
-        if ($this->CurrentMode != "add" && $this->getMasterFilter() != "" && $this->getCurrentMasterTable() == "media") {
-            $masterTbl = Container("media");
+        if ($this->CurrentMode != "add" && $this->getMasterFilter() != "" && $this->getCurrentMasterTable() == "materi") {
+            $masterTbl = Container("materi");
             $rsmaster = $masterTbl->loadRs($this->DbMasterFilter)->fetch(\PDO::FETCH_ASSOC);
             $this->MasterRecordExists = $rsmaster !== false;
             if (!$this->MasterRecordExists) {
                 $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record found
-                $this->terminate("MediaList"); // Return to master page
+                $this->terminate("MateriList"); // Return to master page
                 return;
             } else {
                 $masterTbl->loadListRowValues($rsmaster);
@@ -1009,8 +1004,8 @@ class MateriGrid extends Materi
     {
         $arKeyFlds = explode(Config("COMPOSITE_KEY_SEPARATOR"), $key);
         if (count($arKeyFlds) >= 1) {
-            $this->id_materi->setOldValue($arKeyFlds[0]);
-            if (!is_numeric($this->id_materi->OldValue)) {
+            $this->id_artikel_materi->setOldValue($arKeyFlds[0]);
+            if (!is_numeric($this->id_artikel_materi->OldValue)) {
                 return false;
             }
         }
@@ -1072,7 +1067,7 @@ class MateriGrid extends Materi
                     if ($key != "") {
                         $key .= Config("COMPOSITE_KEY_SEPARATOR");
                     }
-                    $key .= $this->id_materi->CurrentValue;
+                    $key .= $this->id_artikel_materi->CurrentValue;
 
                     // Add filter for this record
                     $filter = $this->getRecordFilter();
@@ -1110,13 +1105,10 @@ class MateriGrid extends Materi
     public function emptyRow()
     {
         global $CurrentForm;
-        if ($CurrentForm->hasValue("x_id_media") && $CurrentForm->hasValue("o_id_media") && $this->id_media->CurrentValue != $this->id_media->OldValue) {
+        if ($CurrentForm->hasValue("x_id_materi") && $CurrentForm->hasValue("o_id_materi") && $this->id_materi->CurrentValue != $this->id_materi->OldValue) {
             return false;
         }
         if ($CurrentForm->hasValue("x_judul") && $CurrentForm->hasValue("o_judul") && $this->judul->CurrentValue != $this->judul->OldValue) {
-            return false;
-        }
-        if ($CurrentForm->hasValue("x_isi") && $CurrentForm->hasValue("o_isi") && $this->isi->CurrentValue != $this->isi->OldValue) {
             return false;
         }
         return true;
@@ -1200,9 +1192,9 @@ class MateriGrid extends Materi
     // Reset form status
     public function resetFormError()
     {
-        $this->id_media->clearErrorMessage();
+        $this->id_artikel_materi->clearErrorMessage();
+        $this->id_materi->clearErrorMessage();
         $this->judul->clearErrorMessage();
-        $this->isi->clearErrorMessage();
     }
 
     // Set up sort parameters
@@ -1221,14 +1213,10 @@ class MateriGrid extends Materi
     {
         $orderBy = $this->getSessionOrderBy(); // Get ORDER BY from Session
         if ($orderBy == "") {
-            $this->DefaultSort = "`id_materi` DESC";
+            $this->DefaultSort = "";
             if ($this->getSqlOrderBy() != "") {
                 $useDefaultSort = true;
-                if ($this->id_materi->getSort() != "") {
-                    $useDefaultSort = false;
-                }
                 if ($useDefaultSort) {
-                    $this->id_materi->setSort("DESC");
                     $orderBy = $this->getSqlOrderBy();
                     $this->setSessionOrderBy($orderBy);
                 } else {
@@ -1251,7 +1239,7 @@ class MateriGrid extends Materi
                 $this->setCurrentMasterTable(""); // Clear master table
                 $this->DbMasterFilter = "";
                 $this->DbDetailFilter = "";
-                        $this->id_media->setSessionValue("");
+                        $this->id_materi->setSessionValue("");
             }
 
             // Reset (clear) sorting order
@@ -1408,7 +1396,7 @@ class MateriGrid extends Materi
             }
         } // End View mode
         if ($this->CurrentMode == "edit" && is_numeric($this->RowIndex) && $this->RowAction != "delete") {
-            $this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $keyName . "\" id=\"" . $keyName . "\" value=\"" . $this->id_materi->CurrentValue . "\">";
+            $this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $keyName . "\" id=\"" . $keyName . "\" value=\"" . $this->id_artikel_materi->CurrentValue . "\">";
         }
         $this->renderListOptionsExt();
 
@@ -1423,7 +1411,7 @@ class MateriGrid extends Materi
         if ($key != "") {
                 $key .= Config("COMPOSITE_KEY_SEPARATOR");
         }
-        $key .= $rs->fields['id_materi'];
+        $key .= $rs->fields['id_artikel_materi'];
     }
 
     // Set up other options
@@ -1490,16 +1478,14 @@ class MateriGrid extends Materi
     // Load default values
     protected function loadDefaultValues()
     {
+        $this->id_artikel_materi->CurrentValue = null;
+        $this->id_artikel_materi->OldValue = $this->id_artikel_materi->CurrentValue;
         $this->id_materi->CurrentValue = null;
         $this->id_materi->OldValue = $this->id_materi->CurrentValue;
-        $this->id_media->CurrentValue = null;
-        $this->id_media->OldValue = $this->id_media->CurrentValue;
         $this->judul->CurrentValue = null;
         $this->judul->OldValue = $this->judul->CurrentValue;
         $this->isi->CurrentValue = null;
         $this->isi->OldValue = $this->isi->CurrentValue;
-        $this->pdf->CurrentValue = null;
-        $this->pdf->OldValue = $this->pdf->CurrentValue;
     }
 
     // Load form values
@@ -1509,17 +1495,23 @@ class MateriGrid extends Materi
         global $CurrentForm;
         $CurrentForm->FormName = $this->FormName;
 
-        // Check field name 'id_media' first before field var 'x_id_media'
-        $val = $CurrentForm->hasValue("id_media") ? $CurrentForm->getValue("id_media") : $CurrentForm->getValue("x_id_media");
-        if (!$this->id_media->IsDetailKey) {
+        // Check field name 'id_artikel_materi' first before field var 'x_id_artikel_materi'
+        $val = $CurrentForm->hasValue("id_artikel_materi") ? $CurrentForm->getValue("id_artikel_materi") : $CurrentForm->getValue("x_id_artikel_materi");
+        if (!$this->id_artikel_materi->IsDetailKey && !$this->isGridAdd() && !$this->isAdd()) {
+            $this->id_artikel_materi->setFormValue($val);
+        }
+
+        // Check field name 'id_materi' first before field var 'x_id_materi'
+        $val = $CurrentForm->hasValue("id_materi") ? $CurrentForm->getValue("id_materi") : $CurrentForm->getValue("x_id_materi");
+        if (!$this->id_materi->IsDetailKey) {
             if (IsApi() && $val === null) {
-                $this->id_media->Visible = false; // Disable update for API request
+                $this->id_materi->Visible = false; // Disable update for API request
             } else {
-                $this->id_media->setFormValue($val);
+                $this->id_materi->setFormValue($val);
             }
         }
-        if ($CurrentForm->hasValue("o_id_media")) {
-            $this->id_media->setOldValue($CurrentForm->getValue("o_id_media"));
+        if ($CurrentForm->hasValue("o_id_materi")) {
+            $this->id_materi->setOldValue($CurrentForm->getValue("o_id_materi"));
         }
 
         // Check field name 'judul' first before field var 'x_judul'
@@ -1534,25 +1526,6 @@ class MateriGrid extends Materi
         if ($CurrentForm->hasValue("o_judul")) {
             $this->judul->setOldValue($CurrentForm->getValue("o_judul"));
         }
-
-        // Check field name 'isi' first before field var 'x_isi'
-        $val = $CurrentForm->hasValue("isi") ? $CurrentForm->getValue("isi") : $CurrentForm->getValue("x_isi");
-        if (!$this->isi->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->isi->Visible = false; // Disable update for API request
-            } else {
-                $this->isi->setFormValue($val);
-            }
-        }
-        if ($CurrentForm->hasValue("o_isi")) {
-            $this->isi->setOldValue($CurrentForm->getValue("o_isi"));
-        }
-
-        // Check field name 'id_materi' first before field var 'x_id_materi'
-        $val = $CurrentForm->hasValue("id_materi") ? $CurrentForm->getValue("id_materi") : $CurrentForm->getValue("x_id_materi");
-        if (!$this->id_materi->IsDetailKey && !$this->isGridAdd() && !$this->isAdd()) {
-            $this->id_materi->setFormValue($val);
-        }
     }
 
     // Restore form values
@@ -1560,11 +1533,10 @@ class MateriGrid extends Materi
     {
         global $CurrentForm;
         if (!$this->isGridAdd() && !$this->isAdd()) {
-            $this->id_materi->CurrentValue = $this->id_materi->FormValue;
+            $this->id_artikel_materi->CurrentValue = $this->id_artikel_materi->FormValue;
         }
-        $this->id_media->CurrentValue = $this->id_media->FormValue;
+        $this->id_materi->CurrentValue = $this->id_materi->FormValue;
         $this->judul->CurrentValue = $this->judul->FormValue;
-        $this->isi->CurrentValue = $this->isi->FormValue;
     }
 
     // Load recordset
@@ -1635,11 +1607,10 @@ class MateriGrid extends Materi
         if (!$rs) {
             return;
         }
+        $this->id_artikel_materi->setDbValue($row['id_artikel_materi']);
         $this->id_materi->setDbValue($row['id_materi']);
-        $this->id_media->setDbValue($row['id_media']);
         $this->judul->setDbValue($row['judul']);
         $this->isi->setDbValue($row['isi']);
-        $this->pdf->setDbValue($row['pdf']);
     }
 
     // Return a row with default values
@@ -1647,11 +1618,10 @@ class MateriGrid extends Materi
     {
         $this->loadDefaultValues();
         $row = [];
+        $row['id_artikel_materi'] = $this->id_artikel_materi->CurrentValue;
         $row['id_materi'] = $this->id_materi->CurrentValue;
-        $row['id_media'] = $this->id_media->CurrentValue;
         $row['judul'] = $this->judul->CurrentValue;
         $row['isi'] = $this->isi->CurrentValue;
-        $row['pdf'] = $this->pdf->CurrentValue;
         return $row;
     }
 
@@ -1664,7 +1634,7 @@ class MateriGrid extends Materi
         $cnt = count($keys);
         if ($cnt >= 1) {
             if (strval($keys[0]) != "") {
-                $this->id_materi->OldValue = strval($keys[0]); // id_materi
+                $this->id_artikel_materi->OldValue = strval($keys[0]); // id_artikel_materi
             } else {
                 $validKey = false;
             }
@@ -1700,111 +1670,107 @@ class MateriGrid extends Materi
 
         // Common render codes for all row types
 
-        // id_materi
+        // id_artikel_materi
 
-        // id_media
+        // id_materi
 
         // judul
 
         // isi
-
-        // pdf
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_media
-            $curVal = strval($this->id_media->CurrentValue);
+            // id_artikel_materi
+            $this->id_artikel_materi->ViewValue = $this->id_artikel_materi->CurrentValue;
+            $this->id_artikel_materi->ViewCustomAttributes = "";
+
+            // id_materi
+            $curVal = strval($this->id_materi->CurrentValue);
             if ($curVal != "") {
-                $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
-                if ($this->id_media->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_media`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_media->Lookup->getSql(false, $filterWrk, '', $this, true);
+                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                if ($this->id_materi->ViewValue === null) { // Lookup from database
+                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
                     $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
                     $ari = count($rswrk);
                     if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_media->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_media->ViewValue = $this->id_media->displayValue($arwrk);
+                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
+                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
                     } else {
-                        $this->id_media->ViewValue = $this->id_media->CurrentValue;
+                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
                     }
                 }
             } else {
-                $this->id_media->ViewValue = null;
+                $this->id_materi->ViewValue = null;
             }
-            $this->id_media->ViewCustomAttributes = "";
+            $this->id_materi->ViewCustomAttributes = "";
 
             // judul
             $this->judul->ViewValue = $this->judul->CurrentValue;
             $this->judul->ViewCustomAttributes = "";
 
-            // isi
-            $this->isi->ViewValue = $this->isi->CurrentValue;
-            $this->isi->ViewCustomAttributes = "";
+            // id_artikel_materi
+            $this->id_artikel_materi->LinkCustomAttributes = "";
+            $this->id_artikel_materi->HrefValue = "";
+            $this->id_artikel_materi->TooltipValue = "";
 
-            // pdf
-            $this->pdf->ViewValue = $this->pdf->CurrentValue;
-            $this->pdf->ViewCustomAttributes = "";
-
-            // id_media
-            $this->id_media->LinkCustomAttributes = "";
-            $this->id_media->HrefValue = "";
-            $this->id_media->TooltipValue = "";
+            // id_materi
+            $this->id_materi->LinkCustomAttributes = "";
+            $this->id_materi->HrefValue = "";
+            $this->id_materi->TooltipValue = "";
 
             // judul
             $this->judul->LinkCustomAttributes = "";
             $this->judul->HrefValue = "";
             $this->judul->TooltipValue = "";
-
-            // isi
-            $this->isi->LinkCustomAttributes = "";
-            $this->isi->HrefValue = "";
-            $this->isi->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_ADD) {
-            // id_media
-            $this->id_media->EditAttrs["class"] = "form-control";
-            $this->id_media->EditCustomAttributes = "";
-            if ($this->id_media->getSessionValue() != "") {
-                $this->id_media->CurrentValue = GetForeignKeyValue($this->id_media->getSessionValue());
-                $this->id_media->OldValue = $this->id_media->CurrentValue;
-                $curVal = strval($this->id_media->CurrentValue);
+            // id_artikel_materi
+
+            // id_materi
+            $this->id_materi->EditAttrs["class"] = "form-control";
+            $this->id_materi->EditCustomAttributes = "";
+            if ($this->id_materi->getSessionValue() != "") {
+                $this->id_materi->CurrentValue = GetForeignKeyValue($this->id_materi->getSessionValue());
+                $this->id_materi->OldValue = $this->id_materi->CurrentValue;
+                $curVal = strval($this->id_materi->CurrentValue);
                 if ($curVal != "") {
-                    $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
-                    if ($this->id_media->ViewValue === null) { // Lookup from database
-                        $filterWrk = "`id_media`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                        $sqlWrk = $this->id_media->Lookup->getSql(false, $filterWrk, '', $this, true);
+                    $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                    if ($this->id_materi->ViewValue === null) { // Lookup from database
+                        $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                        $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
                         $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
                         $ari = count($rswrk);
                         if ($ari > 0) { // Lookup values found
-                            $arwrk = $this->id_media->Lookup->renderViewRow($rswrk[0]);
-                            $this->id_media->ViewValue = $this->id_media->displayValue($arwrk);
+                            $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
+                            $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
                         } else {
-                            $this->id_media->ViewValue = $this->id_media->CurrentValue;
+                            $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
                         }
                     }
                 } else {
-                    $this->id_media->ViewValue = null;
+                    $this->id_materi->ViewValue = null;
                 }
-                $this->id_media->ViewCustomAttributes = "";
+                $this->id_materi->ViewCustomAttributes = "";
             } else {
-                $curVal = trim(strval($this->id_media->CurrentValue));
+                $curVal = trim(strval($this->id_materi->CurrentValue));
                 if ($curVal != "") {
-                    $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
+                    $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
                 } else {
-                    $this->id_media->ViewValue = $this->id_media->Lookup !== null && is_array($this->id_media->Lookup->Options) ? $curVal : null;
+                    $this->id_materi->ViewValue = $this->id_materi->Lookup !== null && is_array($this->id_materi->Lookup->Options) ? $curVal : null;
                 }
-                if ($this->id_media->ViewValue !== null) { // Load from cache
-                    $this->id_media->EditValue = array_values($this->id_media->Lookup->Options);
+                if ($this->id_materi->ViewValue !== null) { // Load from cache
+                    $this->id_materi->EditValue = array_values($this->id_materi->Lookup->Options);
                 } else { // Lookup from database
                     if ($curVal == "") {
                         $filterWrk = "0=1";
                     } else {
-                        $filterWrk = "`id_media`" . SearchString("=", $this->id_media->CurrentValue, DATATYPE_NUMBER, "");
+                        $filterWrk = "`id_materi`" . SearchString("=", $this->id_materi->CurrentValue, DATATYPE_NUMBER, "");
                     }
-                    $sqlWrk = $this->id_media->Lookup->getSql(true, $filterWrk, '', $this);
+                    $sqlWrk = $this->id_materi->Lookup->getSql(true, $filterWrk, '', $this);
                     $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
                     $ari = count($rswrk);
                     $arwrk = $rswrk;
-                    $this->id_media->EditValue = $arwrk;
+                    $this->id_materi->EditValue = $arwrk;
                 }
-                $this->id_media->PlaceHolder = RemoveHtml($this->id_media->caption());
+                $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
             }
 
             // judul
@@ -1815,74 +1781,74 @@ class MateriGrid extends Materi
             }
             $this->judul->EditValue = HtmlEncode($this->judul->CurrentValue);
             $this->judul->PlaceHolder = RemoveHtml($this->judul->caption());
-
-            // isi
-            $this->isi->EditAttrs["class"] = "form-control";
-            $this->isi->EditCustomAttributes = "";
-            $this->isi->EditValue = HtmlEncode($this->isi->CurrentValue);
-            $this->isi->PlaceHolder = RemoveHtml($this->isi->caption());
 
             // Add refer script
 
-            // id_media
-            $this->id_media->LinkCustomAttributes = "";
-            $this->id_media->HrefValue = "";
+            // id_artikel_materi
+            $this->id_artikel_materi->LinkCustomAttributes = "";
+            $this->id_artikel_materi->HrefValue = "";
+
+            // id_materi
+            $this->id_materi->LinkCustomAttributes = "";
+            $this->id_materi->HrefValue = "";
 
             // judul
             $this->judul->LinkCustomAttributes = "";
             $this->judul->HrefValue = "";
-
-            // isi
-            $this->isi->LinkCustomAttributes = "";
-            $this->isi->HrefValue = "";
         } elseif ($this->RowType == ROWTYPE_EDIT) {
-            // id_media
-            $this->id_media->EditAttrs["class"] = "form-control";
-            $this->id_media->EditCustomAttributes = "";
-            if ($this->id_media->getSessionValue() != "") {
-                $this->id_media->CurrentValue = GetForeignKeyValue($this->id_media->getSessionValue());
-                $this->id_media->OldValue = $this->id_media->CurrentValue;
-                $curVal = strval($this->id_media->CurrentValue);
+            // id_artikel_materi
+            $this->id_artikel_materi->EditAttrs["class"] = "form-control";
+            $this->id_artikel_materi->EditCustomAttributes = "";
+            $this->id_artikel_materi->EditValue = $this->id_artikel_materi->CurrentValue;
+            $this->id_artikel_materi->ViewCustomAttributes = "";
+
+            // id_materi
+            $this->id_materi->EditAttrs["class"] = "form-control";
+            $this->id_materi->EditCustomAttributes = "";
+            if ($this->id_materi->getSessionValue() != "") {
+                $this->id_materi->CurrentValue = GetForeignKeyValue($this->id_materi->getSessionValue());
+                $this->id_materi->OldValue = $this->id_materi->CurrentValue;
+                $curVal = strval($this->id_materi->CurrentValue);
                 if ($curVal != "") {
-                    $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
-                    if ($this->id_media->ViewValue === null) { // Lookup from database
-                        $filterWrk = "`id_media`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                        $sqlWrk = $this->id_media->Lookup->getSql(false, $filterWrk, '', $this, true);
+                    $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                    if ($this->id_materi->ViewValue === null) { // Lookup from database
+                        $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                        $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
                         $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
                         $ari = count($rswrk);
                         if ($ari > 0) { // Lookup values found
-                            $arwrk = $this->id_media->Lookup->renderViewRow($rswrk[0]);
-                            $this->id_media->ViewValue = $this->id_media->displayValue($arwrk);
+                            $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
+                            $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
                         } else {
-                            $this->id_media->ViewValue = $this->id_media->CurrentValue;
+                            $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
                         }
                     }
                 } else {
-                    $this->id_media->ViewValue = null;
+                    $this->id_materi->ViewValue = null;
                 }
-                $this->id_media->ViewCustomAttributes = "";
+                $this->id_materi->ViewCustomAttributes = "";
             } else {
-                $curVal = trim(strval($this->id_media->CurrentValue));
+                $curVal = trim(strval($this->id_materi->CurrentValue));
                 if ($curVal != "") {
-                    $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
+                    $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
                 } else {
-                    $this->id_media->ViewValue = $this->id_media->Lookup !== null && is_array($this->id_media->Lookup->Options) ? $curVal : null;
+                    $this->id_materi->ViewValue = $this->id_materi->Lookup !== null && is_array($this->id_materi->Lookup->Options) ? $curVal : null;
                 }
-                if ($this->id_media->ViewValue !== null) { // Load from cache
-                    $this->id_media->EditValue = array_values($this->id_media->Lookup->Options);
+                if ($this->id_materi->ViewValue !== null) { // Load from cache
+                    $this->id_materi->EditValue = array_values($this->id_materi->Lookup->Options);
                 } else { // Lookup from database
                     if ($curVal == "") {
                         $filterWrk = "0=1";
                     } else {
-                        $filterWrk = "`id_media`" . SearchString("=", $this->id_media->CurrentValue, DATATYPE_NUMBER, "");
+                        $filterWrk = "`id_materi`" . SearchString("=", $this->id_materi->CurrentValue, DATATYPE_NUMBER, "");
                     }
-                    $sqlWrk = $this->id_media->Lookup->getSql(true, $filterWrk, '', $this);
+                    $sqlWrk = $this->id_materi->Lookup->getSql(true, $filterWrk, '', $this);
                     $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
                     $ari = count($rswrk);
                     $arwrk = $rswrk;
-                    $this->id_media->EditValue = $arwrk;
+                    $this->id_materi->EditValue = $arwrk;
                 }
-                $this->id_media->PlaceHolder = RemoveHtml($this->id_media->caption());
+                $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
             }
 
             // judul
@@ -1894,25 +1860,19 @@ class MateriGrid extends Materi
             $this->judul->EditValue = HtmlEncode($this->judul->CurrentValue);
             $this->judul->PlaceHolder = RemoveHtml($this->judul->caption());
 
-            // isi
-            $this->isi->EditAttrs["class"] = "form-control";
-            $this->isi->EditCustomAttributes = "";
-            $this->isi->EditValue = HtmlEncode($this->isi->CurrentValue);
-            $this->isi->PlaceHolder = RemoveHtml($this->isi->caption());
-
             // Edit refer script
 
-            // id_media
-            $this->id_media->LinkCustomAttributes = "";
-            $this->id_media->HrefValue = "";
+            // id_artikel_materi
+            $this->id_artikel_materi->LinkCustomAttributes = "";
+            $this->id_artikel_materi->HrefValue = "";
+
+            // id_materi
+            $this->id_materi->LinkCustomAttributes = "";
+            $this->id_materi->HrefValue = "";
 
             // judul
             $this->judul->LinkCustomAttributes = "";
             $this->judul->HrefValue = "";
-
-            // isi
-            $this->isi->LinkCustomAttributes = "";
-            $this->isi->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1933,19 +1893,19 @@ class MateriGrid extends Materi
         if (!Config("SERVER_VALIDATE")) {
             return true;
         }
-        if ($this->id_media->Required) {
-            if (!$this->id_media->IsDetailKey && EmptyValue($this->id_media->FormValue)) {
-                $this->id_media->addErrorMessage(str_replace("%s", $this->id_media->caption(), $this->id_media->RequiredErrorMessage));
+        if ($this->id_artikel_materi->Required) {
+            if (!$this->id_artikel_materi->IsDetailKey && EmptyValue($this->id_artikel_materi->FormValue)) {
+                $this->id_artikel_materi->addErrorMessage(str_replace("%s", $this->id_artikel_materi->caption(), $this->id_artikel_materi->RequiredErrorMessage));
+            }
+        }
+        if ($this->id_materi->Required) {
+            if (!$this->id_materi->IsDetailKey && EmptyValue($this->id_materi->FormValue)) {
+                $this->id_materi->addErrorMessage(str_replace("%s", $this->id_materi->caption(), $this->id_materi->RequiredErrorMessage));
             }
         }
         if ($this->judul->Required) {
             if (!$this->judul->IsDetailKey && EmptyValue($this->judul->FormValue)) {
                 $this->judul->addErrorMessage(str_replace("%s", $this->judul->caption(), $this->judul->RequiredErrorMessage));
-            }
-        }
-        if ($this->isi->Required) {
-            if (!$this->isi->IsDetailKey && EmptyValue($this->isi->FormValue)) {
-                $this->isi->addErrorMessage(str_replace("%s", $this->isi->caption(), $this->isi->RequiredErrorMessage));
             }
         }
 
@@ -1993,7 +1953,7 @@ class MateriGrid extends Materi
                 if ($thisKey != "") {
                     $thisKey .= Config("COMPOSITE_KEY_SEPARATOR");
                 }
-                $thisKey .= $row['id_materi'];
+                $thisKey .= $row['id_artikel_materi'];
                 if (Config("DELETE_UPLOADED_FILES")) { // Delete old files
                     $this->deleteUploadedFiles($row);
                 }
@@ -2052,14 +2012,11 @@ class MateriGrid extends Materi
             $this->loadDbValues($rsold);
             $rsnew = [];
 
-            // id_media
-            $this->id_media->setDbValueDef($rsnew, $this->id_media->CurrentValue, 0, $this->id_media->ReadOnly);
+            // id_materi
+            $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, $this->id_materi->ReadOnly);
 
             // judul
             $this->judul->setDbValueDef($rsnew, $this->judul->CurrentValue, "", $this->judul->ReadOnly);
-
-            // isi
-            $this->isi->setDbValueDef($rsnew, $this->isi->CurrentValue, "", $this->isi->ReadOnly);
 
             // Call Row Updating event
             $updateRow = $this->rowUpdating($rsold, $rsnew);
@@ -2120,8 +2077,8 @@ class MateriGrid extends Materi
         global $Language, $Security;
 
         // Set up foreign key field value from Session
-        if ($this->getCurrentMasterTable() == "media") {
-            $this->id_media->CurrentValue = $this->id_media->getSessionValue();
+        if ($this->getCurrentMasterTable() == "materi") {
+            $this->id_materi->CurrentValue = $this->id_materi->getSessionValue();
         }
         $conn = $this->getConnection();
 
@@ -2131,14 +2088,11 @@ class MateriGrid extends Materi
         }
         $rsnew = [];
 
-        // id_media
-        $this->id_media->setDbValueDef($rsnew, $this->id_media->CurrentValue, 0, false);
+        // id_materi
+        $this->id_materi->setDbValueDef($rsnew, $this->id_materi->CurrentValue, 0, false);
 
         // judul
         $this->judul->setDbValueDef($rsnew, $this->judul->CurrentValue, "", false);
-
-        // isi
-        $this->isi->setDbValueDef($rsnew, $this->isi->CurrentValue, "", false);
 
         // Call Row Inserting event
         $insertRow = $this->rowInserting($rsold, $rsnew);
@@ -2179,9 +2133,9 @@ class MateriGrid extends Materi
     {
         // Hide foreign keys
         $masterTblVar = $this->getCurrentMasterTable();
-        if ($masterTblVar == "media") {
-            $masterTbl = Container("media");
-            $this->id_media->Visible = false;
+        if ($masterTblVar == "materi") {
+            $masterTbl = Container("materi");
+            $this->id_materi->Visible = false;
             if ($masterTbl->EventCancelled) {
                 $this->EventCancelled = true;
             }
@@ -2203,7 +2157,7 @@ class MateriGrid extends Materi
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_id_media":
+                case "x_id_materi":
                     break;
                 default:
                     $lookupFilter = "";

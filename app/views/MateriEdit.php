@@ -19,9 +19,7 @@ loadjs.ready("head", function () {
     fmateriedit.addFields([
         ["id_materi", [fields.id_materi.required ? ew.Validators.required(fields.id_materi.caption) : null], fields.id_materi.isInvalid],
         ["id_media", [fields.id_media.required ? ew.Validators.required(fields.id_media.caption) : null], fields.id_media.isInvalid],
-        ["judul", [fields.judul.required ? ew.Validators.required(fields.judul.caption) : null], fields.judul.isInvalid],
-        ["isi", [fields.isi.required ? ew.Validators.required(fields.isi.caption) : null], fields.isi.isInvalid],
-        ["pdf", [fields.pdf.required ? ew.Validators.fileRequired(fields.pdf.caption) : null], fields.pdf.isInvalid]
+        ["judul", [fields.judul.required ? ew.Validators.required(fields.judul.caption) : null], fields.judul.isInvalid]
     ]);
 
     // Set invalid fields
@@ -179,49 +177,6 @@ loadjs.ready("head", function() {
 </div></div>
     </div>
 <?php } ?>
-<?php if ($Page->isi->Visible) { // isi ?>
-    <div id="r_isi" class="form-group row">
-        <label id="elh_materi_isi" class="<?= $Page->LeftColumnClass ?>"><?= $Page->isi->caption() ?><?= $Page->isi->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->isi->cellAttributes() ?>>
-<span id="el_materi_isi">
-<?php $Page->isi->EditAttrs->appendClass("editor"); ?>
-<textarea data-table="materi" data-field="x_isi" name="x_isi" id="x_isi" cols="35" rows="4" placeholder="<?= HtmlEncode($Page->isi->getPlaceHolder()) ?>"<?= $Page->isi->editAttributes() ?> aria-describedby="x_isi_help"><?= $Page->isi->EditValue ?></textarea>
-<?= $Page->isi->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->isi->getErrorMessage() ?></div>
-<script>
-loadjs.ready(["fmateriedit", "editor"], function() {
-	ew.createEditor("fmateriedit", "x_isi", 35, 4, <?= $Page->isi->ReadOnly || false ? "true" : "false" ?>);
-});
-</script>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->pdf->Visible) { // pdf ?>
-    <div id="r_pdf" class="form-group row">
-        <label id="elh_materi_pdf" class="<?= $Page->LeftColumnClass ?>"><?= $Page->pdf->caption() ?><?= $Page->pdf->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div <?= $Page->pdf->cellAttributes() ?>>
-<span id="el_materi_pdf">
-<div id="fd_x_pdf">
-<div class="input-group">
-    <div class="custom-file">
-        <input type="file" class="custom-file-input" title="<?= $Page->pdf->title() ?>" data-table="materi" data-field="x_pdf" name="x_pdf" id="x_pdf" lang="<?= CurrentLanguageID() ?>"<?= $Page->pdf->editAttributes() ?><?= ($Page->pdf->ReadOnly || $Page->pdf->Disabled) ? " disabled" : "" ?> aria-describedby="x_pdf_help">
-        <label class="custom-file-label ew-file-label" for="x_pdf"><?= $Language->phrase("ChooseFile") ?></label>
-    </div>
-</div>
-<?= $Page->pdf->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->pdf->getErrorMessage() ?></div>
-<input type="hidden" name="fn_x_pdf" id= "fn_x_pdf" value="<?= $Page->pdf->Upload->FileName ?>">
-<input type="hidden" name="fa_x_pdf" id= "fa_x_pdf" value="<?= (Post("fa_x_pdf") == "0") ? "0" : "1" ?>">
-<input type="hidden" name="fs_x_pdf" id= "fs_x_pdf" value="255">
-<input type="hidden" name="fx_x_pdf" id= "fx_x_pdf" value="<?= $Page->pdf->UploadAllowedFileExt ?>">
-<input type="hidden" name="fm_x_pdf" id= "fm_x_pdf" value="<?= $Page->pdf->UploadMaxFileSize ?>">
-</div>
-<table id="ft_x_pdf" class="table table-sm float-left ew-upload-table"><tbody class="files"></tbody></table>
-</span>
-</div></div>
-    </div>
-<?php } ?>
 </div><!-- /page* -->
 <?php
     if (in_array("evaluasi", explode(",", $Page->getCurrentDetailTable())) && $evaluasi->DetailEdit) {
@@ -238,6 +193,22 @@ loadjs.ready(["fmateriedit", "editor"], function() {
 <h4 class="ew-detail-caption"><?= $Language->tablePhrase("rencana_pembelajaran", "TblCaption") ?></h4>
 <?php } ?>
 <?php include_once "RencanaPembelajaranGrid.php" ?>
+<?php } ?>
+<?php
+    if (in_array("pdf_materi", explode(",", $Page->getCurrentDetailTable())) && $pdf_materi->DetailEdit) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("pdf_materi", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "PdfMateriGrid.php" ?>
+<?php } ?>
+<?php
+    if (in_array("artikel_materi", explode(",", $Page->getCurrentDetailTable())) && $artikel_materi->DetailEdit) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("artikel_materi", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "ArtikelMateriGrid.php" ?>
 <?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <div class="form-group row"><!-- buttons .form-group -->

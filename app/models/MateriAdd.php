@@ -628,8 +628,8 @@ class MateriAdd extends Materi
         $this->id_materi->Visible = false;
         $this->id_media->setVisibility();
         $this->judul->setVisibility();
-        $this->isi->setVisibility();
-        $this->pdf->setVisibility();
+        $this->isi->Visible = false;
+        $this->pdf->Visible = false;
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -791,9 +791,6 @@ class MateriAdd extends Materi
     protected function getUploadFiles()
     {
         global $CurrentForm, $Language;
-        $this->pdf->Upload->Index = $CurrentForm->Index;
-        $this->pdf->Upload->uploadFile();
-        $this->pdf->CurrentValue = $this->pdf->Upload->FileName;
     }
 
     // Load default values
@@ -807,9 +804,8 @@ class MateriAdd extends Materi
         $this->judul->OldValue = $this->judul->CurrentValue;
         $this->isi->CurrentValue = null;
         $this->isi->OldValue = $this->isi->CurrentValue;
-        $this->pdf->Upload->DbValue = null;
-        $this->pdf->OldValue = $this->pdf->Upload->DbValue;
-        $this->pdf->CurrentValue = null; // Clear file related field
+        $this->pdf->CurrentValue = null;
+        $this->pdf->OldValue = $this->pdf->CurrentValue;
     }
 
     // Load form values
@@ -817,7 +813,6 @@ class MateriAdd extends Materi
     {
         // Load from form
         global $CurrentForm;
-        $this->getUploadFiles(); // Get upload files
 
         // Check field name 'id_media' first before field var 'x_id_media'
         $val = $CurrentForm->hasValue("id_media") ? $CurrentForm->getValue("id_media") : $CurrentForm->getValue("x_id_media");
@@ -839,16 +834,6 @@ class MateriAdd extends Materi
             }
         }
 
-        // Check field name 'isi' first before field var 'x_isi'
-        $val = $CurrentForm->hasValue("isi") ? $CurrentForm->getValue("isi") : $CurrentForm->getValue("x_isi");
-        if (!$this->isi->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->isi->Visible = false; // Disable update for API request
-            } else {
-                $this->isi->setFormValue($val);
-            }
-        }
-
         // Check field name 'id_materi' first before field var 'x_id_materi'
         $val = $CurrentForm->hasValue("id_materi") ? $CurrentForm->getValue("id_materi") : $CurrentForm->getValue("x_id_materi");
     }
@@ -859,7 +844,6 @@ class MateriAdd extends Materi
         global $CurrentForm;
         $this->id_media->CurrentValue = $this->id_media->FormValue;
         $this->judul->CurrentValue = $this->judul->FormValue;
-        $this->isi->CurrentValue = $this->isi->FormValue;
     }
 
     /**
@@ -913,8 +897,7 @@ class MateriAdd extends Materi
         $this->id_media->setDbValue($row['id_media']);
         $this->judul->setDbValue($row['judul']);
         $this->isi->setDbValue($row['isi']);
-        $this->pdf->Upload->DbValue = $row['pdf'];
-        $this->pdf->setDbValue($this->pdf->Upload->DbValue);
+        $this->pdf->setDbValue($row['pdf']);
     }
 
     // Return a row with default values
@@ -926,7 +909,7 @@ class MateriAdd extends Materi
         $row['id_media'] = $this->id_media->CurrentValue;
         $row['judul'] = $this->judul->CurrentValue;
         $row['isi'] = $this->isi->CurrentValue;
-        $row['pdf'] = $this->pdf->Upload->DbValue;
+        $row['pdf'] = $this->pdf->CurrentValue;
         return $row;
     }
 
@@ -1005,11 +988,7 @@ class MateriAdd extends Materi
             $this->isi->ViewCustomAttributes = "";
 
             // pdf
-            if (!EmptyValue($this->pdf->Upload->DbValue)) {
-                $this->pdf->ViewValue = $this->pdf->Upload->DbValue;
-            } else {
-                $this->pdf->ViewValue = "";
-            }
+            $this->pdf->ViewValue = $this->pdf->CurrentValue;
             $this->pdf->ViewCustomAttributes = "";
 
             // id_media
@@ -1021,17 +1000,6 @@ class MateriAdd extends Materi
             $this->judul->LinkCustomAttributes = "";
             $this->judul->HrefValue = "";
             $this->judul->TooltipValue = "";
-
-            // isi
-            $this->isi->LinkCustomAttributes = "";
-            $this->isi->HrefValue = "";
-            $this->isi->TooltipValue = "";
-
-            // pdf
-            $this->pdf->LinkCustomAttributes = "";
-            $this->pdf->HrefValue = "";
-            $this->pdf->ExportHrefValue = $this->pdf->UploadPath . $this->pdf->Upload->DbValue;
-            $this->pdf->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_ADD) {
             // id_media
             $this->id_media->EditAttrs["class"] = "form-control";
@@ -1090,27 +1058,6 @@ class MateriAdd extends Materi
             $this->judul->EditValue = HtmlEncode($this->judul->CurrentValue);
             $this->judul->PlaceHolder = RemoveHtml($this->judul->caption());
 
-            // isi
-            $this->isi->EditAttrs["class"] = "form-control";
-            $this->isi->EditCustomAttributes = "";
-            $this->isi->EditValue = HtmlEncode($this->isi->CurrentValue);
-            $this->isi->PlaceHolder = RemoveHtml($this->isi->caption());
-
-            // pdf
-            $this->pdf->EditAttrs["class"] = "form-control";
-            $this->pdf->EditCustomAttributes = "";
-            if (!EmptyValue($this->pdf->Upload->DbValue)) {
-                $this->pdf->EditValue = $this->pdf->Upload->DbValue;
-            } else {
-                $this->pdf->EditValue = "";
-            }
-            if (!EmptyValue($this->pdf->CurrentValue)) {
-                $this->pdf->Upload->FileName = $this->pdf->CurrentValue;
-            }
-            if ($this->isShow() || $this->isCopy()) {
-                RenderUploadField($this->pdf);
-            }
-
             // Add refer script
 
             // id_media
@@ -1120,15 +1067,6 @@ class MateriAdd extends Materi
             // judul
             $this->judul->LinkCustomAttributes = "";
             $this->judul->HrefValue = "";
-
-            // isi
-            $this->isi->LinkCustomAttributes = "";
-            $this->isi->HrefValue = "";
-
-            // pdf
-            $this->pdf->LinkCustomAttributes = "";
-            $this->pdf->HrefValue = "";
-            $this->pdf->ExportHrefValue = $this->pdf->UploadPath . $this->pdf->Upload->DbValue;
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1159,16 +1097,6 @@ class MateriAdd extends Materi
                 $this->judul->addErrorMessage(str_replace("%s", $this->judul->caption(), $this->judul->RequiredErrorMessage));
             }
         }
-        if ($this->isi->Required) {
-            if (!$this->isi->IsDetailKey && EmptyValue($this->isi->FormValue)) {
-                $this->isi->addErrorMessage(str_replace("%s", $this->isi->caption(), $this->isi->RequiredErrorMessage));
-            }
-        }
-        if ($this->pdf->Required) {
-            if ($this->pdf->Upload->FileName == "" && !$this->pdf->Upload->KeepFile) {
-                $this->pdf->addErrorMessage(str_replace("%s", $this->pdf->caption(), $this->pdf->RequiredErrorMessage));
-            }
-        }
 
         // Validate detail grid
         $detailTblVar = explode(",", $this->getCurrentDetailTable());
@@ -1178,6 +1106,14 @@ class MateriAdd extends Materi
         }
         $detailPage = Container("RencanaPembelajaranGrid");
         if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
+            $detailPage->validateGridForm();
+        }
+        $detailPage = Container("PdfMateriGrid");
+        if (in_array("pdf_materi", $detailTblVar) && $detailPage->DetailAdd) {
+            $detailPage->validateGridForm();
+        }
+        $detailPage = Container("ArtikelMateriGrid");
+        if (in_array("artikel_materi", $detailTblVar) && $detailPage->DetailAdd) {
             $detailPage->validateGridForm();
         }
 
@@ -1216,96 +1152,11 @@ class MateriAdd extends Materi
         // judul
         $this->judul->setDbValueDef($rsnew, $this->judul->CurrentValue, "", false);
 
-        // isi
-        $this->isi->setDbValueDef($rsnew, $this->isi->CurrentValue, "", false);
-
-        // pdf
-        if ($this->pdf->Visible && !$this->pdf->Upload->KeepFile) {
-            $this->pdf->Upload->DbValue = ""; // No need to delete old file
-            if ($this->pdf->Upload->FileName == "") {
-                $rsnew['pdf'] = null;
-            } else {
-                $rsnew['pdf'] = $this->pdf->Upload->FileName;
-            }
-        }
-        if ($this->pdf->Visible && !$this->pdf->Upload->KeepFile) {
-            $oldFiles = EmptyValue($this->pdf->Upload->DbValue) ? [] : [$this->pdf->htmlDecode($this->pdf->Upload->DbValue)];
-            if (!EmptyValue($this->pdf->Upload->FileName)) {
-                $newFiles = [$this->pdf->Upload->FileName];
-                $NewFileCount = count($newFiles);
-                for ($i = 0; $i < $NewFileCount; $i++) {
-                    if ($newFiles[$i] != "") {
-                        $file = $newFiles[$i];
-                        $tempPath = UploadTempPath($this->pdf, $this->pdf->Upload->Index);
-                        if (file_exists($tempPath . $file)) {
-                            if (Config("DELETE_UPLOADED_FILES")) {
-                                $oldFileFound = false;
-                                $oldFileCount = count($oldFiles);
-                                for ($j = 0; $j < $oldFileCount; $j++) {
-                                    $oldFile = $oldFiles[$j];
-                                    if ($oldFile == $file) { // Old file found, no need to delete anymore
-                                        array_splice($oldFiles, $j, 1);
-                                        $oldFileFound = true;
-                                        break;
-                                    }
-                                }
-                                if ($oldFileFound) { // No need to check if file exists further
-                                    continue;
-                                }
-                            }
-                            $file1 = UniqueFilename($this->pdf->physicalUploadPath(), $file); // Get new file name
-                            if ($file1 != $file) { // Rename temp file
-                                while (file_exists($tempPath . $file1) || file_exists($this->pdf->physicalUploadPath() . $file1)) { // Make sure no file name clash
-                                    $file1 = UniqueFilename([$this->pdf->physicalUploadPath(), $tempPath], $file1, true); // Use indexed name
-                                }
-                                rename($tempPath . $file, $tempPath . $file1);
-                                $newFiles[$i] = $file1;
-                            }
-                        }
-                    }
-                }
-                $this->pdf->Upload->DbValue = empty($oldFiles) ? "" : implode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $oldFiles);
-                $this->pdf->Upload->FileName = implode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $newFiles);
-                $this->pdf->setDbValueDef($rsnew, $this->pdf->Upload->FileName, "", false);
-            }
-        }
-
         // Call Row Inserting event
         $insertRow = $this->rowInserting($rsold, $rsnew);
         if ($insertRow) {
             $addRow = $this->insert($rsnew);
             if ($addRow) {
-                if ($this->pdf->Visible && !$this->pdf->Upload->KeepFile) {
-                    $oldFiles = EmptyValue($this->pdf->Upload->DbValue) ? [] : [$this->pdf->htmlDecode($this->pdf->Upload->DbValue)];
-                    if (!EmptyValue($this->pdf->Upload->FileName)) {
-                        $newFiles = [$this->pdf->Upload->FileName];
-                        $newFiles2 = [$this->pdf->htmlDecode($rsnew['pdf'])];
-                        $newFileCount = count($newFiles);
-                        for ($i = 0; $i < $newFileCount; $i++) {
-                            if ($newFiles[$i] != "") {
-                                $file = UploadTempPath($this->pdf, $this->pdf->Upload->Index) . $newFiles[$i];
-                                if (file_exists($file)) {
-                                    if (@$newFiles2[$i] != "") { // Use correct file name
-                                        $newFiles[$i] = $newFiles2[$i];
-                                    }
-                                    if (!$this->pdf->Upload->SaveToFile($newFiles[$i], true, $i)) { // Just replace
-                                        $this->setFailureMessage($Language->phrase("UploadErrMsg7"));
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        $newFiles = [];
-                    }
-                    if (Config("DELETE_UPLOADED_FILES")) {
-                        foreach ($oldFiles as $oldFile) {
-                            if ($oldFile != "" && !in_array($oldFile, $newFiles)) {
-                                @unlink($this->pdf->oldPhysicalUploadPath() . $oldFile);
-                            }
-                        }
-                    }
-                }
             }
         } else {
             if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
@@ -1338,6 +1189,22 @@ class MateriAdd extends Materi
                 $detailPage->id_materi->setSessionValue(""); // Clear master key if insert failed
                 }
             }
+            $detailPage = Container("PdfMateriGrid");
+            if (in_array("pdf_materi", $detailTblVar) && $detailPage->DetailAdd) {
+                $detailPage->id_materi->setSessionValue($this->id_materi->CurrentValue); // Set master key
+                $addRow = $detailPage->gridInsert();
+                if (!$addRow) {
+                $detailPage->id_materi->setSessionValue(""); // Clear master key if insert failed
+                }
+            }
+            $detailPage = Container("ArtikelMateriGrid");
+            if (in_array("artikel_materi", $detailTblVar) && $detailPage->DetailAdd) {
+                $detailPage->id_materi->setSessionValue($this->id_materi->CurrentValue); // Set master key
+                $addRow = $detailPage->gridInsert();
+                if (!$addRow) {
+                $detailPage->id_materi->setSessionValue(""); // Clear master key if insert failed
+                }
+            }
         }
 
         // Commit/Rollback transaction
@@ -1355,8 +1222,6 @@ class MateriAdd extends Materi
 
         // Clean upload path if any
         if ($addRow) {
-            // pdf
-            CleanUploadTempPath($this->pdf, $this->pdf->Upload->Index);
         }
 
         // Write JSON for API request
@@ -1483,6 +1348,42 @@ class MateriAdd extends Materi
                     $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
                     $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
                     $detailPageObj->id_indikator->setSessionValue(""); // Clear session key
+                }
+            }
+            if (in_array("pdf_materi", $detailTblVar)) {
+                $detailPageObj = Container("PdfMateriGrid");
+                if ($detailPageObj->DetailAdd) {
+                    if ($this->CopyRecord) {
+                        $detailPageObj->CurrentMode = "copy";
+                    } else {
+                        $detailPageObj->CurrentMode = "add";
+                    }
+                    $detailPageObj->CurrentAction = "gridadd";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_materi->IsDetailKey = true;
+                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
+                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
+                }
+            }
+            if (in_array("artikel_materi", $detailTblVar)) {
+                $detailPageObj = Container("ArtikelMateriGrid");
+                if ($detailPageObj->DetailAdd) {
+                    if ($this->CopyRecord) {
+                        $detailPageObj->CurrentMode = "copy";
+                    } else {
+                        $detailPageObj->CurrentMode = "add";
+                    }
+                    $detailPageObj->CurrentAction = "gridadd";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_materi->IsDetailKey = true;
+                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
+                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
                 }
             }
         }

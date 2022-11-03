@@ -16,7 +16,9 @@
         <select name="aksi" class="form-control">
             <option value="{{ $aksi }}">{{ $aksi }}</option>
             <option value="rencana_pembelajaran">Rencana Pembelajaran</option>
-            <option value="Materi">Materi</option>
+            <!--
+                <option value="Materi">Materi</option>
+                -->
             <option value="Soal">Soal</option>
             <option value="tampilkan_jawaban">tampilkan_jawaban</option>
             <option value="ulangan">ulangan</option>
@@ -117,6 +119,6 @@
         </tbody>
     </table>
     <!--
-                                                                                        <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
-                                                                                    -->
+                                                                                            <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
+                                                                                        -->
 @endsection

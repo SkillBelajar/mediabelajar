@@ -65,14 +65,20 @@
 
 
                 <div class="row">
-                    <div class="col-sm-4"> <img
-                            src="../../../app/files/tut-wuri-handayani-ftrd-image-removebg-preview-removebg-preview.png"
-                            class="img-rounded" width="90" height="90"></div>
+                    <div class="col-sm-4"> <img src="../../../app/files/{{ $logo }}" class="img-rounded"
+                            width="90" height="90"></div>
                     <div class="col-sm-8">
-                        <h4><small>Pengajar : {{ $nama_guru }} | {{ $tempat_kerja }}</small></h4>
+                        <h4><small> <br> {{ $tempat_kerja }} <br> {{ $nama_guru }}</small></h4>
                     </div>
                 </div>
                 <hr>
+                @if ($kode == 1)
+                    <h1>{{ $judul_materi }}</h1>
+                    <hr>
+                @endif
+
+
+
                 @foreach ($slide as $item)
                     <h2>{{ $item->judul }}</h2>
 

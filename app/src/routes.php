@@ -252,6 +252,40 @@ return function (App $app) {
         }
     );
 
+    // artikel_materi
+    $app->any('/ArtikelMateriList[/{id_artikel_materi}]', ArtikelMateriController::class . ':list')->add(PermissionMiddleware::class)->setName('ArtikelMateriList-artikel_materi-list'); // list
+    $app->any('/ArtikelMateriAdd[/{id_artikel_materi}]', ArtikelMateriController::class . ':add')->add(PermissionMiddleware::class)->setName('ArtikelMateriAdd-artikel_materi-add'); // add
+    $app->any('/ArtikelMateriView[/{id_artikel_materi}]', ArtikelMateriController::class . ':view')->add(PermissionMiddleware::class)->setName('ArtikelMateriView-artikel_materi-view'); // view
+    $app->any('/ArtikelMateriEdit[/{id_artikel_materi}]', ArtikelMateriController::class . ':edit')->add(PermissionMiddleware::class)->setName('ArtikelMateriEdit-artikel_materi-edit'); // edit
+    $app->any('/ArtikelMateriDelete[/{id_artikel_materi}]', ArtikelMateriController::class . ':delete')->add(PermissionMiddleware::class)->setName('ArtikelMateriDelete-artikel_materi-delete'); // delete
+    $app->group(
+        '/artikel_materi',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_artikel_materi}]', ArtikelMateriController::class . ':list')->add(PermissionMiddleware::class)->setName('artikel_materi/list-artikel_materi-list-2'); // list
+            $group->any('/add[/{id_artikel_materi}]', ArtikelMateriController::class . ':add')->add(PermissionMiddleware::class)->setName('artikel_materi/add-artikel_materi-add-2'); // add
+            $group->any('/view[/{id_artikel_materi}]', ArtikelMateriController::class . ':view')->add(PermissionMiddleware::class)->setName('artikel_materi/view-artikel_materi-view-2'); // view
+            $group->any('/edit[/{id_artikel_materi}]', ArtikelMateriController::class . ':edit')->add(PermissionMiddleware::class)->setName('artikel_materi/edit-artikel_materi-edit-2'); // edit
+            $group->any('/delete[/{id_artikel_materi}]', ArtikelMateriController::class . ':delete')->add(PermissionMiddleware::class)->setName('artikel_materi/delete-artikel_materi-delete-2'); // delete
+        }
+    );
+
+    // pdf_materi
+    $app->any('/PdfMateriList[/{id_pdf_materi}]', PdfMateriController::class . ':list')->add(PermissionMiddleware::class)->setName('PdfMateriList-pdf_materi-list'); // list
+    $app->any('/PdfMateriAdd[/{id_pdf_materi}]', PdfMateriController::class . ':add')->add(PermissionMiddleware::class)->setName('PdfMateriAdd-pdf_materi-add'); // add
+    $app->any('/PdfMateriView[/{id_pdf_materi}]', PdfMateriController::class . ':view')->add(PermissionMiddleware::class)->setName('PdfMateriView-pdf_materi-view'); // view
+    $app->any('/PdfMateriEdit[/{id_pdf_materi}]', PdfMateriController::class . ':edit')->add(PermissionMiddleware::class)->setName('PdfMateriEdit-pdf_materi-edit'); // edit
+    $app->any('/PdfMateriDelete[/{id_pdf_materi}]', PdfMateriController::class . ':delete')->add(PermissionMiddleware::class)->setName('PdfMateriDelete-pdf_materi-delete'); // delete
+    $app->group(
+        '/pdf_materi',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_pdf_materi}]', PdfMateriController::class . ':list')->add(PermissionMiddleware::class)->setName('pdf_materi/list-pdf_materi-list-2'); // list
+            $group->any('/add[/{id_pdf_materi}]', PdfMateriController::class . ':add')->add(PermissionMiddleware::class)->setName('pdf_materi/add-pdf_materi-add-2'); // add
+            $group->any('/view[/{id_pdf_materi}]', PdfMateriController::class . ':view')->add(PermissionMiddleware::class)->setName('pdf_materi/view-pdf_materi-view-2'); // view
+            $group->any('/edit[/{id_pdf_materi}]', PdfMateriController::class . ':edit')->add(PermissionMiddleware::class)->setName('pdf_materi/edit-pdf_materi-edit-2'); // edit
+            $group->any('/delete[/{id_pdf_materi}]', PdfMateriController::class . ':delete')->add(PermissionMiddleware::class)->setName('pdf_materi/delete-pdf_materi-delete-2'); // delete
+        }
+    );
+
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
 

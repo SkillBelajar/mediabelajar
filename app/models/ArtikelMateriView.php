@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class MateriView extends Materi
+class ArtikelMateriView extends ArtikelMateri
 {
     // Page ID
     public $PageID = "view";
@@ -16,10 +16,10 @@ class MateriView extends Materi
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'materi';
+    public $TableName = 'artikel_materi';
 
     // Page object name
-    public $PageObjName = "MateriView";
+    public $PageObjName = "ArtikelMateriView";
 
     // Rendering View
     public $RenderingView = false;
@@ -342,15 +342,15 @@ class MateriView extends Materi
         // Parent constuctor
         parent::__construct();
 
-        // Table object (materi)
-        if (!isset($GLOBALS["materi"]) || get_class($GLOBALS["materi"]) == PROJECT_NAMESPACE . "materi") {
-            $GLOBALS["materi"] = &$this;
+        // Table object (artikel_materi)
+        if (!isset($GLOBALS["artikel_materi"]) || get_class($GLOBALS["artikel_materi"]) == PROJECT_NAMESPACE . "artikel_materi") {
+            $GLOBALS["artikel_materi"] = &$this;
         }
 
         // Page URL
         $pageUrl = $this->pageUrl();
-        if (($keyValue = Get("id_materi") ?? Route("id_materi")) !== null) {
-            $this->RecKey["id_materi"] = $keyValue;
+        if (($keyValue = Get("id_artikel_materi") ?? Route("id_artikel_materi")) !== null) {
+            $this->RecKey["id_artikel_materi"] = $keyValue;
         }
         $this->ExportPrintUrl = $pageUrl . "export=print";
         $this->ExportHtmlUrl = $pageUrl . "export=html";
@@ -362,7 +362,7 @@ class MateriView extends Materi
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'materi');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'artikel_materi');
         }
 
         // Start timer
@@ -433,7 +433,7 @@ class MateriView extends Materi
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("materi"));
+                $doc = new $class(Container("artikel_materi"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -472,7 +472,7 @@ class MateriView extends Materi
                 $pageName = GetPageName($url);
                 if ($pageName != $this->getListUrl()) { // Not List page
                     $row["caption"] = $this->getModalCaption($pageName);
-                    if ($pageName == "MateriView") {
+                    if ($pageName == "ArtikelMateriView") {
                         $row["view"] = "1";
                     }
                 } else { // List page should not be shown as modal => error
@@ -563,7 +563,7 @@ class MateriView extends Materi
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_materi'];
+            $key .= @$ar['id_artikel_materi'];
         }
         return $key;
     }
@@ -576,7 +576,7 @@ class MateriView extends Materi
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_materi->Visible = false;
+            $this->id_artikel_materi->Visible = false;
         }
     }
 
@@ -665,10 +665,6 @@ class MateriView extends Materi
     public $RecordRange = 10;
     public $RecKey = [];
     public $IsModal = false;
-    public $evaluasi_Count;
-    public $rencana_pembelajaran_Count;
-    public $pdf_materi_Count;
-    public $artikel_materi_Count;
 
     /**
      * Page run
@@ -683,11 +679,10 @@ class MateriView extends Materi
         // Is modal
         $this->IsModal = Param("modal") == "1";
         $this->CurrentAction = Param("action"); // Set up current action
+        $this->id_artikel_materi->setVisibility();
         $this->id_materi->setVisibility();
-        $this->id_media->setVisibility();
         $this->judul->setVisibility();
         $this->isi->setVisibility();
-        $this->pdf->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -702,7 +697,7 @@ class MateriView extends Materi
         }
 
         // Set up lookup cache
-        $this->setupLookupOptions($this->id_media);
+        $this->setupLookupOptions($this->id_materi);
 
         // Check modal
         if ($this->IsModal) {
@@ -717,17 +712,17 @@ class MateriView extends Materi
         // Set up master/detail parameters
         $this->setupMasterParms();
         if ($this->isPageRequest()) { // Validate request
-            if (($keyValue = Get("id_materi") ?? Route("id_materi")) !== null) {
-                $this->id_materi->setQueryStringValue($keyValue);
-                $this->RecKey["id_materi"] = $this->id_materi->QueryStringValue;
-            } elseif (Post("id_materi") !== null) {
-                $this->id_materi->setFormValue(Post("id_materi"));
-                $this->RecKey["id_materi"] = $this->id_materi->FormValue;
+            if (($keyValue = Get("id_artikel_materi") ?? Route("id_artikel_materi")) !== null) {
+                $this->id_artikel_materi->setQueryStringValue($keyValue);
+                $this->RecKey["id_artikel_materi"] = $this->id_artikel_materi->QueryStringValue;
+            } elseif (Post("id_artikel_materi") !== null) {
+                $this->id_artikel_materi->setFormValue(Post("id_artikel_materi"));
+                $this->RecKey["id_artikel_materi"] = $this->id_artikel_materi->FormValue;
             } elseif (IsApi() && ($keyValue = Key(0) ?? Route(2)) !== null) {
-                $this->id_materi->setQueryStringValue($keyValue);
-                $this->RecKey["id_materi"] = $this->id_materi->QueryStringValue;
+                $this->id_artikel_materi->setQueryStringValue($keyValue);
+                $this->RecKey["id_artikel_materi"] = $this->id_artikel_materi->QueryStringValue;
             } else {
-                $returnUrl = "MateriList"; // Return to list
+                $returnUrl = "ArtikelMateriList"; // Return to list
             }
 
             // Get action
@@ -750,12 +745,12 @@ class MateriView extends Materi
                         if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "") {
                             $this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
                         }
-                        $returnUrl = "MateriList"; // No matching record, return to list
+                        $returnUrl = "ArtikelMateriList"; // No matching record, return to list
                     }
                     break;
             }
         } else {
-            $returnUrl = "MateriList"; // Not page request, return to list
+            $returnUrl = "ArtikelMateriList"; // Not page request, return to list
         }
         if ($returnUrl != "") {
             $this->terminate($returnUrl);
@@ -771,9 +766,6 @@ class MateriView extends Materi
         $this->RowType = ROWTYPE_VIEW;
         $this->resetAttributes();
         $this->renderRow();
-
-        // Set up detail parameters
-        $this->setupDetailParms();
 
         // Normal return
         if (IsApi()) {
@@ -850,225 +842,6 @@ class MateriView extends Materi
             $item->Body = "<a class=\"ew-action ew-delete\" title=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("ViewPageDeleteLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->DeleteUrl)) . "\">" . $Language->phrase("ViewPageDeleteLink") . "</a>";
         }
         $item->Visible = ($this->DeleteUrl != "" && $Security->canDelete());
-        $option = $options["detail"];
-        $detailTableLink = "";
-        $detailViewTblVar = "";
-        $detailCopyTblVar = "";
-        $detailEditTblVar = "";
-
-        // "detail_evaluasi"
-        $item = &$option->add("detail_evaluasi");
-        $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("evaluasi", "TblCaption");
-        $body .= "&nbsp;" . str_replace("%c", $this->evaluasi_Count, $Language->phrase("DetailCount"));
-        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("EvaluasiList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "")) . "\">" . $body . "</a>";
-        $links = "";
-        $detailPageObj = Container("EvaluasiGrid");
-        if ($detailPageObj->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=evaluasi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            if ($detailViewTblVar != "") {
-                $detailViewTblVar .= ",";
-            }
-            $detailViewTblVar .= "evaluasi";
-        }
-        if ($detailPageObj->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=evaluasi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            if ($detailEditTblVar != "") {
-                $detailEditTblVar .= ",";
-            }
-            $detailEditTblVar .= "evaluasi";
-        }
-        if ($detailPageObj->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=evaluasi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            if ($detailCopyTblVar != "") {
-                $detailCopyTblVar .= ",";
-            }
-            $detailCopyTblVar .= "evaluasi";
-        }
-        if ($links != "") {
-            $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-        }
-        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-        $item->Body = $body;
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'evaluasi');
-        if ($item->Visible) {
-            if ($detailTableLink != "") {
-                $detailTableLink .= ",";
-            }
-            $detailTableLink .= "evaluasi";
-        }
-        if ($this->ShowMultipleDetails) {
-            $item->Visible = false;
-        }
-
-        // "detail_rencana_pembelajaran"
-        $item = &$option->add("detail_rencana_pembelajaran");
-        $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("rencana_pembelajaran", "TblCaption");
-        $body .= "&nbsp;" . str_replace("%c", $this->rencana_pembelajaran_Count, $Language->phrase("DetailCount"));
-        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("RencanaPembelajaranList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "")) . "\">" . $body . "</a>";
-        $links = "";
-        $detailPageObj = Container("RencanaPembelajaranGrid");
-        if ($detailPageObj->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            if ($detailViewTblVar != "") {
-                $detailViewTblVar .= ",";
-            }
-            $detailViewTblVar .= "rencana_pembelajaran";
-        }
-        if ($detailPageObj->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            if ($detailEditTblVar != "") {
-                $detailEditTblVar .= ",";
-            }
-            $detailEditTblVar .= "rencana_pembelajaran";
-        }
-        if ($detailPageObj->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            if ($detailCopyTblVar != "") {
-                $detailCopyTblVar .= ",";
-            }
-            $detailCopyTblVar .= "rencana_pembelajaran";
-        }
-        if ($links != "") {
-            $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-        }
-        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-        $item->Body = $body;
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'rencana_pembelajaran');
-        if ($item->Visible) {
-            if ($detailTableLink != "") {
-                $detailTableLink .= ",";
-            }
-            $detailTableLink .= "rencana_pembelajaran";
-        }
-        if ($this->ShowMultipleDetails) {
-            $item->Visible = false;
-        }
-
-        // "detail_pdf_materi"
-        $item = &$option->add("detail_pdf_materi");
-        $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("pdf_materi", "TblCaption");
-        $body .= "&nbsp;" . str_replace("%c", $this->pdf_materi_Count, $Language->phrase("DetailCount"));
-        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("PdfMateriList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "")) . "\">" . $body . "</a>";
-        $links = "";
-        $detailPageObj = Container("PdfMateriGrid");
-        if ($detailPageObj->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=pdf_materi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            if ($detailViewTblVar != "") {
-                $detailViewTblVar .= ",";
-            }
-            $detailViewTblVar .= "pdf_materi";
-        }
-        if ($detailPageObj->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=pdf_materi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            if ($detailEditTblVar != "") {
-                $detailEditTblVar .= ",";
-            }
-            $detailEditTblVar .= "pdf_materi";
-        }
-        if ($detailPageObj->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=pdf_materi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            if ($detailCopyTblVar != "") {
-                $detailCopyTblVar .= ",";
-            }
-            $detailCopyTblVar .= "pdf_materi";
-        }
-        if ($links != "") {
-            $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-        }
-        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-        $item->Body = $body;
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'pdf_materi');
-        if ($item->Visible) {
-            if ($detailTableLink != "") {
-                $detailTableLink .= ",";
-            }
-            $detailTableLink .= "pdf_materi";
-        }
-        if ($this->ShowMultipleDetails) {
-            $item->Visible = false;
-        }
-
-        // "detail_artikel_materi"
-        $item = &$option->add("detail_artikel_materi");
-        $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("artikel_materi", "TblCaption");
-        $body .= "&nbsp;" . str_replace("%c", $this->artikel_materi_Count, $Language->phrase("DetailCount"));
-        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("ArtikelMateriList?" . Config("TABLE_SHOW_MASTER") . "=materi&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue) . "")) . "\">" . $body . "</a>";
-        $links = "";
-        $detailPageObj = Container("ArtikelMateriGrid");
-        if ($detailPageObj->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=artikel_materi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            if ($detailViewTblVar != "") {
-                $detailViewTblVar .= ",";
-            }
-            $detailViewTblVar .= "artikel_materi";
-        }
-        if ($detailPageObj->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=artikel_materi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            if ($detailEditTblVar != "") {
-                $detailEditTblVar .= ",";
-            }
-            $detailEditTblVar .= "artikel_materi";
-        }
-        if ($detailPageObj->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'materi')) {
-            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=artikel_materi"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            if ($detailCopyTblVar != "") {
-                $detailCopyTblVar .= ",";
-            }
-            $detailCopyTblVar .= "artikel_materi";
-        }
-        if ($links != "") {
-            $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-        }
-        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-        $item->Body = $body;
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'artikel_materi');
-        if ($item->Visible) {
-            if ($detailTableLink != "") {
-                $detailTableLink .= ",";
-            }
-            $detailTableLink .= "artikel_materi";
-        }
-        if ($this->ShowMultipleDetails) {
-            $item->Visible = false;
-        }
-
-        // Multiple details
-        if ($this->ShowMultipleDetails) {
-            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">";
-            $links = "";
-            if ($detailViewTblVar != "") {
-                $links .= "<li><a class=\"ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailViewTblVar))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            }
-            if ($detailEditTblVar != "") {
-                $links .= "<li><a class=\"ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailEditTblVar))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            }
-            if ($detailCopyTblVar != "") {
-                $links .= "<li><a class=\"ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailCopyTblVar))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            }
-            if ($links != "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default ew-master-detail\" title=\"" . HtmlTitle($Language->phrase("MultipleMasterDetails")) . "\" data-toggle=\"dropdown\">" . $Language->phrase("MultipleMasterDetails") . "</button>";
-                $body .= "<ul class=\"dropdown-menu ew-menu\">" . $links . "</ul>";
-            }
-            $body .= "</div>";
-            // Multiple details
-            $item = &$option->add("details");
-            $item->Body = $body;
-        }
-
-        // Set up detail default
-        $option = $options["detail"];
-        $options["detail"]->DropDownButtonPhrase = $Language->phrase("ButtonDetails");
-        $ar = explode(",", $detailTableLink);
-        $cnt = count($ar);
-        $option->UseDropDownButton = ($cnt > 1);
-        $option->UseButtonGroup = true;
-        $item = &$option->add($option->GroupOptionName);
-        $item->Body = "";
-        $item->Visible = false;
 
         // Set up action default
         $option = $options["action"];
@@ -1127,46 +900,20 @@ class MateriView extends Materi
         if (!$rs) {
             return;
         }
+        $this->id_artikel_materi->setDbValue($row['id_artikel_materi']);
         $this->id_materi->setDbValue($row['id_materi']);
-        $this->id_media->setDbValue($row['id_media']);
         $this->judul->setDbValue($row['judul']);
         $this->isi->setDbValue($row['isi']);
-        $this->pdf->setDbValue($row['pdf']);
-        $detailTbl = Container("evaluasi");
-        $detailFilter = $detailTbl->sqlDetailFilter_materi();
-        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("materi");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->evaluasi_Count = $detailTbl->loadRecordCount($detailFilter);
-        $detailTbl = Container("rencana_pembelajaran");
-        $detailFilter = $detailTbl->sqlDetailFilter_materi();
-        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("materi");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->rencana_pembelajaran_Count = $detailTbl->loadRecordCount($detailFilter);
-        $detailTbl = Container("pdf_materi");
-        $detailFilter = $detailTbl->sqlDetailFilter_materi();
-        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("materi");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->pdf_materi_Count = $detailTbl->loadRecordCount($detailFilter);
-        $detailTbl = Container("artikel_materi");
-        $detailFilter = $detailTbl->sqlDetailFilter_materi();
-        $detailFilter = str_replace("@id_materi@", AdjustSql($this->id_materi->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("materi");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->artikel_materi_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values
     protected function newRow()
     {
         $row = [];
+        $row['id_artikel_materi'] = null;
         $row['id_materi'] = null;
-        $row['id_media'] = null;
         $row['judul'] = null;
         $row['isi'] = null;
-        $row['pdf'] = null;
         return $row;
     }
 
@@ -1188,40 +935,38 @@ class MateriView extends Materi
 
         // Common render codes for all row types
 
-        // id_materi
+        // id_artikel_materi
 
-        // id_media
+        // id_materi
 
         // judul
 
         // isi
-
-        // pdf
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_materi
-            $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-            $this->id_materi->ViewCustomAttributes = "";
+            // id_artikel_materi
+            $this->id_artikel_materi->ViewValue = $this->id_artikel_materi->CurrentValue;
+            $this->id_artikel_materi->ViewCustomAttributes = "";
 
-            // id_media
-            $curVal = strval($this->id_media->CurrentValue);
+            // id_materi
+            $curVal = strval($this->id_materi->CurrentValue);
             if ($curVal != "") {
-                $this->id_media->ViewValue = $this->id_media->lookupCacheOption($curVal);
-                if ($this->id_media->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_media`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_media->Lookup->getSql(false, $filterWrk, '', $this, true);
+                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
+                if ($this->id_materi->ViewValue === null) { // Lookup from database
+                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
+                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
                     $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
                     $ari = count($rswrk);
                     if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_media->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_media->ViewValue = $this->id_media->displayValue($arwrk);
+                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
+                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
                     } else {
-                        $this->id_media->ViewValue = $this->id_media->CurrentValue;
+                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
                     }
                 }
             } else {
-                $this->id_media->ViewValue = null;
+                $this->id_materi->ViewValue = null;
             }
-            $this->id_media->ViewCustomAttributes = "";
+            $this->id_materi->ViewCustomAttributes = "";
 
             // judul
             $this->judul->ViewValue = $this->judul->CurrentValue;
@@ -1231,19 +976,15 @@ class MateriView extends Materi
             $this->isi->ViewValue = $this->isi->CurrentValue;
             $this->isi->ViewCustomAttributes = "";
 
-            // pdf
-            $this->pdf->ViewValue = $this->pdf->CurrentValue;
-            $this->pdf->ViewCustomAttributes = "";
+            // id_artikel_materi
+            $this->id_artikel_materi->LinkCustomAttributes = "";
+            $this->id_artikel_materi->HrefValue = "";
+            $this->id_artikel_materi->TooltipValue = "";
 
             // id_materi
             $this->id_materi->LinkCustomAttributes = "";
             $this->id_materi->HrefValue = "";
             $this->id_materi->TooltipValue = "";
-
-            // id_media
-            $this->id_media->LinkCustomAttributes = "";
-            $this->id_media->HrefValue = "";
-            $this->id_media->TooltipValue = "";
 
             // judul
             $this->judul->LinkCustomAttributes = "";
@@ -1254,11 +995,6 @@ class MateriView extends Materi
             $this->isi->LinkCustomAttributes = "";
             $this->isi->HrefValue = "";
             $this->isi->TooltipValue = "";
-
-            // pdf
-            $this->pdf->LinkCustomAttributes = "";
-            $this->pdf->HrefValue = "";
-            $this->pdf->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1279,14 +1015,14 @@ class MateriView extends Materi
                 $this->DbMasterFilter = "";
                 $this->DbDetailFilter = "";
             }
-            if ($masterTblVar == "media") {
+            if ($masterTblVar == "materi") {
                 $validMaster = true;
-                $masterTbl = Container("media");
-                if (($parm = Get("fk_id_media", Get("id_media"))) !== null) {
-                    $masterTbl->id_media->setQueryStringValue($parm);
-                    $this->id_media->setQueryStringValue($masterTbl->id_media->QueryStringValue);
-                    $this->id_media->setSessionValue($this->id_media->QueryStringValue);
-                    if (!is_numeric($masterTbl->id_media->QueryStringValue)) {
+                $masterTbl = Container("materi");
+                if (($parm = Get("fk_id_materi", Get("id_materi"))) !== null) {
+                    $masterTbl->id_materi->setQueryStringValue($parm);
+                    $this->id_materi->setQueryStringValue($masterTbl->id_materi->QueryStringValue);
+                    $this->id_materi->setSessionValue($this->id_materi->QueryStringValue);
+                    if (!is_numeric($masterTbl->id_materi->QueryStringValue)) {
                         $validMaster = false;
                     }
                 } else {
@@ -1300,14 +1036,14 @@ class MateriView extends Materi
                     $this->DbMasterFilter = "";
                     $this->DbDetailFilter = "";
             }
-            if ($masterTblVar == "media") {
+            if ($masterTblVar == "materi") {
                 $validMaster = true;
-                $masterTbl = Container("media");
-                if (($parm = Post("fk_id_media", Post("id_media"))) !== null) {
-                    $masterTbl->id_media->setFormValue($parm);
-                    $this->id_media->setFormValue($masterTbl->id_media->FormValue);
-                    $this->id_media->setSessionValue($this->id_media->FormValue);
-                    if (!is_numeric($masterTbl->id_media->FormValue)) {
+                $masterTbl = Container("materi");
+                if (($parm = Post("fk_id_materi", Post("id_materi"))) !== null) {
+                    $masterTbl->id_materi->setFormValue($parm);
+                    $this->id_materi->setFormValue($masterTbl->id_materi->FormValue);
+                    $this->id_materi->setSessionValue($this->id_materi->FormValue);
+                    if (!is_numeric($masterTbl->id_materi->FormValue)) {
                         $validMaster = false;
                     }
                 } else {
@@ -1327,82 +1063,14 @@ class MateriView extends Materi
             }
 
             // Clear previous master key from Session
-            if ($masterTblVar != "media") {
-                if ($this->id_media->CurrentValue == "") {
-                    $this->id_media->setSessionValue("");
+            if ($masterTblVar != "materi") {
+                if ($this->id_materi->CurrentValue == "") {
+                    $this->id_materi->setSessionValue("");
                 }
             }
         }
         $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
         $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
-    }
-
-    // Set up detail parms based on QueryString
-    protected function setupDetailParms()
-    {
-        // Get the keys for master table
-        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
-        if ($detailTblVar !== null) {
-            $this->setCurrentDetailTable($detailTblVar);
-        } else {
-            $detailTblVar = $this->getCurrentDetailTable();
-        }
-        if ($detailTblVar != "") {
-            $detailTblVar = explode(",", $detailTblVar);
-            if (in_array("evaluasi", $detailTblVar)) {
-                $detailPageObj = Container("EvaluasiGrid");
-                if ($detailPageObj->DetailView) {
-                    $detailPageObj->CurrentMode = "view";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_materi->IsDetailKey = true;
-                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
-                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
-                }
-            }
-            if (in_array("rencana_pembelajaran", $detailTblVar)) {
-                $detailPageObj = Container("RencanaPembelajaranGrid");
-                if ($detailPageObj->DetailView) {
-                    $detailPageObj->CurrentMode = "view";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_materi->IsDetailKey = true;
-                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
-                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
-                    $detailPageObj->id_indikator->setSessionValue(""); // Clear session key
-                }
-            }
-            if (in_array("pdf_materi", $detailTblVar)) {
-                $detailPageObj = Container("PdfMateriGrid");
-                if ($detailPageObj->DetailView) {
-                    $detailPageObj->CurrentMode = "view";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_materi->IsDetailKey = true;
-                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
-                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
-                }
-            }
-            if (in_array("artikel_materi", $detailTblVar)) {
-                $detailPageObj = Container("ArtikelMateriGrid");
-                if ($detailPageObj->DetailView) {
-                    $detailPageObj->CurrentMode = "view";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_materi->IsDetailKey = true;
-                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
-                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
-                }
-            }
-        }
     }
 
     // Set up Breadcrumb
@@ -1411,7 +1079,7 @@ class MateriView extends Materi
         global $Breadcrumb, $Language;
         $Breadcrumb = new Breadcrumb("index");
         $url = CurrentUrl();
-        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("MateriList"), "", $this->TableVar, true);
+        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("ArtikelMateriList"), "", $this->TableVar, true);
         $pageId = "view";
         $Breadcrumb->add("view", $pageId, $url);
     }
@@ -1429,7 +1097,7 @@ class MateriView extends Materi
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_id_media":
+                case "x_id_materi":
                     break;
                 default:
                     $lookupFilter = "";

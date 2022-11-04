@@ -11,6 +11,18 @@ class rpp extends Controller
     public function slide($slide)
     {
         //materi
+        //if admin
+        $nama = \Session::get('nama');
+        //dd($nama);
+        if ($nama == "Test | Test - ") {
+            //dd("ok");
+            //lakukan update slide
+            DB::update("UPDATE `live_rencana` SET `id_indikator` = ? WHERE `live_rencana`.`id_live_rencana` = 1;", [$slide]);
+        }
+
+        //
+
+
         $materi = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
         $id_materi = $materi[0]->id_materi;
         //dd($id_materi);

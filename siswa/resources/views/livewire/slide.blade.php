@@ -11,5 +11,18 @@
                 window.location = '../mediabelajar'
             </script>
         @endif
+
+        <?php
+        //cek slide berapa
+        $slide = \DB::select('SELECT * FROM `live_rencana` WHERE `id_live_rencana` = 1');
+        $slidek = $slide[0]->id_indikator;
+        //echo $slidek;
+        if ($kode != $slidek) {
+            return redirect('/mediabelajar');
+        }
+        ?>
+
+
+
     </div>
 </div>

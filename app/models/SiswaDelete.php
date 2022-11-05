@@ -525,8 +525,8 @@ class SiswaDelete extends Siswa
     {
         global $ExportType, $CustomExportType, $ExportFileName, $UserProfile, $Language, $Security, $CurrentForm;
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_siswa->setVisibility();
-        $this->nama->Visible = false;
+        $this->id_siswa->Visible = false;
+        $this->nama->setVisibility();
         $this->kelas->setVisibility();
         $this->hideFieldsForAddEdit();
 
@@ -723,18 +723,18 @@ class SiswaDelete extends Siswa
 
         // kelas
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_siswa
-            $this->id_siswa->ViewValue = $this->id_siswa->CurrentValue;
-            $this->id_siswa->ViewCustomAttributes = "";
+            // nama
+            $this->nama->ViewValue = $this->nama->CurrentValue;
+            $this->nama->ViewCustomAttributes = "";
 
             // kelas
             $this->kelas->ViewValue = $this->kelas->CurrentValue;
             $this->kelas->ViewCustomAttributes = "";
 
-            // id_siswa
-            $this->id_siswa->LinkCustomAttributes = "";
-            $this->id_siswa->HrefValue = "";
-            $this->id_siswa->TooltipValue = "";
+            // nama
+            $this->nama->LinkCustomAttributes = "";
+            $this->nama->HrefValue = "";
+            $this->nama->TooltipValue = "";
 
             // kelas
             $this->kelas->LinkCustomAttributes = "";

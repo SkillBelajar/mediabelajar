@@ -1100,10 +1100,6 @@ class MateriAdd extends Materi
 
         // Validate detail grid
         $detailTblVar = explode(",", $this->getCurrentDetailTable());
-        $detailPage = Container("EvaluasiGrid");
-        if (in_array("evaluasi", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->validateGridForm();
-        }
         $detailPage = Container("RencanaPembelajaranGrid");
         if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
             $detailPage->validateGridForm();
@@ -1173,14 +1169,6 @@ class MateriAdd extends Materi
         // Add detail records
         if ($addRow) {
             $detailTblVar = explode(",", $this->getCurrentDetailTable());
-            $detailPage = Container("EvaluasiGrid");
-            if (in_array("evaluasi", $detailTblVar) && $detailPage->DetailAdd) {
-                $detailPage->id_materi->setSessionValue($this->id_materi->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->id_materi->setSessionValue(""); // Clear master key if insert failed
-                }
-            }
             $detailPage = Container("RencanaPembelajaranGrid");
             if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
                 $detailPage->id_materi->setSessionValue($this->id_materi->CurrentValue); // Set master key
@@ -1313,24 +1301,6 @@ class MateriAdd extends Materi
         }
         if ($detailTblVar != "") {
             $detailTblVar = explode(",", $detailTblVar);
-            if (in_array("evaluasi", $detailTblVar)) {
-                $detailPageObj = Container("EvaluasiGrid");
-                if ($detailPageObj->DetailAdd) {
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_materi->IsDetailKey = true;
-                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
-                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
-                }
-            }
             if (in_array("rencana_pembelajaran", $detailTblVar)) {
                 $detailPageObj = Container("RencanaPembelajaranGrid");
                 if ($detailPageObj->DetailAdd) {

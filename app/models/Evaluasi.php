@@ -198,32 +198,6 @@ class Evaluasi extends DbTable
         return "`id_materi`=@id_materi@";
     }
 
-    // Current detail table name
-    public function getCurrentDetailTable()
-    {
-        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")];
-    }
-
-    public function setCurrentDetailTable($v)
-    {
-        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")] = $v;
-    }
-
-    // Get detail url
-    public function getDetailUrl()
-    {
-        // Detail url
-        $detailUrl = "";
-        if ($this->getCurrentDetailTable() == "peserta") {
-            $detailUrl = Container("peserta")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
-            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_evaluasi", $this->id_evaluasi->CurrentValue);
-        }
-        if ($detailUrl == "") {
-            $detailUrl = "EvaluasiList";
-        }
-        return $detailUrl;
-    }
-
     // Table level SQL
     public function getSqlFrom() // From
     {
@@ -699,11 +673,7 @@ class Evaluasi extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        if ($parm != "") {
-            $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm($parm));
-        } else {
-            $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
-        }
+        $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm($parm));
         return $this->addMasterUrl($url);
     }
 
@@ -717,11 +687,7 @@ class Evaluasi extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        if ($parm != "") {
-            $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm($parm));
-        } else {
-            $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
-        }
+        $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm($parm));
         return $this->addMasterUrl($url);
     }
 

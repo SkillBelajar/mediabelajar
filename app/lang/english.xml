@@ -956,11 +956,11 @@
     <menu id="4">
       <phrase id="menutext" value="peserta" />
     </menu>
-    <menu id="20">
-      <phrase id="menutext" value="siswa" />
-    </menu>
     <menu id="14">
       <phrase id="menutext" value="data peserta" />
+    </menu>
+    <menu id="20">
+      <phrase id="menutext" value="siswa" />
     </menu>
     <menu id="6">
       <phrase id="menutext" value="gambar" />
@@ -991,6 +991,9 @@
     </menu>
     <menu id="24">
       <phrase id="menutext" value="pengaturan" />
+    </menu>
+    <menu id="53">
+      <phrase id="menutext" value="Generator RPP" />
     </menu>
     <table id="evaluasi">
       <phrase id="tblcaption" value="evaluasi" />

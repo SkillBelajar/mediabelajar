@@ -76,8 +76,6 @@ return [
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),
-    "EvaluasiGrid" => \DI\create(EvaluasiGrid::class),
-    "PesertaGrid" => \DI\create(PesertaGrid::class),
     "RencanaPembelajaranGrid" => \DI\create(RencanaPembelajaranGrid::class),
     "PdfMateriGrid" => \DI\create(PdfMateriGrid::class),
     "ArtikelMateriGrid" => \DI\create(ArtikelMateriGrid::class),

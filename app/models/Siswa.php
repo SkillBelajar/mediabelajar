@@ -72,7 +72,7 @@ class Siswa extends DbTable
         $this->id_siswa = new DbField('siswa', 'siswa', 'x_id_siswa', 'id_siswa', '`id_siswa`', '`id_siswa`', 3, 100, -1, false, '`id_siswa`', false, false, false, 'FORMATTED TEXT', 'NO');
         $this->id_siswa->IsAutoIncrement = true; // Autoincrement field
         $this->id_siswa->IsPrimaryKey = true; // Primary key field
-        $this->id_siswa->Sortable = true; // Allow sort
+        $this->id_siswa->Sortable = false; // Allow sort
         $this->id_siswa->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_siswa'] = &$this->id_siswa;
 
@@ -893,7 +893,7 @@ SORTHTML;
                     $doc->exportCaption($this->nama);
                     $doc->exportCaption($this->kelas);
                 } else {
-                    $doc->exportCaption($this->id_siswa);
+                    $doc->exportCaption($this->nama);
                     $doc->exportCaption($this->kelas);
                 }
                 $doc->endExportRow();
@@ -928,7 +928,7 @@ SORTHTML;
                         $doc->exportField($this->nama);
                         $doc->exportField($this->kelas);
                     } else {
-                        $doc->exportField($this->id_siswa);
+                        $doc->exportField($this->nama);
                         $doc->exportField($this->kelas);
                     }
                     $doc->endExportRow($rowCnt);

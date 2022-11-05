@@ -731,8 +731,8 @@ class SiswaList extends Siswa
 
         // Set up list options
         $this->setupListOptions();
-        $this->id_siswa->setVisibility();
-        $this->nama->Visible = false;
+        $this->id_siswa->Visible = false;
+        $this->nama->setVisibility();
         $this->kelas->setVisibility();
         $this->hideFieldsForAddEdit();
 
@@ -1265,7 +1265,7 @@ class SiswaList extends Siswa
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
-            $this->updateSort($this->id_siswa); // id_siswa
+            $this->updateSort($this->nama); // nama
             $this->updateSort($this->kelas); // kelas
             $this->setStartRecordNumber(1); // Reset start position
         }
@@ -1776,18 +1776,18 @@ class SiswaList extends Siswa
 
         // kelas
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_siswa
-            $this->id_siswa->ViewValue = $this->id_siswa->CurrentValue;
-            $this->id_siswa->ViewCustomAttributes = "";
+            // nama
+            $this->nama->ViewValue = $this->nama->CurrentValue;
+            $this->nama->ViewCustomAttributes = "";
 
             // kelas
             $this->kelas->ViewValue = $this->kelas->CurrentValue;
             $this->kelas->ViewCustomAttributes = "";
 
-            // id_siswa
-            $this->id_siswa->LinkCustomAttributes = "";
-            $this->id_siswa->HrefValue = "";
-            $this->id_siswa->TooltipValue = "";
+            // nama
+            $this->nama->LinkCustomAttributes = "";
+            $this->nama->HrefValue = "";
+            $this->nama->TooltipValue = "";
 
             // kelas
             $this->kelas->LinkCustomAttributes = "";

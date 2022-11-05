@@ -41,8 +41,8 @@ $Page->showMessage();
 <table class="table ew-table">
     <thead>
     <tr class="ew-table-header">
-<?php if ($Page->id_siswa->Visible) { // id_siswa ?>
-        <th class="<?= $Page->id_siswa->headerCellClass() ?>"><span id="elh_siswa_id_siswa" class="siswa_id_siswa"><?= $Page->id_siswa->caption() ?></span></th>
+<?php if ($Page->nama->Visible) { // nama ?>
+        <th class="<?= $Page->nama->headerCellClass() ?>"><span id="elh_siswa_nama" class="siswa_nama"><?= $Page->nama->caption() ?></span></th>
 <?php } ?>
 <?php if ($Page->kelas->Visible) { // kelas ?>
         <th class="<?= $Page->kelas->headerCellClass() ?>"><span id="elh_siswa_kelas" class="siswa_kelas"><?= $Page->kelas->caption() ?></span></th>
@@ -68,11 +68,11 @@ while (!$Page->Recordset->EOF) {
     $Page->renderRow();
 ?>
     <tr <?= $Page->rowAttributes() ?>>
-<?php if ($Page->id_siswa->Visible) { // id_siswa ?>
-        <td <?= $Page->id_siswa->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_siswa_id_siswa" class="siswa_id_siswa">
-<span<?= $Page->id_siswa->viewAttributes() ?>>
-<?= $Page->id_siswa->getViewValue() ?></span>
+<?php if ($Page->nama->Visible) { // nama ?>
+        <td <?= $Page->nama->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_siswa_nama" class="siswa_nama">
+<span<?= $Page->nama->viewAttributes() ?>>
+<?= $Page->nama->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

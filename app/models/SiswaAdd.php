@@ -926,10 +926,6 @@ class SiswaAdd extends Siswa
 
         // kelas
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_siswa
-            $this->id_siswa->ViewValue = $this->id_siswa->CurrentValue;
-            $this->id_siswa->ViewCustomAttributes = "";
-
             // nama
             $this->nama->ViewValue = $this->nama->CurrentValue;
             $this->nama->ViewCustomAttributes = "";

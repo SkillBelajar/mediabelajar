@@ -111,8 +111,8 @@ $Page->renderListOptions();
 // Render list options (header, left)
 $Page->ListOptions->render("header", "left");
 ?>
-<?php if ($Page->id_siswa->Visible) { // id_siswa ?>
-        <th data-name="id_siswa" class="<?= $Page->id_siswa->headerCellClass() ?>"><div id="elh_siswa_id_siswa" class="siswa_id_siswa"><?= $Page->renderSort($Page->id_siswa) ?></div></th>
+<?php if ($Page->nama->Visible) { // nama ?>
+        <th data-name="nama" class="<?= $Page->nama->headerCellClass() ?>"><div id="elh_siswa_nama" class="siswa_nama"><?= $Page->renderSort($Page->nama) ?></div></th>
 <?php } ?>
 <?php if ($Page->kelas->Visible) { // kelas ?>
         <th data-name="kelas" class="<?= $Page->kelas->headerCellClass() ?>"><div id="elh_siswa_kelas" class="siswa_kelas"><?= $Page->renderSort($Page->kelas) ?></div></th>
@@ -177,11 +177,11 @@ while ($Page->RecordCount < $Page->StopRecord) {
 // Render list options (body, left)
 $Page->ListOptions->render("body", "left", $Page->RowCount);
 ?>
-    <?php if ($Page->id_siswa->Visible) { // id_siswa ?>
-        <td data-name="id_siswa" <?= $Page->id_siswa->cellAttributes() ?>>
-<span id="el<?= $Page->RowCount ?>_siswa_id_siswa">
-<span<?= $Page->id_siswa->viewAttributes() ?>>
-<?= $Page->id_siswa->getViewValue() ?></span>
+    <?php if ($Page->nama->Visible) { // nama ?>
+        <td data-name="nama" <?= $Page->nama->cellAttributes() ?>>
+<span id="el<?= $Page->RowCount ?>_siswa_nama">
+<span<?= $Page->nama->viewAttributes() ?>>
+<?= $Page->nama->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

@@ -2,6 +2,7 @@
 error_reporting(0);
 
 use App\Http\Controllers\awal;
+use App\Http\Controllers\generator_rencana;
 use App\Http\Controllers\guru;
 use App\Http\Controllers\gurulive2;
 use App\Http\Controllers\randomx;
@@ -80,3 +81,8 @@ Route::get('/rencana_pembelajaran/{slide}', [rpp::class, 'slide']);
 
 
 Route::get('/rpp', [rpp::class, 'rpp']);
+
+//genrator rencana
+
+Route::get('/generator_rpp', [generator_rencana::class, 'generator_rpp']);
+Route::post('/generator_rpp', [generator_rencana::class, 'mulai_generator_rpp']);

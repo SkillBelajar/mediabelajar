@@ -70,6 +70,9 @@ return [
     "pengaturan" => \DI\create(Pengaturan::class),
     "artikel_materi" => \DI\create(ArtikelMateri::class),
     "pdf_materi" => \DI\create(PdfMateri::class),
+    "generator_rencana" => \DI\create(GeneratorRencana::class),
+    "live_rencana" => \DI\create(LiveRencana::class),
+    "open_slide" => \DI\create(OpenSlide::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),
@@ -78,4 +81,5 @@ return [
     "RencanaPembelajaranGrid" => \DI\create(RencanaPembelajaranGrid::class),
     "PdfMateriGrid" => \DI\create(PdfMateriGrid::class),
     "ArtikelMateriGrid" => \DI\create(ArtikelMateriGrid::class),
+    "GeneratorRencanaGrid" => \DI\create(GeneratorRencanaGrid::class),
 ];

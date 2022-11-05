@@ -5,9 +5,9 @@ namespace PHPMaker2021\project1;
 use Doctrine\DBAL\ParameterType;
 
 /**
- * Table class for indikator_rencana_belajar
+ * Table class for live_rencana
  */
-class IndikatorRencanaBelajar extends DbTable
+class LiveRencana extends DbTable
 {
     protected $SqlFrom = "";
     protected $SqlSelect = null;
@@ -29,9 +29,8 @@ class IndikatorRencanaBelajar extends DbTable
     public $ExportDoc;
 
     // Fields
+    public $id_live_rencana;
     public $id_indikator;
-    public $kategori;
-    public $indikator;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -44,12 +43,12 @@ class IndikatorRencanaBelajar extends DbTable
 
         // Language object
         $Language = Container("language");
-        $this->TableVar = 'indikator_rencana_belajar';
-        $this->TableName = 'indikator_rencana_belajar';
+        $this->TableVar = 'live_rencana';
+        $this->TableName = 'live_rencana';
         $this->TableType = 'TABLE';
 
         // Update Table
-        $this->UpdateTable = "`indikator_rencana_belajar`";
+        $this->UpdateTable = "`live_rencana`";
         $this->Dbid = 'DB';
         $this->ExportAll = true;
         $this->ExportPageBreakCount = 0; // Page break per every n record (PDF only)
@@ -68,32 +67,21 @@ class IndikatorRencanaBelajar extends DbTable
         $this->UserIDAllowSecurity = Config("DEFAULT_USER_ID_ALLOW_SECURITY"); // Default User ID allowed permissions
         $this->BasicSearch = new BasicSearch($this->TableVar);
 
+        // id_live_rencana
+        $this->id_live_rencana = new DbField('live_rencana', 'live_rencana', 'x_id_live_rencana', 'id_live_rencana', '`id_live_rencana`', '`id_live_rencana`', 3, 100, -1, false, '`id_live_rencana`', false, false, false, 'FORMATTED TEXT', 'NO');
+        $this->id_live_rencana->IsAutoIncrement = true; // Autoincrement field
+        $this->id_live_rencana->IsPrimaryKey = true; // Primary key field
+        $this->id_live_rencana->Sortable = true; // Allow sort
+        $this->id_live_rencana->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->Fields['id_live_rencana'] = &$this->id_live_rencana;
+
         // id_indikator
-        $this->id_indikator = new DbField('indikator_rencana_belajar', 'indikator_rencana_belajar', 'x_id_indikator', 'id_indikator', '`id_indikator`', '`id_indikator`', 3, 100, -1, false, '`id_indikator`', false, false, false, 'FORMATTED TEXT', 'NO');
-        $this->id_indikator->IsAutoIncrement = true; // Autoincrement field
-        $this->id_indikator->IsPrimaryKey = true; // Primary key field
-        $this->id_indikator->IsForeignKey = true; // Foreign key field
+        $this->id_indikator = new DbField('live_rencana', 'live_rencana', 'x_id_indikator', 'id_indikator', '`id_indikator`', '`id_indikator`', 3, 100, -1, false, '`id_indikator`', false, false, false, 'FORMATTED TEXT', 'TEXT');
+        $this->id_indikator->Nullable = false; // NOT NULL field
+        $this->id_indikator->Required = true; // Required field
         $this->id_indikator->Sortable = true; // Allow sort
         $this->id_indikator->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
         $this->Fields['id_indikator'] = &$this->id_indikator;
-
-        // kategori
-        $this->kategori = new DbField('indikator_rencana_belajar', 'indikator_rencana_belajar', 'x_kategori', 'kategori', '`kategori`', '`kategori`', 200, 100, -1, false, '`kategori`', false, false, false, 'FORMATTED TEXT', 'SELECT');
-        $this->kategori->Nullable = false; // NOT NULL field
-        $this->kategori->Required = true; // Required field
-        $this->kategori->Sortable = true; // Allow sort
-        $this->kategori->UsePleaseSelect = true; // Use PleaseSelect by default
-        $this->kategori->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->kategori->Lookup = new Lookup('kategori', 'indikator_rencana_belajar', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->kategori->OptionCount = 5;
-        $this->Fields['kategori'] = &$this->kategori;
-
-        // indikator
-        $this->indikator = new DbField('indikator_rencana_belajar', 'indikator_rencana_belajar', 'x_indikator', 'indikator', '`indikator`', '`indikator`', 200, 100, -1, false, '`indikator`', false, false, false, 'FORMATTED TEXT', 'TEXT');
-        $this->indikator->Nullable = false; // NOT NULL field
-        $this->indikator->Required = true; // Required field
-        $this->indikator->Sortable = true; // Allow sort
-        $this->Fields['indikator'] = &$this->indikator;
     }
 
     // Field Visibility
@@ -133,40 +121,10 @@ class IndikatorRencanaBelajar extends DbTable
         }
     }
 
-    // Current detail table name
-    public function getCurrentDetailTable()
-    {
-        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")];
-    }
-
-    public function setCurrentDetailTable($v)
-    {
-        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_DETAIL_TABLE")] = $v;
-    }
-
-    // Get detail url
-    public function getDetailUrl()
-    {
-        // Detail url
-        $detailUrl = "";
-        if ($this->getCurrentDetailTable() == "rencana_pembelajaran") {
-            $detailUrl = Container("rencana_pembelajaran")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
-            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_indikator", $this->id_indikator->CurrentValue);
-        }
-        if ($this->getCurrentDetailTable() == "generator_rencana") {
-            $detailUrl = Container("generator_rencana")->getListUrl() . "?" . Config("TABLE_SHOW_MASTER") . "=" . $this->TableVar;
-            $detailUrl .= "&" . GetForeignKeyUrl("fk_id_indikator", $this->id_indikator->CurrentValue);
-        }
-        if ($detailUrl == "") {
-            $detailUrl = "IndikatorRencanaBelajarList";
-        }
-        return $detailUrl;
-    }
-
     // Table level SQL
     public function getSqlFrom() // From
     {
-        return ($this->SqlFrom != "") ? $this->SqlFrom : "`indikator_rencana_belajar`";
+        return ($this->SqlFrom != "") ? $this->SqlFrom : "`live_rencana`";
     }
 
     public function sqlFrom() // For backward compatibility
@@ -448,8 +406,8 @@ class IndikatorRencanaBelajar extends DbTable
         $success = $this->insertSql($rs)->execute();
         if ($success) {
             // Get insert id if necessary
-            $this->id_indikator->setDbValue($conn->lastInsertId());
-            $rs['id_indikator'] = $this->id_indikator->DbValue;
+            $this->id_live_rencana->setDbValue($conn->lastInsertId());
+            $rs['id_live_rencana'] = $this->id_live_rencana->DbValue;
         }
         return $success;
     }
@@ -509,8 +467,8 @@ class IndikatorRencanaBelajar extends DbTable
             $where = $this->arrayToFilter($where);
         }
         if ($rs) {
-            if (array_key_exists('id_indikator', $rs)) {
-                AddFilter($where, QuotedName('id_indikator', $this->Dbid) . '=' . QuotedValue($rs['id_indikator'], $this->id_indikator->DataType, $this->Dbid));
+            if (array_key_exists('id_live_rencana', $rs)) {
+                AddFilter($where, QuotedName('id_live_rencana', $this->Dbid) . '=' . QuotedValue($rs['id_live_rencana'], $this->id_live_rencana->DataType, $this->Dbid));
             }
         }
         $filter = ($curfilter) ? $this->CurrentFilter : "";
@@ -534,9 +492,8 @@ class IndikatorRencanaBelajar extends DbTable
         if (!is_array($row)) {
             return;
         }
+        $this->id_live_rencana->DbValue = $row['id_live_rencana'];
         $this->id_indikator->DbValue = $row['id_indikator'];
-        $this->kategori->DbValue = $row['kategori'];
-        $this->indikator->DbValue = $row['indikator'];
     }
 
     // Delete uploaded files
@@ -548,7 +505,7 @@ class IndikatorRencanaBelajar extends DbTable
     // Record filter WHERE clause
     protected function sqlKeyFilter()
     {
-        return "`id_indikator` = @id_indikator@";
+        return "`id_live_rencana` = @id_live_rencana@";
     }
 
     // Get record filter
@@ -556,9 +513,9 @@ class IndikatorRencanaBelajar extends DbTable
     {
         $keyFilter = $this->sqlKeyFilter();
         if (is_array($row)) {
-            $val = array_key_exists('id_indikator', $row) ? $row['id_indikator'] : null;
+            $val = array_key_exists('id_live_rencana', $row) ? $row['id_live_rencana'] : null;
         } else {
-            $val = $this->id_indikator->OldValue !== null ? $this->id_indikator->OldValue : $this->id_indikator->CurrentValue;
+            $val = $this->id_live_rencana->OldValue !== null ? $this->id_live_rencana->OldValue : $this->id_live_rencana->CurrentValue;
         }
         if (!is_numeric($val)) {
             return "0=1"; // Invalid key
@@ -566,7 +523,7 @@ class IndikatorRencanaBelajar extends DbTable
         if ($val === null) {
             return "0=1"; // Invalid key
         } else {
-            $keyFilter = str_replace("@id_indikator@", AdjustSql($val, $this->Dbid), $keyFilter); // Replace key value
+            $keyFilter = str_replace("@id_live_rencana@", AdjustSql($val, $this->Dbid), $keyFilter); // Replace key value
         }
         return $keyFilter;
     }
@@ -582,7 +539,7 @@ class IndikatorRencanaBelajar extends DbTable
         if (@$_SESSION[$name] != "") {
             return $_SESSION[$name];
         } else {
-            return GetUrl("IndikatorRencanaBelajarList");
+            return GetUrl("LiveRencanaList");
         }
     }
 
@@ -595,11 +552,11 @@ class IndikatorRencanaBelajar extends DbTable
     public function getModalCaption($pageName)
     {
         global $Language;
-        if ($pageName == "IndikatorRencanaBelajarView") {
+        if ($pageName == "LiveRencanaView") {
             return $Language->phrase("View");
-        } elseif ($pageName == "IndikatorRencanaBelajarEdit") {
+        } elseif ($pageName == "LiveRencanaEdit") {
             return $Language->phrase("Edit");
-        } elseif ($pageName == "IndikatorRencanaBelajarAdd") {
+        } elseif ($pageName == "LiveRencanaAdd") {
             return $Language->phrase("Add");
         } else {
             return "";
@@ -609,16 +566,16 @@ class IndikatorRencanaBelajar extends DbTable
     // List URL
     public function getListUrl()
     {
-        return "IndikatorRencanaBelajarList";
+        return "LiveRencanaList";
     }
 
     // View URL
     public function getViewUrl($parm = "")
     {
         if ($parm != "") {
-            $url = $this->keyUrl("IndikatorRencanaBelajarView", $this->getUrlParm($parm));
+            $url = $this->keyUrl("LiveRencanaView", $this->getUrlParm($parm));
         } else {
-            $url = $this->keyUrl("IndikatorRencanaBelajarView", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+            $url = $this->keyUrl("LiveRencanaView", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
         }
         return $this->addMasterUrl($url);
     }
@@ -627,9 +584,9 @@ class IndikatorRencanaBelajar extends DbTable
     public function getAddUrl($parm = "")
     {
         if ($parm != "") {
-            $url = "IndikatorRencanaBelajarAdd?" . $this->getUrlParm($parm);
+            $url = "LiveRencanaAdd?" . $this->getUrlParm($parm);
         } else {
-            $url = "IndikatorRencanaBelajarAdd";
+            $url = "LiveRencanaAdd";
         }
         return $this->addMasterUrl($url);
     }
@@ -637,11 +594,7 @@ class IndikatorRencanaBelajar extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        if ($parm != "") {
-            $url = $this->keyUrl("IndikatorRencanaBelajarEdit", $this->getUrlParm($parm));
-        } else {
-            $url = $this->keyUrl("IndikatorRencanaBelajarEdit", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
-        }
+        $url = $this->keyUrl("LiveRencanaEdit", $this->getUrlParm($parm));
         return $this->addMasterUrl($url);
     }
 
@@ -655,11 +608,7 @@ class IndikatorRencanaBelajar extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        if ($parm != "") {
-            $url = $this->keyUrl("IndikatorRencanaBelajarAdd", $this->getUrlParm($parm));
-        } else {
-            $url = $this->keyUrl("IndikatorRencanaBelajarAdd", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
-        }
+        $url = $this->keyUrl("LiveRencanaAdd", $this->getUrlParm($parm));
         return $this->addMasterUrl($url);
     }
 
@@ -673,7 +622,7 @@ class IndikatorRencanaBelajar extends DbTable
     // Delete URL
     public function getDeleteUrl()
     {
-        return $this->keyUrl("IndikatorRencanaBelajarDelete", $this->getUrlParm());
+        return $this->keyUrl("LiveRencanaDelete", $this->getUrlParm());
     }
 
     // Add master url
@@ -685,7 +634,7 @@ class IndikatorRencanaBelajar extends DbTable
     public function keyToJson($htmlEncode = false)
     {
         $json = "";
-        $json .= "id_indikator:" . JsonEncode($this->id_indikator->CurrentValue, "number");
+        $json .= "id_live_rencana:" . JsonEncode($this->id_live_rencana->CurrentValue, "number");
         $json = "{" . $json . "}";
         if ($htmlEncode) {
             $json = HtmlEncode($json);
@@ -696,8 +645,8 @@ class IndikatorRencanaBelajar extends DbTable
     // Add key value to URL
     public function keyUrl($url, $parm = "")
     {
-        if ($this->id_indikator->CurrentValue !== null) {
-            $url .= "/" . rawurlencode($this->id_indikator->CurrentValue);
+        if ($this->id_live_rencana->CurrentValue !== null) {
+            $url .= "/" . rawurlencode($this->id_live_rencana->CurrentValue);
         } else {
             return "javascript:ew.alert(ew.language.phrase('InvalidRecord'));";
         }
@@ -759,7 +708,7 @@ SORTHTML;
             $arKeys = Param("key_m");
             $cnt = count($arKeys);
         } else {
-            if (($keyValue = Param("id_indikator") ?? Route("id_indikator")) !== null) {
+            if (($keyValue = Param("id_live_rencana") ?? Route("id_live_rencana")) !== null) {
                 $arKeys[] = $keyValue;
             } elseif (IsApi() && (($keyValue = Key(0) ?? Route(2)) !== null)) {
                 $arKeys[] = $keyValue;
@@ -792,9 +741,9 @@ SORTHTML;
                 $keyFilter .= " OR ";
             }
             if ($setCurrent) {
-                $this->id_indikator->CurrentValue = $key;
+                $this->id_live_rencana->CurrentValue = $key;
             } else {
-                $this->id_indikator->OldValue = $key;
+                $this->id_live_rencana->OldValue = $key;
             }
             $keyFilter .= "(" . $this->getRecordFilter() . ")";
         }
@@ -820,9 +769,8 @@ SORTHTML;
         } else {
             return;
         }
+        $this->id_live_rencana->setDbValue($row['id_live_rencana']);
         $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->kategori->setDbValue($row['kategori']);
-        $this->indikator->setDbValue($row['indikator']);
     }
 
     // Render list row values
@@ -835,42 +783,28 @@ SORTHTML;
 
         // Common render codes
 
+        // id_live_rencana
+
         // id_indikator
 
-        // kategori
-
-        // indikator
+        // id_live_rencana
+        $this->id_live_rencana->ViewValue = $this->id_live_rencana->CurrentValue;
+        $this->id_live_rencana->ViewCustomAttributes = "";
 
         // id_indikator
         $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
+        $this->id_indikator->ViewValue = FormatNumber($this->id_indikator->ViewValue, 0, -2, -2, -2);
         $this->id_indikator->ViewCustomAttributes = "";
 
-        // kategori
-        if (strval($this->kategori->CurrentValue) != "") {
-            $this->kategori->ViewValue = $this->kategori->optionCaption($this->kategori->CurrentValue);
-        } else {
-            $this->kategori->ViewValue = null;
-        }
-        $this->kategori->ViewCustomAttributes = "";
-
-        // indikator
-        $this->indikator->ViewValue = $this->indikator->CurrentValue;
-        $this->indikator->ViewCustomAttributes = "";
+        // id_live_rencana
+        $this->id_live_rencana->LinkCustomAttributes = "";
+        $this->id_live_rencana->HrefValue = "";
+        $this->id_live_rencana->TooltipValue = "";
 
         // id_indikator
         $this->id_indikator->LinkCustomAttributes = "";
         $this->id_indikator->HrefValue = "";
         $this->id_indikator->TooltipValue = "";
-
-        // kategori
-        $this->kategori->LinkCustomAttributes = "";
-        $this->kategori->HrefValue = "";
-        $this->kategori->TooltipValue = "";
-
-        // indikator
-        $this->indikator->LinkCustomAttributes = "";
-        $this->indikator->HrefValue = "";
-        $this->indikator->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -887,26 +821,17 @@ SORTHTML;
         // Call Row Rendering event
         $this->rowRendering();
 
+        // id_live_rencana
+        $this->id_live_rencana->EditAttrs["class"] = "form-control";
+        $this->id_live_rencana->EditCustomAttributes = "";
+        $this->id_live_rencana->EditValue = $this->id_live_rencana->CurrentValue;
+        $this->id_live_rencana->ViewCustomAttributes = "";
+
         // id_indikator
         $this->id_indikator->EditAttrs["class"] = "form-control";
         $this->id_indikator->EditCustomAttributes = "";
         $this->id_indikator->EditValue = $this->id_indikator->CurrentValue;
-        $this->id_indikator->ViewCustomAttributes = "";
-
-        // kategori
-        $this->kategori->EditAttrs["class"] = "form-control";
-        $this->kategori->EditCustomAttributes = "";
-        $this->kategori->EditValue = $this->kategori->options(true);
-        $this->kategori->PlaceHolder = RemoveHtml($this->kategori->caption());
-
-        // indikator
-        $this->indikator->EditAttrs["class"] = "form-control";
-        $this->indikator->EditCustomAttributes = "";
-        if (!$this->indikator->Raw) {
-            $this->indikator->CurrentValue = HtmlDecode($this->indikator->CurrentValue);
-        }
-        $this->indikator->EditValue = $this->indikator->CurrentValue;
-        $this->indikator->PlaceHolder = RemoveHtml($this->indikator->caption());
+        $this->id_indikator->PlaceHolder = RemoveHtml($this->id_indikator->caption());
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -936,13 +861,11 @@ SORTHTML;
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
+                    $doc->exportCaption($this->id_live_rencana);
                     $doc->exportCaption($this->id_indikator);
-                    $doc->exportCaption($this->kategori);
-                    $doc->exportCaption($this->indikator);
                 } else {
+                    $doc->exportCaption($this->id_live_rencana);
                     $doc->exportCaption($this->id_indikator);
-                    $doc->exportCaption($this->kategori);
-                    $doc->exportCaption($this->indikator);
                 }
                 $doc->endExportRow();
             }
@@ -972,13 +895,11 @@ SORTHTML;
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
+                        $doc->exportField($this->id_live_rencana);
                         $doc->exportField($this->id_indikator);
-                        $doc->exportField($this->kategori);
-                        $doc->exportField($this->indikator);
                     } else {
+                        $doc->exportField($this->id_live_rencana);
                         $doc->exportField($this->id_indikator);
-                        $doc->exportField($this->kategori);
-                        $doc->exportField($this->indikator);
                     }
                     $doc->endExportRow($rowCnt);
                 }

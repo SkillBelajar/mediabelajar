@@ -84,6 +84,14 @@ $Page->showMessage();
 <?php } ?>
 <?php include_once "RencanaPembelajaranGrid.php" ?>
 <?php } ?>
+<?php
+    if (in_array("generator_rencana", explode(",", $Page->getCurrentDetailTable())) && $generator_rencana->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("generator_rencana", "TblCaption") ?>&nbsp;<?= str_replace("%c", $Page->generator_rencana_Count, $Language->phrase("DetailCount")) ?></h4>
+<?php } ?>
+<?php include_once "GeneratorRencanaGrid.php" ?>
+<?php } ?>
 </form>
 <?php
 $Page->showPageFooter();

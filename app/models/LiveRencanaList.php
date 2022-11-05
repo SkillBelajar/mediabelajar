@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
+class LiveRencanaList extends LiveRencana
 {
     // Page ID
     public $PageID = "list";
@@ -16,10 +16,10 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'indikator_rencana_belajar';
+    public $TableName = 'live_rencana';
 
     // Page object name
-    public $PageObjName = "IndikatorRencanaBelajarList";
+    public $PageObjName = "LiveRencanaList";
 
     // Rendering View
     public $RenderingView = false;
@@ -28,7 +28,7 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     public $UseCustomTemplate = false;
 
     // Grid form hidden field names
-    public $FormName = "findikator_rencana_belajarlist";
+    public $FormName = "flive_rencanalist";
     public $FormActionName = "k_action";
     public $FormKeyName = "k_key";
     public $FormOldKeyName = "k_oldkey";
@@ -350,9 +350,9 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         // Parent constuctor
         parent::__construct();
 
-        // Table object (indikator_rencana_belajar)
-        if (!isset($GLOBALS["indikator_rencana_belajar"]) || get_class($GLOBALS["indikator_rencana_belajar"]) == PROJECT_NAMESPACE . "indikator_rencana_belajar") {
-            $GLOBALS["indikator_rencana_belajar"] = &$this;
+        // Table object (live_rencana)
+        if (!isset($GLOBALS["live_rencana"]) || get_class($GLOBALS["live_rencana"]) == PROJECT_NAMESPACE . "live_rencana") {
+            $GLOBALS["live_rencana"] = &$this;
         }
 
         // Page URL
@@ -366,16 +366,16 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         $this->ExportHtmlUrl = $pageUrl . "export=html";
         $this->ExportXmlUrl = $pageUrl . "export=xml";
         $this->ExportCsvUrl = $pageUrl . "export=csv";
-        $this->AddUrl = "IndikatorRencanaBelajarAdd?" . Config("TABLE_SHOW_DETAIL") . "=";
+        $this->AddUrl = "LiveRencanaAdd";
         $this->InlineAddUrl = $pageUrl . "action=add";
         $this->GridAddUrl = $pageUrl . "action=gridadd";
         $this->GridEditUrl = $pageUrl . "action=gridedit";
-        $this->MultiDeleteUrl = "IndikatorRencanaBelajarDelete";
-        $this->MultiUpdateUrl = "IndikatorRencanaBelajarUpdate";
+        $this->MultiDeleteUrl = "LiveRencanaDelete";
+        $this->MultiUpdateUrl = "LiveRencanaUpdate";
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'indikator_rencana_belajar');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'live_rencana');
         }
 
         // Start timer
@@ -412,7 +412,7 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
 
         // Filter options
         $this->FilterOptions = new ListOptions("div");
-        $this->FilterOptions->TagClassName = "ew-filter-option findikator_rencana_belajarlistsrch";
+        $this->FilterOptions->TagClassName = "ew-filter-option flive_rencanalistsrch";
 
         // List actions
         $this->ListActions = new ListActions();
@@ -463,7 +463,7 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("indikator_rencana_belajar"));
+                $doc = new $class(Container("live_rencana"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -579,7 +579,7 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_indikator'];
+            $key .= @$ar['id_live_rencana'];
         }
         return $key;
     }
@@ -592,7 +592,7 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_indikator->Visible = false;
+            $this->id_live_rencana->Visible = false;
         }
     }
 
@@ -710,8 +710,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     public $MultiSelectKey;
     public $Command;
     public $RestoreSearch = false;
-            public $rencana_pembelajaran_Count;
-            public $generator_rencana_Count;
     public $DetailPages;
     public $OldRecordset;
 
@@ -733,9 +731,8 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
 
         // Set up list options
         $this->setupListOptions();
+        $this->id_live_rencana->setVisibility();
         $this->id_indikator->setVisibility();
-        $this->kategori->setVisibility();
-        $this->indikator->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Global Page Loading event (in userfn*.php)
@@ -812,33 +809,8 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
                 $this->OtherOptions->hideAllOptions();
             }
 
-            // Get default search criteria
-            AddFilter($this->DefaultSearchWhere, $this->basicSearchWhere(true));
-
-            // Get basic search values
-            $this->loadBasicSearchValues();
-
-            // Process filter list
-            if ($this->processFilterList()) {
-                $this->terminate();
-                return;
-            }
-
-            // Restore search parms from Session if not searching / reset / export
-            if (($this->isExport() || $this->Command != "search" && $this->Command != "reset" && $this->Command != "resetall") && $this->Command != "json" && $this->checkSearchParms()) {
-                $this->restoreSearchParms();
-            }
-
-            // Call Recordset SearchValidated event
-            $this->recordsetSearchValidated();
-
             // Set up sorting order
             $this->setupSortOrder();
-
-            // Get basic search criteria
-            if (!$this->hasInvalidFields()) {
-                $srchBasic = $this->basicSearchWhere();
-            }
         }
 
         // Restore display records
@@ -852,31 +824,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         // Load Sorting Order
         if ($this->Command != "json") {
             $this->loadSortOrder();
-        }
-
-        // Load search default if no existing search criteria
-        if (!$this->checkSearchParms()) {
-            // Load basic search from default
-            $this->BasicSearch->loadDefault();
-            if ($this->BasicSearch->Keyword != "") {
-                $srchBasic = $this->basicSearchWhere();
-            }
-        }
-
-        // Build search criteria
-        AddFilter($this->SearchWhere, $srchAdvanced);
-        AddFilter($this->SearchWhere, $srchBasic);
-
-        // Call Recordset_Searching event
-        $this->recordsetSearching($this->SearchWhere);
-
-        // Save search criteria
-        if ($this->Command == "search" && !$this->RestoreSearch) {
-            $this->setSearchWhere($this->SearchWhere); // Save to Session
-            $this->StartRecord = 1; // Reset start record counter
-            $this->setStartRecordNumber($this->StartRecord);
-        } elseif ($this->Command != "json") {
-            $this->SearchWhere = $this->getSearchWhere();
         }
 
         // Build filter
@@ -1016,248 +963,12 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     {
         $arKeyFlds = explode(Config("COMPOSITE_KEY_SEPARATOR"), $key);
         if (count($arKeyFlds) >= 1) {
-            $this->id_indikator->setOldValue($arKeyFlds[0]);
-            if (!is_numeric($this->id_indikator->OldValue)) {
+            $this->id_live_rencana->setOldValue($arKeyFlds[0]);
+            if (!is_numeric($this->id_live_rencana->OldValue)) {
                 return false;
             }
         }
         return true;
-    }
-
-    // Get list of filters
-    public function getFilterList()
-    {
-        global $UserProfile;
-
-        // Initialize
-        $filterList = "";
-        $savedFilterList = "";
-        $filterList = Concat($filterList, $this->id_indikator->AdvancedSearch->toJson(), ","); // Field id_indikator
-        $filterList = Concat($filterList, $this->kategori->AdvancedSearch->toJson(), ","); // Field kategori
-        $filterList = Concat($filterList, $this->indikator->AdvancedSearch->toJson(), ","); // Field indikator
-        if ($this->BasicSearch->Keyword != "") {
-            $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
-            $filterList = Concat($filterList, $wrk, ",");
-        }
-
-        // Return filter list in JSON
-        if ($filterList != "") {
-            $filterList = "\"data\":{" . $filterList . "}";
-        }
-        if ($savedFilterList != "") {
-            $filterList = Concat($filterList, "\"filters\":" . $savedFilterList, ",");
-        }
-        return ($filterList != "") ? "{" . $filterList . "}" : "null";
-    }
-
-    // Process filter list
-    protected function processFilterList()
-    {
-        global $UserProfile;
-        if (Post("ajax") == "savefilters") { // Save filter request (Ajax)
-            $filters = Post("filters");
-            $UserProfile->setSearchFilters(CurrentUserName(), "findikator_rencana_belajarlistsrch", $filters);
-            WriteJson([["success" => true]]); // Success
-            return true;
-        } elseif (Post("cmd") == "resetfilter") {
-            $this->restoreFilterList();
-        }
-        return false;
-    }
-
-    // Restore list of filters
-    protected function restoreFilterList()
-    {
-        // Return if not reset filter
-        if (Post("cmd") !== "resetfilter") {
-            return false;
-        }
-        $filter = json_decode(Post("filter"), true);
-        $this->Command = "search";
-
-        // Field id_indikator
-        $this->id_indikator->AdvancedSearch->SearchValue = @$filter["x_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchOperator = @$filter["z_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchCondition = @$filter["v_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchValue2 = @$filter["y_id_indikator"];
-        $this->id_indikator->AdvancedSearch->SearchOperator2 = @$filter["w_id_indikator"];
-        $this->id_indikator->AdvancedSearch->save();
-
-        // Field kategori
-        $this->kategori->AdvancedSearch->SearchValue = @$filter["x_kategori"];
-        $this->kategori->AdvancedSearch->SearchOperator = @$filter["z_kategori"];
-        $this->kategori->AdvancedSearch->SearchCondition = @$filter["v_kategori"];
-        $this->kategori->AdvancedSearch->SearchValue2 = @$filter["y_kategori"];
-        $this->kategori->AdvancedSearch->SearchOperator2 = @$filter["w_kategori"];
-        $this->kategori->AdvancedSearch->save();
-
-        // Field indikator
-        $this->indikator->AdvancedSearch->SearchValue = @$filter["x_indikator"];
-        $this->indikator->AdvancedSearch->SearchOperator = @$filter["z_indikator"];
-        $this->indikator->AdvancedSearch->SearchCondition = @$filter["v_indikator"];
-        $this->indikator->AdvancedSearch->SearchValue2 = @$filter["y_indikator"];
-        $this->indikator->AdvancedSearch->SearchOperator2 = @$filter["w_indikator"];
-        $this->indikator->AdvancedSearch->save();
-        $this->BasicSearch->setKeyword(@$filter[Config("TABLE_BASIC_SEARCH")]);
-        $this->BasicSearch->setType(@$filter[Config("TABLE_BASIC_SEARCH_TYPE")]);
-    }
-
-    // Return basic search SQL
-    protected function basicSearchSql($arKeywords, $type)
-    {
-        $where = "";
-        $this->buildBasicSearchSql($where, $this->kategori, $arKeywords, $type);
-        $this->buildBasicSearchSql($where, $this->indikator, $arKeywords, $type);
-        return $where;
-    }
-
-    // Build basic search SQL
-    protected function buildBasicSearchSql(&$where, &$fld, $arKeywords, $type)
-    {
-        $defCond = ($type == "OR") ? "OR" : "AND";
-        $arSql = []; // Array for SQL parts
-        $arCond = []; // Array for search conditions
-        $cnt = count($arKeywords);
-        $j = 0; // Number of SQL parts
-        for ($i = 0; $i < $cnt; $i++) {
-            $keyword = $arKeywords[$i];
-            $keyword = trim($keyword);
-            if (Config("BASIC_SEARCH_IGNORE_PATTERN") != "") {
-                $keyword = preg_replace(Config("BASIC_SEARCH_IGNORE_PATTERN"), "\\", $keyword);
-                $ar = explode("\\", $keyword);
-            } else {
-                $ar = [$keyword];
-            }
-            foreach ($ar as $keyword) {
-                if ($keyword != "") {
-                    $wrk = "";
-                    if ($keyword == "OR" && $type == "") {
-                        if ($j > 0) {
-                            $arCond[$j - 1] = "OR";
-                        }
-                    } elseif ($keyword == Config("NULL_VALUE")) {
-                        $wrk = $fld->Expression . " IS NULL";
-                    } elseif ($keyword == Config("NOT_NULL_VALUE")) {
-                        $wrk = $fld->Expression . " IS NOT NULL";
-                    } elseif ($fld->IsVirtual) {
-                        $wrk = $fld->VirtualExpression . Like(QuotedValue("%" . $keyword . "%", DATATYPE_STRING, $this->Dbid), $this->Dbid);
-                    } elseif ($fld->DataType != DATATYPE_NUMBER || is_numeric($keyword)) {
-                        $wrk = $fld->BasicSearchExpression . Like(QuotedValue("%" . $keyword . "%", DATATYPE_STRING, $this->Dbid), $this->Dbid);
-                    }
-                    if ($wrk != "") {
-                        $arSql[$j] = $wrk;
-                        $arCond[$j] = $defCond;
-                        $j += 1;
-                    }
-                }
-            }
-        }
-        $cnt = count($arSql);
-        $quoted = false;
-        $sql = "";
-        if ($cnt > 0) {
-            for ($i = 0; $i < $cnt - 1; $i++) {
-                if ($arCond[$i] == "OR") {
-                    if (!$quoted) {
-                        $sql .= "(";
-                    }
-                    $quoted = true;
-                }
-                $sql .= $arSql[$i];
-                if ($quoted && $arCond[$i] != "OR") {
-                    $sql .= ")";
-                    $quoted = false;
-                }
-                $sql .= " " . $arCond[$i] . " ";
-            }
-            $sql .= $arSql[$cnt - 1];
-            if ($quoted) {
-                $sql .= ")";
-            }
-        }
-        if ($sql != "") {
-            if ($where != "") {
-                $where .= " OR ";
-            }
-            $where .= "(" . $sql . ")";
-        }
-    }
-
-    // Return basic search WHERE clause based on search keyword and type
-    protected function basicSearchWhere($default = false)
-    {
-        global $Security;
-        $searchStr = "";
-        $searchKeyword = ($default) ? $this->BasicSearch->KeywordDefault : $this->BasicSearch->Keyword;
-        $searchType = ($default) ? $this->BasicSearch->TypeDefault : $this->BasicSearch->Type;
-
-        // Get search SQL
-        if ($searchKeyword != "") {
-            $ar = $this->BasicSearch->keywordList($default);
-            // Search keyword in any fields
-            if (($searchType == "OR" || $searchType == "AND") && $this->BasicSearch->BasicSearchAnyFields) {
-                foreach ($ar as $keyword) {
-                    if ($keyword != "") {
-                        if ($searchStr != "") {
-                            $searchStr .= " " . $searchType . " ";
-                        }
-                        $searchStr .= "(" . $this->basicSearchSql([$keyword], $searchType) . ")";
-                    }
-                }
-            } else {
-                $searchStr = $this->basicSearchSql($ar, $searchType);
-            }
-            if (!$default && in_array($this->Command, ["", "reset", "resetall"])) {
-                $this->Command = "search";
-            }
-        }
-        if (!$default && $this->Command == "search") {
-            $this->BasicSearch->setKeyword($searchKeyword);
-            $this->BasicSearch->setType($searchType);
-        }
-        return $searchStr;
-    }
-
-    // Check if search parm exists
-    protected function checkSearchParms()
-    {
-        // Check basic search
-        if ($this->BasicSearch->issetSession()) {
-            return true;
-        }
-        return false;
-    }
-
-    // Clear all search parameters
-    protected function resetSearchParms()
-    {
-        // Clear search WHERE clause
-        $this->SearchWhere = "";
-        $this->setSearchWhere($this->SearchWhere);
-
-        // Clear basic search parameters
-        $this->resetBasicSearchParms();
-    }
-
-    // Load advanced search default values
-    protected function loadAdvancedSearchDefault()
-    {
-        return false;
-    }
-
-    // Clear all basic search parameters
-    protected function resetBasicSearchParms()
-    {
-        $this->BasicSearch->unsetSession();
-    }
-
-    // Restore all search parameters
-    protected function restoreSearchParms()
-    {
-        $this->RestoreSearch = true;
-
-        // Restore basic search values
-        $this->BasicSearch->load();
     }
 
     // Set up sort parameters
@@ -1267,9 +978,8 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         if (Get("order") !== null) {
             $this->CurrentOrder = Get("order");
             $this->CurrentOrderType = Get("ordertype", "");
+            $this->updateSort($this->id_live_rencana); // id_live_rencana
             $this->updateSort($this->id_indikator); // id_indikator
-            $this->updateSort($this->kategori); // kategori
-            $this->updateSort($this->indikator); // indikator
             $this->setStartRecordNumber(1); // Reset start position
         }
     }
@@ -1300,18 +1010,12 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     {
         // Check if reset command
         if (StartsString("reset", $this->Command)) {
-            // Reset search criteria
-            if ($this->Command == "reset" || $this->Command == "resetall") {
-                $this->resetSearchParms();
-            }
-
             // Reset (clear) sorting order
             if ($this->Command == "resetsort") {
                 $orderBy = "";
                 $this->setSessionOrderBy($orderBy);
+                $this->id_live_rencana->setSort("");
                 $this->id_indikator->setSort("");
-                $this->kategori->setSort("");
-                $this->indikator->setSort("");
             }
 
             // Reset start position
@@ -1354,35 +1058,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         $item->CssClass = "text-nowrap";
         $item->Visible = $Security->canDelete();
         $item->OnLeft = false;
-
-        // "detail_rencana_pembelajaran"
-        $item = &$this->ListOptions->add("detail_rencana_pembelajaran");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'rencana_pembelajaran') && !$this->ShowMultipleDetails;
-        $item->OnLeft = false;
-        $item->ShowInButtonGroup = false;
-
-        // "detail_generator_rencana"
-        $item = &$this->ListOptions->add("detail_generator_rencana");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'generator_rencana') && !$this->ShowMultipleDetails;
-        $item->OnLeft = false;
-        $item->ShowInButtonGroup = false;
-
-        // Multiple details
-        if ($this->ShowMultipleDetails) {
-            $item = &$this->ListOptions->add("details");
-            $item->CssClass = "text-nowrap";
-            $item->Visible = $this->ShowMultipleDetails;
-            $item->OnLeft = false;
-            $item->ShowInButtonGroup = false;
-        }
-
-        // Set up detail pages
-        $pages = new SubPages();
-        $pages->add("rencana_pembelajaran");
-        $pages->add("generator_rencana");
-        $this->DetailPages = $pages;
 
         // List actions
         $item = &$this->ListOptions->add("listactions");
@@ -1493,126 +1168,10 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
                 $opt->Visible = true;
             }
         }
-        $detailViewTblVar = "";
-        $detailCopyTblVar = "";
-        $detailEditTblVar = "";
-
-        // "detail_rencana_pembelajaran"
-        $opt = $this->ListOptions["detail_rencana_pembelajaran"];
-        if ($Security->allowList(CurrentProjectID() . 'rencana_pembelajaran')) {
-            $body = $Language->phrase("DetailLink") . $Language->TablePhrase("rencana_pembelajaran", "TblCaption");
-            $body .= "&nbsp;" . str_replace("%c", $this->rencana_pembelajaran_Count, $Language->phrase("DetailCount"));
-            $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode("RencanaPembelajaranList?" . Config("TABLE_SHOW_MASTER") . "=indikator_rencana_belajar&" . GetForeignKeyUrl("fk_id_indikator", $this->id_indikator->CurrentValue) . "") . "\">" . $body . "</a>";
-            $links = "";
-            $detailPage = Container("RencanaPembelajaranGrid");
-            if ($detailPage->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'indikator_rencana_belajar')) {
-                $caption = $Language->phrase("MasterDetailViewLink");
-                $url = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailViewTblVar != "") {
-                    $detailViewTblVar .= ",";
-                }
-                $detailViewTblVar .= "rencana_pembelajaran";
-            }
-            if ($detailPage->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'indikator_rencana_belajar')) {
-                $caption = $Language->phrase("MasterDetailEditLink");
-                $url = $this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailEditTblVar != "") {
-                    $detailEditTblVar .= ",";
-                }
-                $detailEditTblVar .= "rencana_pembelajaran";
-            }
-            if ($detailPage->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'indikator_rencana_belajar')) {
-                $caption = $Language->phrase("MasterDetailCopyLink");
-                $url = $this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailCopyTblVar != "") {
-                    $detailCopyTblVar .= ",";
-                }
-                $detailCopyTblVar .= "rencana_pembelajaran";
-            }
-            if ($links != "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-                $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-            }
-            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-            $opt->Body = $body;
-            if ($this->ShowMultipleDetails) {
-                $opt->Visible = false;
-            }
-        }
-
-        // "detail_generator_rencana"
-        $opt = $this->ListOptions["detail_generator_rencana"];
-        if ($Security->allowList(CurrentProjectID() . 'generator_rencana')) {
-            $body = $Language->phrase("DetailLink") . $Language->TablePhrase("generator_rencana", "TblCaption");
-            $body .= "&nbsp;" . str_replace("%c", $this->generator_rencana_Count, $Language->phrase("DetailCount"));
-            $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode("GeneratorRencanaList?" . Config("TABLE_SHOW_MASTER") . "=indikator_rencana_belajar&" . GetForeignKeyUrl("fk_id_indikator", $this->id_indikator->CurrentValue) . "") . "\">" . $body . "</a>";
-            $links = "";
-            $detailPage = Container("GeneratorRencanaGrid");
-            if ($detailPage->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'indikator_rencana_belajar')) {
-                $caption = $Language->phrase("MasterDetailViewLink");
-                $url = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailViewTblVar != "") {
-                    $detailViewTblVar .= ",";
-                }
-                $detailViewTblVar .= "generator_rencana";
-            }
-            if ($detailPage->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'indikator_rencana_belajar')) {
-                $caption = $Language->phrase("MasterDetailEditLink");
-                $url = $this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailEditTblVar != "") {
-                    $detailEditTblVar .= ",";
-                }
-                $detailEditTblVar .= "generator_rencana";
-            }
-            if ($detailPage->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'indikator_rencana_belajar')) {
-                $caption = $Language->phrase("MasterDetailCopyLink");
-                $url = $this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailCopyTblVar != "") {
-                    $detailCopyTblVar .= ",";
-                }
-                $detailCopyTblVar .= "generator_rencana";
-            }
-            if ($links != "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-                $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-            }
-            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-            $opt->Body = $body;
-            if ($this->ShowMultipleDetails) {
-                $opt->Visible = false;
-            }
-        }
-        if ($this->ShowMultipleDetails) {
-            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">";
-            $links = "";
-            if ($detailViewTblVar != "") {
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailViewTblVar)) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            }
-            if ($detailEditTblVar != "") {
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailEditTblVar)) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            }
-            if ($detailCopyTblVar != "") {
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode($this->GetCopyUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailCopyTblVar)) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            }
-            if ($links != "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default ew-master-detail\" title=\"" . HtmlTitle($Language->phrase("MultipleMasterDetails")) . "\" data-toggle=\"dropdown\">" . $Language->phrase("MultipleMasterDetails") . "</button>";
-                $body .= "<ul class=\"dropdown-menu ew-menu\">" . $links . "</ul>";
-            }
-            $body .= "</div>";
-            // Multiple details
-            $opt = $this->ListOptions["details"];
-            $opt->Body = $body;
-        }
 
         // "checkbox"
         $opt = $this->ListOptions["checkbox"];
-        $opt->Body = "<div class=\"custom-control custom-checkbox d-inline-block\"><input type=\"checkbox\" id=\"key_m_" . $this->RowCount . "\" name=\"key_m[]\" class=\"custom-control-input ew-multi-select\" value=\"" . HtmlEncode($this->id_indikator->CurrentValue) . "\" onclick=\"ew.clickMultiCheckbox(event);\"><label class=\"custom-control-label\" for=\"key_m_" . $this->RowCount . "\"></label></div>";
+        $opt->Body = "<div class=\"custom-control custom-checkbox d-inline-block\"><input type=\"checkbox\" id=\"key_m_" . $this->RowCount . "\" name=\"key_m[]\" class=\"custom-control-input ew-multi-select\" value=\"" . HtmlEncode($this->id_live_rencana->CurrentValue) . "\" onclick=\"ew.clickMultiCheckbox(event);\"><label class=\"custom-control-label\" for=\"key_m_" . $this->RowCount . "\"></label></div>";
         $this->renderListOptionsExt();
 
         // Call ListOptions_Rendered event
@@ -1631,49 +1190,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         $addcaption = HtmlTitle($Language->phrase("AddLink"));
         $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
         $item->Visible = $this->AddUrl != "" && $Security->canAdd();
-        $option = $options["detail"];
-        $detailTableLink = "";
-                $item = &$option->add("detailadd_rencana_pembelajaran");
-                $url = $this->getAddUrl(Config("TABLE_SHOW_DETAIL") . "=rencana_pembelajaran");
-                $detailPage = Container("RencanaPembelajaranGrid");
-                $caption = $Language->phrase("Add") . "&nbsp;" . $this->tableCaption() . "/" . $detailPage->tableCaption();
-                $item->Body = "<a class=\"ew-detail-add-group ew-detail-add\" title=\"" . HtmlTitle($caption) . "\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode(GetUrl($url)) . "\">" . $caption . "</a>";
-                $item->Visible = ($detailPage->DetailAdd && $Security->allowAdd(CurrentProjectID() . 'indikator_rencana_belajar') && $Security->canAdd());
-                if ($item->Visible) {
-                    if ($detailTableLink != "") {
-                        $detailTableLink .= ",";
-                    }
-                    $detailTableLink .= "rencana_pembelajaran";
-                }
-                $item = &$option->add("detailadd_generator_rencana");
-                $url = $this->getAddUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana");
-                $detailPage = Container("GeneratorRencanaGrid");
-                $caption = $Language->phrase("Add") . "&nbsp;" . $this->tableCaption() . "/" . $detailPage->tableCaption();
-                $item->Body = "<a class=\"ew-detail-add-group ew-detail-add\" title=\"" . HtmlTitle($caption) . "\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode(GetUrl($url)) . "\">" . $caption . "</a>";
-                $item->Visible = ($detailPage->DetailAdd && $Security->allowAdd(CurrentProjectID() . 'indikator_rencana_belajar') && $Security->canAdd());
-                if ($item->Visible) {
-                    if ($detailTableLink != "") {
-                        $detailTableLink .= ",";
-                    }
-                    $detailTableLink .= "generator_rencana";
-                }
-
-        // Add multiple details
-        if ($this->ShowMultipleDetails) {
-            $item = &$option->add("detailsadd");
-            $url = $this->getAddUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailTableLink);
-            $caption = $Language->phrase("AddMasterDetailLink");
-            $item->Body = "<a class=\"ew-detail-add-group ew-detail-add\" title=\"" . HtmlTitle($caption) . "\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode(GetUrl($url)) . "\">" . $caption . "</a>";
-            $item->Visible = $detailTableLink != "" && $Security->canAdd();
-            // Hide single master/detail items
-            $ar = explode(",", $detailTableLink);
-            $cnt = count($ar);
-            for ($i = 0; $i < $cnt; $i++) {
-                if ($item = $option["detailadd_" . $ar[$i]]) {
-                    $item->Visible = false;
-                }
-            }
-        }
         $option = $options["action"];
 
         // Set up options default
@@ -1691,11 +1207,11 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
 
         // Filter button
         $item = &$this->FilterOptions->add("savecurrentfilter");
-        $item->Body = "<a class=\"ew-save-filter\" data-form=\"findikator_rencana_belajarlistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("SaveCurrentFilter") . "</a>";
-        $item->Visible = true;
+        $item->Body = "<a class=\"ew-save-filter\" data-form=\"flive_rencanalistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("SaveCurrentFilter") . "</a>";
+        $item->Visible = false;
         $item = &$this->FilterOptions->add("deletefilter");
-        $item->Body = "<a class=\"ew-delete-filter\" data-form=\"findikator_rencana_belajarlistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("DeleteFilter") . "</a>";
-        $item->Visible = true;
+        $item->Body = "<a class=\"ew-delete-filter\" data-form=\"flive_rencanalistsrch\" href=\"#\" onclick=\"return false;\">" . $Language->phrase("DeleteFilter") . "</a>";
+        $item->Visible = false;
         $this->FilterOptions->UseDropDownButton = true;
         $this->FilterOptions->UseButtonGroup = !$this->FilterOptions->UseDropDownButton;
         $this->FilterOptions->DropDownButtonPhrase = $Language->phrase("Filters");
@@ -1718,7 +1234,7 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
                 $item = &$option->add("custom_" . $listaction->Action);
                 $caption = $listaction->Caption;
                 $icon = ($listaction->Icon != "") ? '<i class="' . HtmlEncode($listaction->Icon) . '" data-caption="' . HtmlEncode($caption) . '"></i>' . $caption : $caption;
-                $item->Body = '<a class="ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" href="#" onclick="return ew.submitAction(event,jQuery.extend({f:document.findikator_rencana_belajarlist},' . $listaction->toJson(true) . '));">' . $icon . '</a>';
+                $item->Body = '<a class="ew-action ew-list-action" title="' . HtmlEncode($caption) . '" data-caption="' . HtmlEncode($caption) . '" href="#" onclick="return ew.submitAction(event,jQuery.extend({f:document.flive_rencanalist},' . $listaction->toJson(true) . '));">' . $icon . '</a>';
                 $item->Visible = $listaction->Allow;
             }
         }
@@ -1827,16 +1343,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     {
     }
 
-    // Load basic search values
-    protected function loadBasicSearchValues()
-    {
-        $this->BasicSearch->setKeyword(Get(Config("TABLE_BASIC_SEARCH"), ""), false);
-        if ($this->BasicSearch->Keyword != "" && $this->Command == "") {
-            $this->Command = "search";
-        }
-        $this->BasicSearch->setType(Get(Config("TABLE_BASIC_SEARCH_TYPE"), ""), false);
-    }
-
     // Load recordset
     public function loadRecordset($offset = -1, $rowcnt = -1)
     {
@@ -1905,30 +1411,16 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         if (!$rs) {
             return;
         }
+        $this->id_live_rencana->setDbValue($row['id_live_rencana']);
         $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->kategori->setDbValue($row['kategori']);
-        $this->indikator->setDbValue($row['indikator']);
-        $detailTbl = Container("rencana_pembelajaran");
-        $detailFilter = $detailTbl->sqlDetailFilter_indikator_rencana_belajar();
-        $detailFilter = str_replace("@id_indikator@", AdjustSql($this->id_indikator->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("indikator_rencana_belajar");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->rencana_pembelajaran_Count = $detailTbl->loadRecordCount($detailFilter);
-        $detailTbl = Container("generator_rencana");
-        $detailFilter = $detailTbl->sqlDetailFilter_indikator_rencana_belajar();
-        $detailFilter = str_replace("@id_indikator_rencana@", AdjustSql($this->id_indikator->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("indikator_rencana_belajar");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->generator_rencana_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values
     protected function newRow()
     {
         $row = [];
+        $row['id_live_rencana'] = null;
         $row['id_indikator'] = null;
-        $row['kategori'] = null;
-        $row['indikator'] = null;
         return $row;
     }
 
@@ -1937,8 +1429,8 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
     {
         // Load key values from Session
         $validKey = true;
-        if (strval($this->getKey("id_indikator")) != "") {
-            $this->id_indikator->OldValue = $this->getKey("id_indikator"); // id_indikator
+        if (strval($this->getKey("id_live_rencana")) != "") {
+            $this->id_live_rencana->OldValue = $this->getKey("id_live_rencana"); // id_live_rencana
         } else {
             $validKey = false;
         }
@@ -1973,42 +1465,28 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
 
         // Common render codes for all row types
 
+        // id_live_rencana
+
         // id_indikator
-
-        // kategori
-
-        // indikator
         if ($this->RowType == ROWTYPE_VIEW) {
+            // id_live_rencana
+            $this->id_live_rencana->ViewValue = $this->id_live_rencana->CurrentValue;
+            $this->id_live_rencana->ViewCustomAttributes = "";
+
             // id_indikator
             $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
+            $this->id_indikator->ViewValue = FormatNumber($this->id_indikator->ViewValue, 0, -2, -2, -2);
             $this->id_indikator->ViewCustomAttributes = "";
 
-            // kategori
-            if (strval($this->kategori->CurrentValue) != "") {
-                $this->kategori->ViewValue = $this->kategori->optionCaption($this->kategori->CurrentValue);
-            } else {
-                $this->kategori->ViewValue = null;
-            }
-            $this->kategori->ViewCustomAttributes = "";
-
-            // indikator
-            $this->indikator->ViewValue = $this->indikator->CurrentValue;
-            $this->indikator->ViewCustomAttributes = "";
+            // id_live_rencana
+            $this->id_live_rencana->LinkCustomAttributes = "";
+            $this->id_live_rencana->HrefValue = "";
+            $this->id_live_rencana->TooltipValue = "";
 
             // id_indikator
             $this->id_indikator->LinkCustomAttributes = "";
             $this->id_indikator->HrefValue = "";
             $this->id_indikator->TooltipValue = "";
-
-            // kategori
-            $this->kategori->LinkCustomAttributes = "";
-            $this->kategori->HrefValue = "";
-            $this->kategori->TooltipValue = "";
-
-            // indikator
-            $this->indikator->LinkCustomAttributes = "";
-            $this->indikator->HrefValue = "";
-            $this->indikator->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -2024,17 +1502,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
         $pageUrl = $this->pageUrl();
         $this->SearchOptions = new ListOptions("div");
         $this->SearchOptions->TagClassName = "ew-search-option";
-
-        // Search button
-        $item = &$this->SearchOptions->add("searchtoggle");
-        $searchToggleClass = ($this->SearchWhere != "") ? " active" : " active";
-        $item->Body = "<a class=\"btn btn-default ew-search-toggle" . $searchToggleClass . "\" href=\"#\" role=\"button\" title=\"" . $Language->phrase("SearchPanel") . "\" data-caption=\"" . $Language->phrase("SearchPanel") . "\" data-toggle=\"button\" data-form=\"findikator_rencana_belajarlistsrch\" aria-pressed=\"" . ($searchToggleClass == " active" ? "true" : "false") . "\">" . $Language->phrase("SearchLink") . "</a>";
-        $item->Visible = true;
-
-        // Show all button
-        $item = &$this->SearchOptions->add("showall");
-        $item->Body = "<a class=\"btn btn-default ew-show-all\" title=\"" . $Language->phrase("ShowAll") . "\" data-caption=\"" . $Language->phrase("ShowAll") . "\" href=\"" . $pageUrl . "cmd=reset\">" . $Language->phrase("ShowAllBtn") . "</a>";
-        $item->Visible = ($this->SearchWhere != $this->DefaultSearchWhere && $this->SearchWhere != "0=101");
 
         // Button group for search
         $this->SearchOptions->UseDropDownButton = false;
@@ -2075,8 +1542,6 @@ class IndikatorRencanaBelajarList extends IndikatorRencanaBelajar
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_kategori":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;

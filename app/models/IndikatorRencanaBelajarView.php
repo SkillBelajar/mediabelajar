@@ -666,6 +666,7 @@ class IndikatorRencanaBelajarView extends IndikatorRencanaBelajar
     public $RecKey = [];
     public $IsModal = false;
     public $rencana_pembelajaran_Count;
+    public $generator_rencana_Count;
 
     /**
      * Page run
@@ -892,6 +893,51 @@ class IndikatorRencanaBelajarView extends IndikatorRencanaBelajar
             $item->Visible = false;
         }
 
+        // "detail_generator_rencana"
+        $item = &$option->add("detail_generator_rencana");
+        $body = $Language->phrase("ViewPageDetailLink") . $Language->TablePhrase("generator_rencana", "TblCaption");
+        $body .= "&nbsp;" . str_replace("%c", $this->generator_rencana_Count, $Language->phrase("DetailCount"));
+        $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode(GetUrl("GeneratorRencanaList?" . Config("TABLE_SHOW_MASTER") . "=indikator_rencana_belajar&" . GetForeignKeyUrl("fk_id_indikator", $this->id_indikator->CurrentValue) . "")) . "\">" . $body . "</a>";
+        $links = "";
+        $detailPageObj = Container("GeneratorRencanaGrid");
+        if ($detailPageObj->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'indikator_rencana_belajar')) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
+            if ($detailViewTblVar != "") {
+                $detailViewTblVar .= ",";
+            }
+            $detailViewTblVar .= "generator_rencana";
+        }
+        if ($detailPageObj->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'indikator_rencana_belajar')) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
+            if ($detailEditTblVar != "") {
+                $detailEditTblVar .= ",";
+            }
+            $detailEditTblVar .= "generator_rencana";
+        }
+        if ($detailPageObj->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'indikator_rencana_belajar')) {
+            $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode(GetUrl($this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=generator_rencana"))) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
+            if ($detailCopyTblVar != "") {
+                $detailCopyTblVar .= ",";
+            }
+            $detailCopyTblVar .= "generator_rencana";
+        }
+        if ($links != "") {
+            $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
+            $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
+        }
+        $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
+        $item->Body = $body;
+        $item->Visible = $Security->allowList(CurrentProjectID() . 'generator_rencana');
+        if ($item->Visible) {
+            if ($detailTableLink != "") {
+                $detailTableLink .= ",";
+            }
+            $detailTableLink .= "generator_rencana";
+        }
+        if ($this->ShowMultipleDetails) {
+            $item->Visible = false;
+        }
+
         // Multiple details
         if ($this->ShowMultipleDetails) {
             $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">";
@@ -992,6 +1038,12 @@ class IndikatorRencanaBelajarView extends IndikatorRencanaBelajar
         $detailTbl->setCurrentMasterTable("indikator_rencana_belajar");
         $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
         $this->rencana_pembelajaran_Count = $detailTbl->loadRecordCount($detailFilter);
+        $detailTbl = Container("generator_rencana");
+        $detailFilter = $detailTbl->sqlDetailFilter_indikator_rencana_belajar();
+        $detailFilter = str_replace("@id_indikator_rencana@", AdjustSql($this->id_indikator->DbValue, "DB"), $detailFilter);
+        $detailTbl->setCurrentMasterTable("indikator_rencana_belajar");
+        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
+        $this->generator_rencana_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values
@@ -1090,6 +1142,19 @@ class IndikatorRencanaBelajarView extends IndikatorRencanaBelajar
                     $detailPageObj->id_indikator->CurrentValue = $this->id_indikator->CurrentValue;
                     $detailPageObj->id_indikator->setSessionValue($detailPageObj->id_indikator->CurrentValue);
                     $detailPageObj->id_materi->setSessionValue(""); // Clear session key
+                }
+            }
+            if (in_array("generator_rencana", $detailTblVar)) {
+                $detailPageObj = Container("GeneratorRencanaGrid");
+                if ($detailPageObj->DetailView) {
+                    $detailPageObj->CurrentMode = "view";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_indikator_rencana->IsDetailKey = true;
+                    $detailPageObj->id_indikator_rencana->CurrentValue = $this->id_indikator->CurrentValue;
+                    $detailPageObj->id_indikator_rencana->setSessionValue($detailPageObj->id_indikator_rencana->CurrentValue);
                 }
             }
         }

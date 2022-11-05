@@ -7,7 +7,7 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
+class LiveRencanaAdd extends LiveRencana
 {
     // Page ID
     public $PageID = "add";
@@ -16,10 +16,10 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'indikator_rencana_belajar';
+    public $TableName = 'live_rencana';
 
     // Page object name
-    public $PageObjName = "IndikatorRencanaBelajarAdd";
+    public $PageObjName = "LiveRencanaAdd";
 
     // Rendering View
     public $RenderingView = false;
@@ -310,9 +310,9 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         // Parent constuctor
         parent::__construct();
 
-        // Table object (indikator_rencana_belajar)
-        if (!isset($GLOBALS["indikator_rencana_belajar"]) || get_class($GLOBALS["indikator_rencana_belajar"]) == PROJECT_NAMESPACE . "indikator_rencana_belajar") {
-            $GLOBALS["indikator_rencana_belajar"] = &$this;
+        // Table object (live_rencana)
+        if (!isset($GLOBALS["live_rencana"]) || get_class($GLOBALS["live_rencana"]) == PROJECT_NAMESPACE . "live_rencana") {
+            $GLOBALS["live_rencana"] = &$this;
         }
 
         // Page URL
@@ -320,7 +320,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'indikator_rencana_belajar');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'live_rencana');
         }
 
         // Start timer
@@ -378,7 +378,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("indikator_rencana_belajar"));
+                $doc = new $class(Container("live_rencana"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -417,7 +417,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
                 $pageName = GetPageName($url);
                 if ($pageName != $this->getListUrl()) { // Not List page
                     $row["caption"] = $this->getModalCaption($pageName);
-                    if ($pageName == "IndikatorRencanaBelajarView") {
+                    if ($pageName == "LiveRencanaView") {
                         $row["view"] = "1";
                     }
                 } else { // List page should not be shown as modal => error
@@ -508,7 +508,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_indikator'];
+            $key .= @$ar['id_live_rencana'];
         }
         return $key;
     }
@@ -521,7 +521,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_indikator->Visible = false;
+            $this->id_live_rencana->Visible = false;
         }
     }
 
@@ -625,9 +625,8 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         // Create form object
         $CurrentForm = new HttpForm();
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_indikator->Visible = false;
-        $this->kategori->setVisibility();
-        $this->indikator->setVisibility();
+        $this->id_live_rencana->Visible = false;
+        $this->id_indikator->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -661,11 +660,11 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         } else {
             // Load key values from QueryString
             $this->CopyRecord = true;
-            if (($keyValue = Get("id_indikator") ?? Route("id_indikator")) !== null) {
-                $this->id_indikator->setQueryStringValue($keyValue);
-                $this->setKey("id_indikator", $this->id_indikator->CurrentValue); // Set up key
+            if (($keyValue = Get("id_live_rencana") ?? Route("id_live_rencana")) !== null) {
+                $this->id_live_rencana->setQueryStringValue($keyValue);
+                $this->setKey("id_live_rencana", $this->id_live_rencana->CurrentValue); // Set up key
             } else {
-                $this->setKey("id_indikator", ""); // Clear key
+                $this->setKey("id_live_rencana", ""); // Clear key
                 $this->CopyRecord = false;
             }
             if ($this->CopyRecord) {
@@ -682,9 +681,6 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         if ($postBack) {
             $this->loadFormValues(); // Load form values
         }
-
-        // Set up detail parameters
-        $this->setupDetailParms();
 
         // Validate form if post back
         if ($postBack) {
@@ -707,12 +703,9 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
                     if ($this->getFailureMessage() == "") {
                         $this->setFailureMessage($Language->phrase("NoRecord")); // No record found
                     }
-                    $this->terminate("IndikatorRencanaBelajarList"); // No matching record, return to list
+                    $this->terminate("LiveRencanaList"); // No matching record, return to list
                     return;
                 }
-
-                // Set up detail parameters
-                $this->setupDetailParms();
                 break;
             case "insert": // Add new record
                 $this->SendEmail = true; // Send email on add success
@@ -720,14 +713,10 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
                     if ($this->getSuccessMessage() == "" && Post("addopt") != "1") { // Skip success message for addopt (done in JavaScript)
                         $this->setSuccessMessage($Language->phrase("AddSuccess")); // Set up success message
                     }
-                    if ($this->getCurrentDetailTable() != "") { // Master/detail add
-                        $returnUrl = $this->getDetailUrl();
-                    } else {
-                        $returnUrl = $this->getReturnUrl();
-                    }
-                    if (GetPageName($returnUrl) == "IndikatorRencanaBelajarList") {
+                    $returnUrl = $this->getReturnUrl();
+                    if (GetPageName($returnUrl) == "LiveRencanaList") {
                         $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
-                    } elseif (GetPageName($returnUrl) == "IndikatorRencanaBelajarView") {
+                    } elseif (GetPageName($returnUrl) == "LiveRencanaView") {
                         $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
                     }
                     if (IsApi()) { // Return to caller
@@ -743,9 +732,6 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
                 } else {
                     $this->EventCancelled = true; // Event cancelled
                     $this->restoreFormValues(); // Add failed, restore form values
-
-                    // Set up detail parameters
-                    $this->setupDetailParms();
                 }
         }
 
@@ -789,12 +775,10 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     // Load default values
     protected function loadDefaultValues()
     {
+        $this->id_live_rencana->CurrentValue = null;
+        $this->id_live_rencana->OldValue = $this->id_live_rencana->CurrentValue;
         $this->id_indikator->CurrentValue = null;
         $this->id_indikator->OldValue = $this->id_indikator->CurrentValue;
-        $this->kategori->CurrentValue = null;
-        $this->kategori->OldValue = $this->kategori->CurrentValue;
-        $this->indikator->CurrentValue = null;
-        $this->indikator->OldValue = $this->indikator->CurrentValue;
     }
 
     // Load form values
@@ -803,36 +787,25 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         // Load from form
         global $CurrentForm;
 
-        // Check field name 'kategori' first before field var 'x_kategori'
-        $val = $CurrentForm->hasValue("kategori") ? $CurrentForm->getValue("kategori") : $CurrentForm->getValue("x_kategori");
-        if (!$this->kategori->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->kategori->Visible = false; // Disable update for API request
-            } else {
-                $this->kategori->setFormValue($val);
-            }
-        }
-
-        // Check field name 'indikator' first before field var 'x_indikator'
-        $val = $CurrentForm->hasValue("indikator") ? $CurrentForm->getValue("indikator") : $CurrentForm->getValue("x_indikator");
-        if (!$this->indikator->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->indikator->Visible = false; // Disable update for API request
-            } else {
-                $this->indikator->setFormValue($val);
-            }
-        }
-
         // Check field name 'id_indikator' first before field var 'x_id_indikator'
         $val = $CurrentForm->hasValue("id_indikator") ? $CurrentForm->getValue("id_indikator") : $CurrentForm->getValue("x_id_indikator");
+        if (!$this->id_indikator->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->id_indikator->Visible = false; // Disable update for API request
+            } else {
+                $this->id_indikator->setFormValue($val);
+            }
+        }
+
+        // Check field name 'id_live_rencana' first before field var 'x_id_live_rencana'
+        $val = $CurrentForm->hasValue("id_live_rencana") ? $CurrentForm->getValue("id_live_rencana") : $CurrentForm->getValue("x_id_live_rencana");
     }
 
     // Restore form values
     public function restoreFormValues()
     {
         global $CurrentForm;
-        $this->kategori->CurrentValue = $this->kategori->FormValue;
-        $this->indikator->CurrentValue = $this->indikator->FormValue;
+        $this->id_indikator->CurrentValue = $this->id_indikator->FormValue;
     }
 
     /**
@@ -882,9 +855,8 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         if (!$rs) {
             return;
         }
+        $this->id_live_rencana->setDbValue($row['id_live_rencana']);
         $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->kategori->setDbValue($row['kategori']);
-        $this->indikator->setDbValue($row['indikator']);
     }
 
     // Return a row with default values
@@ -892,9 +864,8 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     {
         $this->loadDefaultValues();
         $row = [];
+        $row['id_live_rencana'] = $this->id_live_rencana->CurrentValue;
         $row['id_indikator'] = $this->id_indikator->CurrentValue;
-        $row['kategori'] = $this->kategori->CurrentValue;
-        $row['indikator'] = $this->indikator->CurrentValue;
         return $row;
     }
 
@@ -903,8 +874,8 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     {
         // Load key values from Session
         $validKey = true;
-        if (strval($this->getKey("id_indikator")) != "") {
-            $this->id_indikator->OldValue = $this->getKey("id_indikator"); // id_indikator
+        if (strval($this->getKey("id_live_rencana")) != "") {
+            $this->id_live_rencana->OldValue = $this->getKey("id_live_rencana"); // id_live_rencana
         } else {
             $validKey = false;
         }
@@ -933,62 +904,35 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
         // Common render codes for all row types
 
+        // id_live_rencana
+
         // id_indikator
-
-        // kategori
-
-        // indikator
         if ($this->RowType == ROWTYPE_VIEW) {
+            // id_live_rencana
+            $this->id_live_rencana->ViewValue = $this->id_live_rencana->CurrentValue;
+            $this->id_live_rencana->ViewCustomAttributes = "";
+
             // id_indikator
             $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
+            $this->id_indikator->ViewValue = FormatNumber($this->id_indikator->ViewValue, 0, -2, -2, -2);
             $this->id_indikator->ViewCustomAttributes = "";
 
-            // kategori
-            if (strval($this->kategori->CurrentValue) != "") {
-                $this->kategori->ViewValue = $this->kategori->optionCaption($this->kategori->CurrentValue);
-            } else {
-                $this->kategori->ViewValue = null;
-            }
-            $this->kategori->ViewCustomAttributes = "";
-
-            // indikator
-            $this->indikator->ViewValue = $this->indikator->CurrentValue;
-            $this->indikator->ViewCustomAttributes = "";
-
-            // kategori
-            $this->kategori->LinkCustomAttributes = "";
-            $this->kategori->HrefValue = "";
-            $this->kategori->TooltipValue = "";
-
-            // indikator
-            $this->indikator->LinkCustomAttributes = "";
-            $this->indikator->HrefValue = "";
-            $this->indikator->TooltipValue = "";
+            // id_indikator
+            $this->id_indikator->LinkCustomAttributes = "";
+            $this->id_indikator->HrefValue = "";
+            $this->id_indikator->TooltipValue = "";
         } elseif ($this->RowType == ROWTYPE_ADD) {
-            // kategori
-            $this->kategori->EditAttrs["class"] = "form-control";
-            $this->kategori->EditCustomAttributes = "";
-            $this->kategori->EditValue = $this->kategori->options(true);
-            $this->kategori->PlaceHolder = RemoveHtml($this->kategori->caption());
-
-            // indikator
-            $this->indikator->EditAttrs["class"] = "form-control";
-            $this->indikator->EditCustomAttributes = "";
-            if (!$this->indikator->Raw) {
-                $this->indikator->CurrentValue = HtmlDecode($this->indikator->CurrentValue);
-            }
-            $this->indikator->EditValue = HtmlEncode($this->indikator->CurrentValue);
-            $this->indikator->PlaceHolder = RemoveHtml($this->indikator->caption());
+            // id_indikator
+            $this->id_indikator->EditAttrs["class"] = "form-control";
+            $this->id_indikator->EditCustomAttributes = "";
+            $this->id_indikator->EditValue = HtmlEncode($this->id_indikator->CurrentValue);
+            $this->id_indikator->PlaceHolder = RemoveHtml($this->id_indikator->caption());
 
             // Add refer script
 
-            // kategori
-            $this->kategori->LinkCustomAttributes = "";
-            $this->kategori->HrefValue = "";
-
-            // indikator
-            $this->indikator->LinkCustomAttributes = "";
-            $this->indikator->HrefValue = "";
+            // id_indikator
+            $this->id_indikator->LinkCustomAttributes = "";
+            $this->id_indikator->HrefValue = "";
         }
         if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1009,26 +953,13 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         if (!Config("SERVER_VALIDATE")) {
             return true;
         }
-        if ($this->kategori->Required) {
-            if (!$this->kategori->IsDetailKey && EmptyValue($this->kategori->FormValue)) {
-                $this->kategori->addErrorMessage(str_replace("%s", $this->kategori->caption(), $this->kategori->RequiredErrorMessage));
+        if ($this->id_indikator->Required) {
+            if (!$this->id_indikator->IsDetailKey && EmptyValue($this->id_indikator->FormValue)) {
+                $this->id_indikator->addErrorMessage(str_replace("%s", $this->id_indikator->caption(), $this->id_indikator->RequiredErrorMessage));
             }
         }
-        if ($this->indikator->Required) {
-            if (!$this->indikator->IsDetailKey && EmptyValue($this->indikator->FormValue)) {
-                $this->indikator->addErrorMessage(str_replace("%s", $this->indikator->caption(), $this->indikator->RequiredErrorMessage));
-            }
-        }
-
-        // Validate detail grid
-        $detailTblVar = explode(",", $this->getCurrentDetailTable());
-        $detailPage = Container("RencanaPembelajaranGrid");
-        if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->validateGridForm();
-        }
-        $detailPage = Container("GeneratorRencanaGrid");
-        if (in_array("generator_rencana", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->validateGridForm();
+        if (!CheckInteger($this->id_indikator->FormValue)) {
+            $this->id_indikator->addErrorMessage($this->id_indikator->getErrorMessage(false));
         }
 
         // Return validate result
@@ -1049,22 +980,14 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         global $Language, $Security;
         $conn = $this->getConnection();
 
-        // Begin transaction
-        if ($this->getCurrentDetailTable() != "") {
-            $conn->beginTransaction();
-        }
-
         // Load db values from rsold
         $this->loadDbValues($rsold);
         if ($rsold) {
         }
         $rsnew = [];
 
-        // kategori
-        $this->kategori->setDbValueDef($rsnew, $this->kategori->CurrentValue, "", false);
-
-        // indikator
-        $this->indikator->setDbValueDef($rsnew, $this->indikator->CurrentValue, "", false);
+        // id_indikator
+        $this->id_indikator->setDbValueDef($rsnew, $this->id_indikator->CurrentValue, 0, false);
 
         // Call Row Inserting event
         $insertRow = $this->rowInserting($rsold, $rsnew);
@@ -1083,36 +1006,6 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
             }
             $addRow = false;
         }
-
-        // Add detail records
-        if ($addRow) {
-            $detailTblVar = explode(",", $this->getCurrentDetailTable());
-            $detailPage = Container("RencanaPembelajaranGrid");
-            if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
-                $detailPage->id_indikator->setSessionValue($this->id_indikator->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->id_indikator->setSessionValue(""); // Clear master key if insert failed
-                }
-            }
-            $detailPage = Container("GeneratorRencanaGrid");
-            if (in_array("generator_rencana", $detailTblVar) && $detailPage->DetailAdd) {
-                $detailPage->id_indikator_rencana->setSessionValue($this->id_indikator->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->id_indikator_rencana->setSessionValue(""); // Clear master key if insert failed
-                }
-            }
-        }
-
-        // Commit/Rollback transaction
-        if ($this->getCurrentDetailTable() != "") {
-            if ($addRow) {
-                $conn->commit(); // Commit transaction
-            } else {
-                $conn->rollback(); // Rollback transaction
-            }
-        }
         if ($addRow) {
             // Call Row Inserted event
             $this->rowInserted($rsold, $rsnew);
@@ -1130,65 +1023,13 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         return $addRow;
     }
 
-    // Set up detail parms based on QueryString
-    protected function setupDetailParms()
-    {
-        // Get the keys for master table
-        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
-        if ($detailTblVar !== null) {
-            $this->setCurrentDetailTable($detailTblVar);
-        } else {
-            $detailTblVar = $this->getCurrentDetailTable();
-        }
-        if ($detailTblVar != "") {
-            $detailTblVar = explode(",", $detailTblVar);
-            if (in_array("rencana_pembelajaran", $detailTblVar)) {
-                $detailPageObj = Container("RencanaPembelajaranGrid");
-                if ($detailPageObj->DetailAdd) {
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_indikator->IsDetailKey = true;
-                    $detailPageObj->id_indikator->CurrentValue = $this->id_indikator->CurrentValue;
-                    $detailPageObj->id_indikator->setSessionValue($detailPageObj->id_indikator->CurrentValue);
-                    $detailPageObj->id_materi->setSessionValue(""); // Clear session key
-                }
-            }
-            if (in_array("generator_rencana", $detailTblVar)) {
-                $detailPageObj = Container("GeneratorRencanaGrid");
-                if ($detailPageObj->DetailAdd) {
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_indikator_rencana->IsDetailKey = true;
-                    $detailPageObj->id_indikator_rencana->CurrentValue = $this->id_indikator->CurrentValue;
-                    $detailPageObj->id_indikator_rencana->setSessionValue($detailPageObj->id_indikator_rencana->CurrentValue);
-                }
-            }
-        }
-    }
-
     // Set up Breadcrumb
     protected function setupBreadcrumb()
     {
         global $Breadcrumb, $Language;
         $Breadcrumb = new Breadcrumb("index");
         $url = CurrentUrl();
-        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("IndikatorRencanaBelajarList"), "", $this->TableVar, true);
+        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("LiveRencanaList"), "", $this->TableVar, true);
         $pageId = ($this->isCopy()) ? "Copy" : "Add";
         $Breadcrumb->add("add", $pageId, $url);
     }
@@ -1206,8 +1047,6 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_kategori":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;

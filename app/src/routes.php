@@ -286,6 +286,57 @@ return function (App $app) {
         }
     );
 
+    // generator_rencana
+    $app->any('/GeneratorRencanaList[/{id_generator_rencana}]', GeneratorRencanaController::class . ':list')->add(PermissionMiddleware::class)->setName('GeneratorRencanaList-generator_rencana-list'); // list
+    $app->any('/GeneratorRencanaAdd[/{id_generator_rencana}]', GeneratorRencanaController::class . ':add')->add(PermissionMiddleware::class)->setName('GeneratorRencanaAdd-generator_rencana-add'); // add
+    $app->any('/GeneratorRencanaView[/{id_generator_rencana}]', GeneratorRencanaController::class . ':view')->add(PermissionMiddleware::class)->setName('GeneratorRencanaView-generator_rencana-view'); // view
+    $app->any('/GeneratorRencanaEdit[/{id_generator_rencana}]', GeneratorRencanaController::class . ':edit')->add(PermissionMiddleware::class)->setName('GeneratorRencanaEdit-generator_rencana-edit'); // edit
+    $app->any('/GeneratorRencanaDelete[/{id_generator_rencana}]', GeneratorRencanaController::class . ':delete')->add(PermissionMiddleware::class)->setName('GeneratorRencanaDelete-generator_rencana-delete'); // delete
+    $app->group(
+        '/generator_rencana',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_generator_rencana}]', GeneratorRencanaController::class . ':list')->add(PermissionMiddleware::class)->setName('generator_rencana/list-generator_rencana-list-2'); // list
+            $group->any('/add[/{id_generator_rencana}]', GeneratorRencanaController::class . ':add')->add(PermissionMiddleware::class)->setName('generator_rencana/add-generator_rencana-add-2'); // add
+            $group->any('/view[/{id_generator_rencana}]', GeneratorRencanaController::class . ':view')->add(PermissionMiddleware::class)->setName('generator_rencana/view-generator_rencana-view-2'); // view
+            $group->any('/edit[/{id_generator_rencana}]', GeneratorRencanaController::class . ':edit')->add(PermissionMiddleware::class)->setName('generator_rencana/edit-generator_rencana-edit-2'); // edit
+            $group->any('/delete[/{id_generator_rencana}]', GeneratorRencanaController::class . ':delete')->add(PermissionMiddleware::class)->setName('generator_rencana/delete-generator_rencana-delete-2'); // delete
+        }
+    );
+
+    // live_rencana
+    $app->any('/LiveRencanaList[/{id_live_rencana}]', LiveRencanaController::class . ':list')->add(PermissionMiddleware::class)->setName('LiveRencanaList-live_rencana-list'); // list
+    $app->any('/LiveRencanaAdd[/{id_live_rencana}]', LiveRencanaController::class . ':add')->add(PermissionMiddleware::class)->setName('LiveRencanaAdd-live_rencana-add'); // add
+    $app->any('/LiveRencanaView[/{id_live_rencana}]', LiveRencanaController::class . ':view')->add(PermissionMiddleware::class)->setName('LiveRencanaView-live_rencana-view'); // view
+    $app->any('/LiveRencanaEdit[/{id_live_rencana}]', LiveRencanaController::class . ':edit')->add(PermissionMiddleware::class)->setName('LiveRencanaEdit-live_rencana-edit'); // edit
+    $app->any('/LiveRencanaDelete[/{id_live_rencana}]', LiveRencanaController::class . ':delete')->add(PermissionMiddleware::class)->setName('LiveRencanaDelete-live_rencana-delete'); // delete
+    $app->group(
+        '/live_rencana',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_live_rencana}]', LiveRencanaController::class . ':list')->add(PermissionMiddleware::class)->setName('live_rencana/list-live_rencana-list-2'); // list
+            $group->any('/add[/{id_live_rencana}]', LiveRencanaController::class . ':add')->add(PermissionMiddleware::class)->setName('live_rencana/add-live_rencana-add-2'); // add
+            $group->any('/view[/{id_live_rencana}]', LiveRencanaController::class . ':view')->add(PermissionMiddleware::class)->setName('live_rencana/view-live_rencana-view-2'); // view
+            $group->any('/edit[/{id_live_rencana}]', LiveRencanaController::class . ':edit')->add(PermissionMiddleware::class)->setName('live_rencana/edit-live_rencana-edit-2'); // edit
+            $group->any('/delete[/{id_live_rencana}]', LiveRencanaController::class . ':delete')->add(PermissionMiddleware::class)->setName('live_rencana/delete-live_rencana-delete-2'); // delete
+        }
+    );
+
+    // open_slide
+    $app->any('/OpenSlideList[/{id_open_slide}]', OpenSlideController::class . ':list')->add(PermissionMiddleware::class)->setName('OpenSlideList-open_slide-list'); // list
+    $app->any('/OpenSlideAdd[/{id_open_slide}]', OpenSlideController::class . ':add')->add(PermissionMiddleware::class)->setName('OpenSlideAdd-open_slide-add'); // add
+    $app->any('/OpenSlideView[/{id_open_slide}]', OpenSlideController::class . ':view')->add(PermissionMiddleware::class)->setName('OpenSlideView-open_slide-view'); // view
+    $app->any('/OpenSlideEdit[/{id_open_slide}]', OpenSlideController::class . ':edit')->add(PermissionMiddleware::class)->setName('OpenSlideEdit-open_slide-edit'); // edit
+    $app->any('/OpenSlideDelete[/{id_open_slide}]', OpenSlideController::class . ':delete')->add(PermissionMiddleware::class)->setName('OpenSlideDelete-open_slide-delete'); // delete
+    $app->group(
+        '/open_slide',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_open_slide}]', OpenSlideController::class . ':list')->add(PermissionMiddleware::class)->setName('open_slide/list-open_slide-list-2'); // list
+            $group->any('/add[/{id_open_slide}]', OpenSlideController::class . ':add')->add(PermissionMiddleware::class)->setName('open_slide/add-open_slide-add-2'); // add
+            $group->any('/view[/{id_open_slide}]', OpenSlideController::class . ':view')->add(PermissionMiddleware::class)->setName('open_slide/view-open_slide-view-2'); // view
+            $group->any('/edit[/{id_open_slide}]', OpenSlideController::class . ':edit')->add(PermissionMiddleware::class)->setName('open_slide/edit-open_slide-edit-2'); // edit
+            $group->any('/delete[/{id_open_slide}]', OpenSlideController::class . ':delete')->add(PermissionMiddleware::class)->setName('open_slide/delete-open_slide-delete-2'); // delete
+        }
+    );
+
     // error
     $app->any('/error', OthersController::class . ':error')->add(PermissionMiddleware::class)->setName('error');
 

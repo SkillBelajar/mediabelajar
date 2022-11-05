@@ -63,4 +63,30 @@ class rpp extends Controller
     }
 
     //public function
+
+    public function rpp()
+    {
+        // echo "ok";
+
+        $pn = DB::select("SELECT * FROM `pengaturan` WHERE `id_pengaturan` = 1");
+        $guru = $pn[0]->nama_guru;
+        $tugas = $pn[0]->tempat_kerja;
+        $logo = $pn[0]->logo;
+
+
+        //rencana pembelajaran
+        //ambil materi
+        $materi = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
+        $id_materi = $materi[0]->id_materi;
+
+        $rpp = DB::select("SELECT * FROM `rencana_pembelajaran` WHERE `id_materi` = ? ORDER BY `rencana_pembelajaran`.`id_rencana_pembelajaran` ASC", [$id_materi]);
+
+
+        return view("rpp", [
+            'guru' => $guru,
+            'tugas' => $tugas,
+            'logo' => $logo,
+            'rpp' => $rpp
+        ]);
+    }
 }

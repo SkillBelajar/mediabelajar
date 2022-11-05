@@ -77,3 +77,6 @@ Route::post('/kemampuan', [siswa2::class, 'skemampuan']);
 Route::get('/hapuspeserta/{id_peserta}', [gurulive2::class, 'hapuspeserta']);
 
 Route::get('/rencana_pembelajaran/{slide}', [rpp::class, 'slide']);
+
+
+Route::get('/rpp', [rpp::class, 'rpp']);

@@ -1060,6 +1060,10 @@ class IndikatorRencanaBelajarEdit extends IndikatorRencanaBelajar
         if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailEdit) {
             $detailPage->validateGridForm();
         }
+        $detailPage = Container("GeneratorRencanaGrid");
+        if (in_array("generator_rencana", $detailTblVar) && $detailPage->DetailEdit) {
+            $detailPage->validateGridForm();
+        }
 
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
@@ -1134,6 +1138,12 @@ class IndikatorRencanaBelajarEdit extends IndikatorRencanaBelajar
                         $editRow = $detailPage->gridUpdate();
                     }
                 }
+                if ($editRow) {
+                    $detailPage = Container("GeneratorRencanaGrid");
+                    if (in_array("generator_rencana", $detailTblVar) && $detailPage->DetailEdit) {
+                        $editRow = $detailPage->gridUpdate();
+                    }
+                }
 
                 // Commit/Rollback transaction
                 if ($this->getCurrentDetailTable() != "") {
@@ -1198,6 +1208,20 @@ class IndikatorRencanaBelajarEdit extends IndikatorRencanaBelajar
                     $detailPageObj->id_indikator->CurrentValue = $this->id_indikator->CurrentValue;
                     $detailPageObj->id_indikator->setSessionValue($detailPageObj->id_indikator->CurrentValue);
                     $detailPageObj->id_materi->setSessionValue(""); // Clear session key
+                }
+            }
+            if (in_array("generator_rencana", $detailTblVar)) {
+                $detailPageObj = Container("GeneratorRencanaGrid");
+                if ($detailPageObj->DetailEdit) {
+                    $detailPageObj->CurrentMode = "edit";
+                    $detailPageObj->CurrentAction = "gridedit";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_indikator_rencana->IsDetailKey = true;
+                    $detailPageObj->id_indikator_rencana->CurrentValue = $this->id_indikator->CurrentValue;
+                    $detailPageObj->id_indikator_rencana->setSessionValue($detailPageObj->id_indikator_rencana->CurrentValue);
                 }
             }
         }

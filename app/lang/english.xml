@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2022/11/3" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
+<ew-language date="2022/11/5" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
   <!--
     *** Important Notes:
     1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -917,6 +917,12 @@
   <project>
     <phrase id="bodytitle" value="Media Belajar" />
     <phrase id="footertext" value="Dibuat Oleh Muhammad Ullil Fahri" />
+    <menu id="28">
+      <phrase id="menutext" value="live rencana" />
+    </menu>
+    <menu id="29">
+      <phrase id="menutext" value="open slide" />
+    </menu>
     <menu id="12">
       <phrase id="menutext" value="Edit Live" />
     </menu>
@@ -940,6 +946,9 @@
     </menu>
     <menu id="17">
       <phrase id="menutext" value="indikator rencana belajar" />
+    </menu>
+    <menu id="27">
+      <phrase id="menutext" value="generator rencana" />
     </menu>
     <menu id="1">
       <phrase id="menutext" value="evaluasi" />
@@ -1416,6 +1425,42 @@
       </field>
       <field id="file_pdf">
         <phrase id="fldcaption" value="file pdf" />
+      </field>
+    </table>
+    <table id="generator_rencana">
+      <phrase id="tblcaption" value="generator rencana" />
+      <field id="id_generator_rencana">
+        <phrase id="fldcaption" value="id generator rencana" />
+      </field>
+      <field id="id_indikator_rencana">
+        <phrase id="fldcaption" value="id indikator rencana" />
+      </field>
+      <field id="judul">
+        <phrase id="fldcaption" value="judul" />
+      </field>
+      <field id="isi">
+        <phrase id="fldcaption" value="isi" />
+      </field>
+    </table>
+    <table id="live_rencana">
+      <phrase id="tblcaption" value="live rencana" />
+      <field id="id_live_rencana">
+        <phrase id="fldcaption" value="id live rencana" />
+      </field>
+      <field id="id_indikator">
+        <phrase id="fldcaption" value="id indikator" />
+      </field>
+    </table>
+    <table id="open_slide">
+      <phrase id="tblcaption" value="open slide" />
+      <field id="id_open_slide">
+        <phrase id="fldcaption" value="id open slide" />
+      </field>
+      <field id="nama">
+        <phrase id="fldcaption" value="nama" />
+      </field>
+      <field id="slide">
+        <phrase id="fldcaption" value="slide" />
       </field>
     </table>
   </project>

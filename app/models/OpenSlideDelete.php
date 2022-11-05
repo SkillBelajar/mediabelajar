@@ -7,19 +7,19 @@ use Doctrine\DBAL\ParameterType;
 /**
  * Page class
  */
-class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
+class OpenSlideDelete extends OpenSlide
 {
     // Page ID
-    public $PageID = "add";
+    public $PageID = "delete";
 
     // Project ID
     public $ProjectID = PROJECT_ID;
 
     // Table name
-    public $TableName = 'indikator_rencana_belajar';
+    public $TableName = 'open_slide';
 
     // Page object name
-    public $PageObjName = "IndikatorRencanaBelajarAdd";
+    public $PageObjName = "OpenSlideDelete";
 
     // Rendering View
     public $RenderingView = false;
@@ -310,9 +310,9 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         // Parent constuctor
         parent::__construct();
 
-        // Table object (indikator_rencana_belajar)
-        if (!isset($GLOBALS["indikator_rencana_belajar"]) || get_class($GLOBALS["indikator_rencana_belajar"]) == PROJECT_NAMESPACE . "indikator_rencana_belajar") {
-            $GLOBALS["indikator_rencana_belajar"] = &$this;
+        // Table object (open_slide)
+        if (!isset($GLOBALS["open_slide"]) || get_class($GLOBALS["open_slide"]) == PROJECT_NAMESPACE . "open_slide") {
+            $GLOBALS["open_slide"] = &$this;
         }
 
         // Page URL
@@ -320,7 +320,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
         // Table name (for backward compatibility only)
         if (!defined(PROJECT_NAMESPACE . "TABLE_NAME")) {
-            define(PROJECT_NAMESPACE . "TABLE_NAME", 'indikator_rencana_belajar');
+            define(PROJECT_NAMESPACE . "TABLE_NAME", 'open_slide');
         }
 
         // Start timer
@@ -378,7 +378,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
             }
             $class = PROJECT_NAMESPACE . Config("EXPORT_CLASSES." . $this->CustomExport);
             if (class_exists($class)) {
-                $doc = new $class(Container("indikator_rencana_belajar"));
+                $doc = new $class(Container("open_slide"));
                 $doc->Text = @$content;
                 if ($this->isExport("email")) {
                     echo $this->exportEmail($doc->Text);
@@ -410,25 +410,8 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
             if (!Config("DEBUG") && ob_get_length()) {
                 ob_end_clean();
             }
-
-            // Handle modal response
-            if ($this->IsModal) { // Show as modal
-                $row = ["url" => GetUrl($url), "modal" => "1"];
-                $pageName = GetPageName($url);
-                if ($pageName != $this->getListUrl()) { // Not List page
-                    $row["caption"] = $this->getModalCaption($pageName);
-                    if ($pageName == "IndikatorRencanaBelajarView") {
-                        $row["view"] = "1";
-                    }
-                } else { // List page should not be shown as modal => error
-                    $row["error"] = $this->getFailureMessage();
-                    $this->clearFailureMessage();
-                }
-                WriteJson($row);
-            } else {
-                SaveDebugMessage();
-                Redirect(GetUrl($url));
-            }
+            SaveDebugMessage();
+            Redirect(GetUrl($url));
         }
         return; // Return to controller
     }
@@ -508,7 +491,7 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     {
         $key = "";
         if (is_array($ar)) {
-            $key .= @$ar['id_indikator'];
+            $key .= @$ar['id_open_slide'];
         }
         return $key;
     }
@@ -521,93 +504,17 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     protected function hideFieldsForAddEdit()
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
-            $this->id_indikator->Visible = false;
+            $this->id_open_slide->Visible = false;
         }
     }
-
-    // Lookup data
-    public function lookup()
-    {
-        global $Language, $Security;
-
-        // Get lookup object
-        $fieldName = Post("field");
-        if (!array_key_exists($fieldName, $this->Fields)) {
-            return false;
-        }
-        $lookupField = $this->Fields[$fieldName];
-        $lookup = $lookupField->Lookup;
-        if ($lookup === null) {
-            return false;
-        }
-        if (!$Security->isLoggedIn()) { // Logged in
-            return false;
-        }
-
-        // Get lookup parameters
-        $lookupType = Post("ajax", "unknown");
-        $pageSize = -1;
-        $offset = -1;
-        $searchValue = "";
-        if (SameText($lookupType, "modal")) {
-            $searchValue = Post("sv", "");
-            $pageSize = Post("recperpage", 10);
-            $offset = Post("start", 0);
-        } elseif (SameText($lookupType, "autosuggest")) {
-            $searchValue = Param("q", "");
-            $pageSize = Param("n", -1);
-            $pageSize = is_numeric($pageSize) ? (int)$pageSize : -1;
-            if ($pageSize <= 0) {
-                $pageSize = Config("AUTO_SUGGEST_MAX_ENTRIES");
-            }
-            $start = Param("start", -1);
-            $start = is_numeric($start) ? (int)$start : -1;
-            $page = Param("page", -1);
-            $page = is_numeric($page) ? (int)$page : -1;
-            $offset = $start >= 0 ? $start : ($page > 0 && $pageSize > 0 ? ($page - 1) * $pageSize : 0);
-        }
-        $userSelect = Decrypt(Post("s", ""));
-        $userFilter = Decrypt(Post("f", ""));
-        $userOrderBy = Decrypt(Post("o", ""));
-        $keys = Post("keys");
-        $lookup->LookupType = $lookupType; // Lookup type
-        if ($keys !== null) { // Selected records from modal
-            if (is_array($keys)) {
-                $keys = implode(Config("MULTIPLE_OPTION_SEPARATOR"), $keys);
-            }
-            $lookup->FilterFields = []; // Skip parent fields if any
-            $lookup->FilterValues[] = $keys; // Lookup values
-            $pageSize = -1; // Show all records
-        } else { // Lookup values
-            $lookup->FilterValues[] = Post("v0", Post("lookupValue", ""));
-        }
-        $cnt = is_array($lookup->FilterFields) ? count($lookup->FilterFields) : 0;
-        for ($i = 1; $i <= $cnt; $i++) {
-            $lookup->FilterValues[] = Post("v" . $i, "");
-        }
-        $lookup->SearchValue = $searchValue;
-        $lookup->PageSize = $pageSize;
-        $lookup->Offset = $offset;
-        if ($userSelect != "") {
-            $lookup->UserSelect = $userSelect;
-        }
-        if ($userFilter != "") {
-            $lookup->UserFilter = $userFilter;
-        }
-        if ($userOrderBy != "") {
-            $lookup->UserOrderBy = $userOrderBy;
-        }
-        $lookup->toJson($this); // Use settings from current page
-    }
-    public $FormClassName = "ew-horizontal ew-form ew-add-form";
-    public $IsModal = false;
-    public $IsMobileOrModal = false;
     public $DbMasterFilter = "";
     public $DbDetailFilter = "";
     public $StartRecord;
-    public $Priv = 0;
-    public $OldRecordset;
-    public $CopyRecord;
+    public $TotalRecords = 0;
+    public $RecordCount;
+    public $RecKeys = [];
+    public $StartRowCount = 1;
+    public $RowCount = 0;
 
     /**
      * Page run
@@ -616,18 +523,11 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
      */
     public function run()
     {
-        global $ExportType, $CustomExportType, $ExportFileName, $UserProfile, $Language, $Security, $CurrentForm,
-            $SkipHeaderFooter;
-
-        // Is modal
-        $this->IsModal = Param("modal") == "1";
-
-        // Create form object
-        $CurrentForm = new HttpForm();
+        global $ExportType, $CustomExportType, $ExportFileName, $UserProfile, $Language, $Security, $CurrentForm;
         $this->CurrentAction = Param("action"); // Set up current action
-        $this->id_indikator->Visible = false;
-        $this->kategori->setVisibility();
-        $this->indikator->setVisibility();
+        $this->id_open_slide->setVisibility();
+        $this->nama->setVisibility();
+        $this->slide->setVisibility();
         $this->hideFieldsForAddEdit();
 
         // Do not use lookup cache
@@ -643,121 +543,63 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
         // Set up lookup cache
 
-        // Check modal
-        if ($this->IsModal) {
-            $SkipHeaderFooter = true;
-        }
-        $this->IsMobileOrModal = IsMobile() || $this->IsModal;
-        $this->FormClassName = "ew-form ew-add-form ew-horizontal";
-        $postBack = false;
-
-        // Set up current action
-        if (IsApi()) {
-            $this->CurrentAction = "insert"; // Add record directly
-            $postBack = true;
-        } elseif (Post("action") !== null) {
-            $this->CurrentAction = Post("action"); // Get form action
-            $postBack = true;
-        } else {
-            // Load key values from QueryString
-            $this->CopyRecord = true;
-            if (($keyValue = Get("id_indikator") ?? Route("id_indikator")) !== null) {
-                $this->id_indikator->setQueryStringValue($keyValue);
-                $this->setKey("id_indikator", $this->id_indikator->CurrentValue); // Set up key
-            } else {
-                $this->setKey("id_indikator", ""); // Clear key
-                $this->CopyRecord = false;
-            }
-            if ($this->CopyRecord) {
-                $this->CurrentAction = "copy"; // Copy record
-            } else {
-                $this->CurrentAction = "show"; // Display blank record
-            }
-        }
-
-        // Load old record / default values
-        $loaded = $this->loadOldRecord();
-
-        // Load form values
-        if ($postBack) {
-            $this->loadFormValues(); // Load form values
-        }
-
-        // Set up detail parameters
-        $this->setupDetailParms();
-
-        // Validate form if post back
-        if ($postBack) {
-            if (!$this->validateForm()) {
-                $this->EventCancelled = true; // Event cancelled
-                $this->restoreFormValues(); // Restore form values
-                if (IsApi()) {
-                    $this->terminate();
-                    return;
-                } else {
-                    $this->CurrentAction = "show"; // Form error, reset action
-                }
-            }
-        }
-
-        // Perform current action
-        switch ($this->CurrentAction) {
-            case "copy": // Copy an existing record
-                if (!$loaded) { // Record not loaded
-                    if ($this->getFailureMessage() == "") {
-                        $this->setFailureMessage($Language->phrase("NoRecord")); // No record found
-                    }
-                    $this->terminate("IndikatorRencanaBelajarList"); // No matching record, return to list
-                    return;
-                }
-
-                // Set up detail parameters
-                $this->setupDetailParms();
-                break;
-            case "insert": // Add new record
-                $this->SendEmail = true; // Send email on add success
-                if ($this->addRow($this->OldRecordset)) { // Add successful
-                    if ($this->getSuccessMessage() == "" && Post("addopt") != "1") { // Skip success message for addopt (done in JavaScript)
-                        $this->setSuccessMessage($Language->phrase("AddSuccess")); // Set up success message
-                    }
-                    if ($this->getCurrentDetailTable() != "") { // Master/detail add
-                        $returnUrl = $this->getDetailUrl();
-                    } else {
-                        $returnUrl = $this->getReturnUrl();
-                    }
-                    if (GetPageName($returnUrl) == "IndikatorRencanaBelajarList") {
-                        $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
-                    } elseif (GetPageName($returnUrl) == "IndikatorRencanaBelajarView") {
-                        $returnUrl = $this->getViewUrl(); // View page, return to View page with keyurl directly
-                    }
-                    if (IsApi()) { // Return to caller
-                        $this->terminate(true);
-                        return;
-                    } else {
-                        $this->terminate($returnUrl);
-                        return;
-                    }
-                } elseif (IsApi()) { // API request, return
-                    $this->terminate();
-                    return;
-                } else {
-                    $this->EventCancelled = true; // Event cancelled
-                    $this->restoreFormValues(); // Add failed, restore form values
-
-                    // Set up detail parameters
-                    $this->setupDetailParms();
-                }
-        }
-
         // Set up Breadcrumb
         $this->setupBreadcrumb();
 
-        // Render row based on row type
-        $this->RowType = ROWTYPE_ADD; // Render add type
+        // Load key parameters
+        $this->RecKeys = $this->getRecordKeys(); // Load record keys
+        $filter = $this->getFilterFromRecordKeys();
+        if ($filter == "") {
+            $this->terminate("OpenSlideList"); // Prevent SQL injection, return to list
+            return;
+        }
 
-        // Render row
-        $this->resetAttributes();
-        $this->renderRow();
+        // Set up filter (WHERE Clause)
+        $this->CurrentFilter = $filter;
+
+        // Get action
+        if (IsApi()) {
+            $this->CurrentAction = "delete"; // Delete record directly
+        } elseif (Post("action") !== null) {
+            $this->CurrentAction = Post("action");
+        } elseif (Get("action") == "1") {
+            $this->CurrentAction = "delete"; // Delete record directly
+        } else {
+            $this->CurrentAction = "show"; // Display record
+        }
+        if ($this->isDelete()) {
+            $this->SendEmail = true; // Send email on delete success
+            if ($this->deleteRows()) { // Delete rows
+                if ($this->getSuccessMessage() == "") {
+                    $this->setSuccessMessage($Language->phrase("DeleteSuccess")); // Set up success message
+                }
+                if (IsApi()) {
+                    $this->terminate(true);
+                    return;
+                } else {
+                    $this->terminate($this->getReturnUrl()); // Return to caller
+                    return;
+                }
+            } else { // Delete failed
+                if (IsApi()) {
+                    $this->terminate();
+                    return;
+                }
+                $this->CurrentAction = "show"; // Display record
+            }
+        }
+        if ($this->isShow()) { // Load records for display
+            if ($this->Recordset = $this->loadRecordset()) {
+                $this->TotalRecords = $this->Recordset->recordCount(); // Get record count
+            }
+            if ($this->TotalRecords <= 0) { // No record found, exit
+                if ($this->Recordset) {
+                    $this->Recordset->close();
+                }
+                $this->terminate("OpenSlideList"); // Return to list
+                return;
+            }
+        }
 
         // Set LoginStatus / Page_Rendering / Page_Render
         if (!IsApi() && !$this->isTerminated()) {
@@ -780,59 +622,25 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         }
     }
 
-    // Get upload files
-    protected function getUploadFiles()
+    // Load recordset
+    public function loadRecordset($offset = -1, $rowcnt = -1)
     {
-        global $CurrentForm, $Language;
-    }
+        // Load List page SQL (QueryBuilder)
+        $sql = $this->getListSql();
 
-    // Load default values
-    protected function loadDefaultValues()
-    {
-        $this->id_indikator->CurrentValue = null;
-        $this->id_indikator->OldValue = $this->id_indikator->CurrentValue;
-        $this->kategori->CurrentValue = null;
-        $this->kategori->OldValue = $this->kategori->CurrentValue;
-        $this->indikator->CurrentValue = null;
-        $this->indikator->OldValue = $this->indikator->CurrentValue;
-    }
-
-    // Load form values
-    protected function loadFormValues()
-    {
-        // Load from form
-        global $CurrentForm;
-
-        // Check field name 'kategori' first before field var 'x_kategori'
-        $val = $CurrentForm->hasValue("kategori") ? $CurrentForm->getValue("kategori") : $CurrentForm->getValue("x_kategori");
-        if (!$this->kategori->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->kategori->Visible = false; // Disable update for API request
-            } else {
-                $this->kategori->setFormValue($val);
-            }
+        // Load recordset
+        if ($offset > -1) {
+            $sql->setFirstResult($offset);
         }
-
-        // Check field name 'indikator' first before field var 'x_indikator'
-        $val = $CurrentForm->hasValue("indikator") ? $CurrentForm->getValue("indikator") : $CurrentForm->getValue("x_indikator");
-        if (!$this->indikator->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->indikator->Visible = false; // Disable update for API request
-            } else {
-                $this->indikator->setFormValue($val);
-            }
+        if ($rowcnt > -1) {
+            $sql->setMaxResults($rowcnt);
         }
+        $stmt = $sql->execute();
+        $rs = new Recordset($stmt, $sql);
 
-        // Check field name 'id_indikator' first before field var 'x_id_indikator'
-        $val = $CurrentForm->hasValue("id_indikator") ? $CurrentForm->getValue("id_indikator") : $CurrentForm->getValue("x_id_indikator");
-    }
-
-    // Restore form values
-    public function restoreFormValues()
-    {
-        global $CurrentForm;
-        $this->kategori->CurrentValue = $this->kategori->FormValue;
-        $this->indikator->CurrentValue = $this->indikator->FormValue;
+        // Call Recordset Selected event
+        $this->recordsetSelected($rs);
+        return $rs;
     }
 
     /**
@@ -882,43 +690,19 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         if (!$rs) {
             return;
         }
-        $this->id_indikator->setDbValue($row['id_indikator']);
-        $this->kategori->setDbValue($row['kategori']);
-        $this->indikator->setDbValue($row['indikator']);
+        $this->id_open_slide->setDbValue($row['id_open_slide']);
+        $this->nama->setDbValue($row['nama']);
+        $this->slide->setDbValue($row['slide']);
     }
 
     // Return a row with default values
     protected function newRow()
     {
-        $this->loadDefaultValues();
         $row = [];
-        $row['id_indikator'] = $this->id_indikator->CurrentValue;
-        $row['kategori'] = $this->kategori->CurrentValue;
-        $row['indikator'] = $this->indikator->CurrentValue;
+        $row['id_open_slide'] = null;
+        $row['nama'] = null;
+        $row['slide'] = null;
         return $row;
-    }
-
-    // Load old record
-    protected function loadOldRecord()
-    {
-        // Load key values from Session
-        $validKey = true;
-        if (strval($this->getKey("id_indikator")) != "") {
-            $this->id_indikator->OldValue = $this->getKey("id_indikator"); // id_indikator
-        } else {
-            $validKey = false;
-        }
-
-        // Load old record
-        $this->OldRecordset = null;
-        if ($validKey) {
-            $this->CurrentFilter = $this->getRecordFilter();
-            $sql = $this->getCurrentSql();
-            $conn = $this->getConnection();
-            $this->OldRecordset = LoadRecordset($sql, $conn);
-        }
-        $this->loadRowValues($this->OldRecordset); // Load row values
-        return $validKey;
     }
 
     // Render row values based on field settings
@@ -933,65 +717,39 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
         // Common render codes for all row types
 
-        // id_indikator
+        // id_open_slide
 
-        // kategori
+        // nama
 
-        // indikator
+        // slide
         if ($this->RowType == ROWTYPE_VIEW) {
-            // id_indikator
-            $this->id_indikator->ViewValue = $this->id_indikator->CurrentValue;
-            $this->id_indikator->ViewCustomAttributes = "";
+            // id_open_slide
+            $this->id_open_slide->ViewValue = $this->id_open_slide->CurrentValue;
+            $this->id_open_slide->ViewCustomAttributes = "";
 
-            // kategori
-            if (strval($this->kategori->CurrentValue) != "") {
-                $this->kategori->ViewValue = $this->kategori->optionCaption($this->kategori->CurrentValue);
-            } else {
-                $this->kategori->ViewValue = null;
-            }
-            $this->kategori->ViewCustomAttributes = "";
+            // nama
+            $this->nama->ViewValue = $this->nama->CurrentValue;
+            $this->nama->ViewCustomAttributes = "";
 
-            // indikator
-            $this->indikator->ViewValue = $this->indikator->CurrentValue;
-            $this->indikator->ViewCustomAttributes = "";
+            // slide
+            $this->slide->ViewValue = $this->slide->CurrentValue;
+            $this->slide->ViewValue = FormatNumber($this->slide->ViewValue, 0, -2, -2, -2);
+            $this->slide->ViewCustomAttributes = "";
 
-            // kategori
-            $this->kategori->LinkCustomAttributes = "";
-            $this->kategori->HrefValue = "";
-            $this->kategori->TooltipValue = "";
+            // id_open_slide
+            $this->id_open_slide->LinkCustomAttributes = "";
+            $this->id_open_slide->HrefValue = "";
+            $this->id_open_slide->TooltipValue = "";
 
-            // indikator
-            $this->indikator->LinkCustomAttributes = "";
-            $this->indikator->HrefValue = "";
-            $this->indikator->TooltipValue = "";
-        } elseif ($this->RowType == ROWTYPE_ADD) {
-            // kategori
-            $this->kategori->EditAttrs["class"] = "form-control";
-            $this->kategori->EditCustomAttributes = "";
-            $this->kategori->EditValue = $this->kategori->options(true);
-            $this->kategori->PlaceHolder = RemoveHtml($this->kategori->caption());
+            // nama
+            $this->nama->LinkCustomAttributes = "";
+            $this->nama->HrefValue = "";
+            $this->nama->TooltipValue = "";
 
-            // indikator
-            $this->indikator->EditAttrs["class"] = "form-control";
-            $this->indikator->EditCustomAttributes = "";
-            if (!$this->indikator->Raw) {
-                $this->indikator->CurrentValue = HtmlDecode($this->indikator->CurrentValue);
-            }
-            $this->indikator->EditValue = HtmlEncode($this->indikator->CurrentValue);
-            $this->indikator->PlaceHolder = RemoveHtml($this->indikator->caption());
-
-            // Add refer script
-
-            // kategori
-            $this->kategori->LinkCustomAttributes = "";
-            $this->kategori->HrefValue = "";
-
-            // indikator
-            $this->indikator->LinkCustomAttributes = "";
-            $this->indikator->HrefValue = "";
-        }
-        if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) { // Add/Edit/Search row
-            $this->setupFieldTitles();
+            // slide
+            $this->slide->LinkCustomAttributes = "";
+            $this->slide->HrefValue = "";
+            $this->slide->TooltipValue = "";
         }
 
         // Call Row Rendered event
@@ -1000,186 +758,83 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         }
     }
 
-    // Validate form
-    protected function validateForm()
-    {
-        global $Language;
-
-        // Check if validation required
-        if (!Config("SERVER_VALIDATE")) {
-            return true;
-        }
-        if ($this->kategori->Required) {
-            if (!$this->kategori->IsDetailKey && EmptyValue($this->kategori->FormValue)) {
-                $this->kategori->addErrorMessage(str_replace("%s", $this->kategori->caption(), $this->kategori->RequiredErrorMessage));
-            }
-        }
-        if ($this->indikator->Required) {
-            if (!$this->indikator->IsDetailKey && EmptyValue($this->indikator->FormValue)) {
-                $this->indikator->addErrorMessage(str_replace("%s", $this->indikator->caption(), $this->indikator->RequiredErrorMessage));
-            }
-        }
-
-        // Validate detail grid
-        $detailTblVar = explode(",", $this->getCurrentDetailTable());
-        $detailPage = Container("RencanaPembelajaranGrid");
-        if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->validateGridForm();
-        }
-        $detailPage = Container("GeneratorRencanaGrid");
-        if (in_array("generator_rencana", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->validateGridForm();
-        }
-
-        // Return validate result
-        $validateForm = !$this->hasInvalidFields();
-
-        // Call Form_CustomValidate event
-        $formCustomError = "";
-        $validateForm = $validateForm && $this->formCustomValidate($formCustomError);
-        if ($formCustomError != "") {
-            $this->setFailureMessage($formCustomError);
-        }
-        return $validateForm;
-    }
-
-    // Add record
-    protected function addRow($rsold = null)
+    // Delete records based on current filter
+    protected function deleteRows()
     {
         global $Language, $Security;
+        $deleteRows = true;
+        $sql = $this->getCurrentSql();
         $conn = $this->getConnection();
-
-        // Begin transaction
-        if ($this->getCurrentDetailTable() != "") {
-            $conn->beginTransaction();
+        $rows = $conn->fetchAll($sql);
+        if (count($rows) == 0) {
+            $this->setFailureMessage($Language->phrase("NoRecord")); // No record found
+            return false;
         }
+        $conn->beginTransaction();
 
-        // Load db values from rsold
-        $this->loadDbValues($rsold);
-        if ($rsold) {
-        }
-        $rsnew = [];
+        // Clone old rows
+        $rsold = $rows;
 
-        // kategori
-        $this->kategori->setDbValueDef($rsnew, $this->kategori->CurrentValue, "", false);
-
-        // indikator
-        $this->indikator->setDbValueDef($rsnew, $this->indikator->CurrentValue, "", false);
-
-        // Call Row Inserting event
-        $insertRow = $this->rowInserting($rsold, $rsnew);
-        if ($insertRow) {
-            $addRow = $this->insert($rsnew);
-            if ($addRow) {
+        // Call row deleting event
+        if ($deleteRows) {
+            foreach ($rsold as $row) {
+                $deleteRows = $this->rowDeleting($row);
+                if (!$deleteRows) {
+                    break;
+                }
             }
-        } else {
+        }
+        if ($deleteRows) {
+            $key = "";
+            foreach ($rsold as $row) {
+                $thisKey = "";
+                if ($thisKey != "") {
+                    $thisKey .= Config("COMPOSITE_KEY_SEPARATOR");
+                }
+                $thisKey .= $row['id_open_slide'];
+                if (Config("DELETE_UPLOADED_FILES")) { // Delete old files
+                    $this->deleteUploadedFiles($row);
+                }
+                $deleteRows = $this->delete($row); // Delete
+                if ($deleteRows === false) {
+                    break;
+                }
+                if ($key != "") {
+                    $key .= ", ";
+                }
+                $key .= $thisKey;
+            }
+        }
+        if (!$deleteRows) {
+            // Set up error message
             if ($this->getSuccessMessage() != "" || $this->getFailureMessage() != "") {
                 // Use the message, do nothing
             } elseif ($this->CancelMessage != "") {
                 $this->setFailureMessage($this->CancelMessage);
                 $this->CancelMessage = "";
             } else {
-                $this->setFailureMessage($Language->phrase("InsertCancelled"));
+                $this->setFailureMessage($Language->phrase("DeleteCancelled"));
             }
-            $addRow = false;
+        }
+        if ($deleteRows) {
+            $conn->commit(); // Commit the changes
+        } else {
+            $conn->rollback(); // Rollback changes
         }
 
-        // Add detail records
-        if ($addRow) {
-            $detailTblVar = explode(",", $this->getCurrentDetailTable());
-            $detailPage = Container("RencanaPembelajaranGrid");
-            if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailAdd) {
-                $detailPage->id_indikator->setSessionValue($this->id_indikator->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->id_indikator->setSessionValue(""); // Clear master key if insert failed
-                }
-            }
-            $detailPage = Container("GeneratorRencanaGrid");
-            if (in_array("generator_rencana", $detailTblVar) && $detailPage->DetailAdd) {
-                $detailPage->id_indikator_rencana->setSessionValue($this->id_indikator->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->id_indikator_rencana->setSessionValue(""); // Clear master key if insert failed
-                }
+        // Call Row Deleted event
+        if ($deleteRows) {
+            foreach ($rsold as $row) {
+                $this->rowDeleted($row);
             }
         }
 
-        // Commit/Rollback transaction
-        if ($this->getCurrentDetailTable() != "") {
-            if ($addRow) {
-                $conn->commit(); // Commit transaction
-            } else {
-                $conn->rollback(); // Rollback transaction
-            }
-        }
-        if ($addRow) {
-            // Call Row Inserted event
-            $this->rowInserted($rsold, $rsnew);
-        }
-
-        // Clean upload path if any
-        if ($addRow) {
-        }
-
-        // Write JSON for API request
-        if (IsApi() && $addRow) {
-            $row = $this->getRecordsFromRecordset([$rsnew], true);
+        // Write JSON for API request (Support single row only)
+        if (IsApi() && $deleteRows) {
+            $row = $this->getRecordsFromRecordset($rsold, true);
             WriteJson(["success" => true, $this->TableVar => $row]);
         }
-        return $addRow;
-    }
-
-    // Set up detail parms based on QueryString
-    protected function setupDetailParms()
-    {
-        // Get the keys for master table
-        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
-        if ($detailTblVar !== null) {
-            $this->setCurrentDetailTable($detailTblVar);
-        } else {
-            $detailTblVar = $this->getCurrentDetailTable();
-        }
-        if ($detailTblVar != "") {
-            $detailTblVar = explode(",", $detailTblVar);
-            if (in_array("rencana_pembelajaran", $detailTblVar)) {
-                $detailPageObj = Container("RencanaPembelajaranGrid");
-                if ($detailPageObj->DetailAdd) {
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_indikator->IsDetailKey = true;
-                    $detailPageObj->id_indikator->CurrentValue = $this->id_indikator->CurrentValue;
-                    $detailPageObj->id_indikator->setSessionValue($detailPageObj->id_indikator->CurrentValue);
-                    $detailPageObj->id_materi->setSessionValue(""); // Clear session key
-                }
-            }
-            if (in_array("generator_rencana", $detailTblVar)) {
-                $detailPageObj = Container("GeneratorRencanaGrid");
-                if ($detailPageObj->DetailAdd) {
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_indikator_rencana->IsDetailKey = true;
-                    $detailPageObj->id_indikator_rencana->CurrentValue = $this->id_indikator->CurrentValue;
-                    $detailPageObj->id_indikator_rencana->setSessionValue($detailPageObj->id_indikator_rencana->CurrentValue);
-                }
-            }
-        }
+        return $deleteRows;
     }
 
     // Set up Breadcrumb
@@ -1188,9 +843,9 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
         global $Breadcrumb, $Language;
         $Breadcrumb = new Breadcrumb("index");
         $url = CurrentUrl();
-        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("IndikatorRencanaBelajarList"), "", $this->TableVar, true);
-        $pageId = ($this->isCopy()) ? "Copy" : "Add";
-        $Breadcrumb->add("add", $pageId, $url);
+        $Breadcrumb->add("list", $this->TableVar, $this->addMasterUrl("OpenSlideList"), "", $this->TableVar, true);
+        $pageId = "delete";
+        $Breadcrumb->add("delete", $pageId, $url);
     }
 
     // Setup lookup options
@@ -1206,8 +861,6 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
-                case "x_kategori":
-                    break;
                 default:
                     $lookupFilter = "";
                     break;
@@ -1285,12 +938,5 @@ class IndikatorRencanaBelajarAdd extends IndikatorRencanaBelajar
     {
         // Example:
         //$footer = "your footer";
-    }
-
-    // Form Custom Validate event
-    public function formCustomValidate(&$customError)
-    {
-        // Return error message in CustomError
-        return true;
     }
 }

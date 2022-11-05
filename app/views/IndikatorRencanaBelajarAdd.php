@@ -161,6 +161,14 @@ loadjs.ready("head", function() {
 <?php } ?>
 <?php include_once "RencanaPembelajaranGrid.php" ?>
 <?php } ?>
+<?php
+    if (in_array("generator_rencana", explode(",", $Page->getCurrentDetailTable())) && $generator_rencana->DetailAdd) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("generator_rencana", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "GeneratorRencanaGrid.php" ?>
+<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <div class="form-group row"><!-- buttons .form-group -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->

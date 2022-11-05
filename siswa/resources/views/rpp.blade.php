@@ -13,7 +13,7 @@
         </div>
         <div class="col-sm-8">
             <h1>{{ $tugas }}</h1>
-            <h2>{{ $guru }}</h2>
+            <h3>{{ $guru }}</h3>
         </div>
     </div>
     <hr>
@@ -41,4 +41,15 @@
     <hr>
     <hr>
     <h3>Bahan Materi</h3>
+    <h4>Terlampir PDF File</h4>
+    @foreach ($pdf_filex as $item)
+        - {{ $item->judul }} <br>
+    @endforeach
+    <hr>
+    <h4>Artikel Terkait</h4>
+    @foreach ($at as $item)
+        <b>{{ $item->judul }}</b>
+        {!! $item->isi !!}
+        <hr>
+    @endforeach
 @endsection

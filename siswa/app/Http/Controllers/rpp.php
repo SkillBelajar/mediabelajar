@@ -82,11 +82,16 @@ class rpp extends Controller
         $rpp = DB::select("SELECT * FROM `rencana_pembelajaran` WHERE `id_materi` = ? ORDER BY `rencana_pembelajaran`.`id_rencana_pembelajaran` ASC", [$id_materi]);
 
 
+        $pdf_filex = DB::select("SELECT * FROM `pdf_materi` WHERE `id_materi` = ?", [$id_materi]);
+        $at = DB::select("SELECT * FROM `artikel_materi` WHERE `id_materi` = ?", [$id_materi]);
+
         return view("rpp", [
             'guru' => $guru,
             'tugas' => $tugas,
             'logo' => $logo,
-            'rpp' => $rpp
+            'rpp' => $rpp,
+            'pdf_filex' => $pdf_filex,
+            'at' => $at
         ]);
     }
 }

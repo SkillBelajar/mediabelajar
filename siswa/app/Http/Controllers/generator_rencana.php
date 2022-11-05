@@ -19,6 +19,8 @@ class generator_rencana extends Controller
 
     public function mulai_generator_rpp(Request $request)
     {
+
+        error_reporting(0);
         $materi = $request->materi;
         //echo $materi;
 
@@ -34,6 +36,10 @@ class generator_rencana extends Controller
             $judul = $gn[0]->judul;
             $isi = $gn[0]->isi;
 
+            if (empty($judul)) {
+                $judul = $item->kategori;
+                $isi = $item->indikator;
+            }
 
             DB::insert("INSERT INTO `rencana_pembelajaran` (`id_rencana_pembelajaran`, `id_indikator`, `id_materi`, `kegiatan`, `waktu`, `tampilkan`, `judul`) VALUES (NULL, ?, ?, ?, ?, ?, ?);", [
                 $id_indikator, $materi, $isi, 3, 0, $judul

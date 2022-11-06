@@ -47,4 +47,42 @@ class generator_rencana extends Controller
         }
         return redirect("/generator_rpp");
     }
+
+    public function editrpp()
+    {
+        // echo "ok";
+
+        //id Materi live
+
+        $live = DB::select("SELECT * FROM `live` WHERE `id_live` = 1");
+        $id_materi = $live[0]->id_materi;
+        //dd($id_materi);
+        $rp = DB::select("SELECT * FROM `rencana_pembelajaran` WHERE `id_materi` = ? ORDER BY `rencana_pembelajaran`.`id_rencana_pembelajaran` ASC", [$id_materi]);
+
+        return view("editrpp", [
+            'rp' => $rp,
+            'id_materi' => $id_materi
+        ]);
+    }
+
+    public function editrpp_id($id)
+    {
+        //echo $id;
+        $rp = DB::select("SELECT * FROM `rencana_pembelajaran` WHERE `id_rencana_pembelajaran` = ?", [$id]);
+        return view("formeditrpp", [
+            'rp' => $rp
+        ]);
+    }
+
+    public function simpan_editrpp_id($id, Request $request)
+    {
+        $judul = $request->judul;
+        $kegiatan = $request->editor1;
+
+        DB::update("UPDATE `rencana_pembelajaran` SET `kegiatan` = ?, `judul` = ? WHERE `rencana_pembelajaran`.`id_rencana_pembelajaran` = ?;", [
+            $kegiatan, $judul, $id
+        ]);
+
+        return redirect("/editrpp");
+    }
 }

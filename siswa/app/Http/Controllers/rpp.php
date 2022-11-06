@@ -94,4 +94,9 @@ class rpp extends Controller
             'at' => $at
         ]);
     }
+
+    public function editrpp()
+    {
+        echo "ok";
+    }
 }

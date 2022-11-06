@@ -50,6 +50,7 @@
         }
     </style>
 -->
+    <script src="{{ url('/ckeditor') }}/ckeditor.js"></script>
 </head>
 
 <body>

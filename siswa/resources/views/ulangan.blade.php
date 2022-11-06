@@ -108,7 +108,7 @@
         <thead>
             <tr>
                 <th>Nomor</th>
-                <th>Foto</th>
+
                 <th>Nama Peserta</th>
             </tr>
         </thead>
@@ -122,13 +122,7 @@
                     <td>
                         <h1 class="text-center">{{ $no++ }}</h1>
                     </td>
-                    <td>
-                        <?php
-                        $ft = \DB::select('SELECT * FROM `foto` WHERE `nama` LIKE ?', [$item->nama]);
-                        $ftx = $ft[0]->file_name;
-                        ?>
-                        <img src="../../../upload/{{ $ftx }}" class="img-rounded" width="90" height="90">
-                    </td>
+
                     <td>
                         <h3>{{ $item->nama }}</h3>
                     </td>
@@ -141,25 +135,25 @@
     <br>
 
     <!--
-                                                                                        <table class="table table-bordered">
-                                                                                            <thead>
-                                                                                                <tr>
-                                                                                                    <th>3 Terendah</th>
-                                                                                                </tr>
-                                                                                            </thead>
-                                                                                            <tbody>
-                                                                                                <?php
-                                                                                                $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
+                                                                                                    <table class="table table-bordered">
+                                                                                                        <thead>
+                                                                                                            <tr>
+                                                                                                                <th>3 Terendah</th>
+                                                                                                            </tr>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                            <?php
+                                                                                                            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
 
-                                                                                                ?>
-                                                                                                @foreach ($tertinggi as $item)
+                                                                                                            ?>
+                                                                                                            @foreach ($tertinggi as $item)
     <tr>
-                                                                                                        <td>{{ $item->nama }}</td>
-                                                                                                    </tr>
+                                                                                                                    <td>{{ $item->nama }}</td>
+                                                                                                                </tr>
     @endforeach
 
-                                                                                            </tbody>
-                                                                                        </table>
+                                                                                                        </tbody>
+                                                                                                    </table>
 
-                                                                                    -->
+                                                                                                -->
 @endsection

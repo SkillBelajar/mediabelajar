@@ -5,7 +5,8 @@ $fx = md5($id_k);
 
 $link = $_SERVER["SERVER_NAME"];
 //echo $link;
-$alamat = 'https://' . $link . '/mediabelajar/indexcam.php?id=' . $fx . '';
+//$alamat = 'https://' . $link . '/mediabelajar/indexcam.php?id=' . $fx . '';
+$alamat = 'http://' . $link . '/mediabelajar/siswa/public/?id=' . $fx . '';
 ?>
 
 <script>

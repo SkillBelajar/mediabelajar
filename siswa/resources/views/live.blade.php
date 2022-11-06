@@ -17,8 +17,8 @@
             <option value="{{ $aksi }}">{{ $aksi }}</option>
             <option value="rencana_pembelajaran">Rencana Pembelajaran</option>
             <!--
-                <option value="Materi">Materi</option>
-                -->
+                    <option value="Materi">Materi</option>
+                    -->
             <option value="Soal">Soal</option>
             <option value="tampilkan_jawaban">tampilkan_jawaban</option>
             <option value="ulangan">ulangan</option>
@@ -74,7 +74,9 @@
                         $ft = \DB::select('SELECT * FROM `foto` WHERE `nama` LIKE ?', [$item->nama]);
                         $ftx = $ft[0]->file_name;
                         ?>
-                        <img src="../../../upload/{{ $ftx }}" class="img-rounded" width="90" height="90">
+                        <!--
+                            <img src="../../../upload/{{ $ftx }}" class="img-rounded" width="90" height="90">
+                            -->
                     </td>
                     <td>{{ $item->emosi }}</td>
                     <td>{{ $item->harapan }}</td>
@@ -119,6 +121,6 @@
         </tbody>
     </table>
     <!--
-                                                                                            <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
-                                                                                        -->
+                                                                                                <a href="" class="btn btn-info">Simpan Jawaban Siswa</a>
+                                                                                            -->
 @endsection

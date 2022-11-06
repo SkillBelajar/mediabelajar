@@ -7,18 +7,19 @@
 
 
 @section('isi')
-    <h2>Silahkan Isikan Nama Anda, Untuk Memulai Media Belajar</h2>
+    <h2>Silahkan Pilih Nama Anda, Untuk Memulai Media Belajar</h2>
     <form method="POST">
         <!--
-                                                                                                                                <label>Nama Anda</label>
+                                                                                                                                            <label>Nama Anda</label>
+
+                                                                                                                            <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
 
                                                                                                                 <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
-
-                                                                                                    <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
-                                                                                                    -->
+                                                                                                                -->
 
         <label>Nama Anda </label>
-        <select class="js-example-basic-single" name="nama1">
+        <select class="js-example-basic-single" name="nama1" required>
+            <option value="">== Pilih Nama == </option>
             @foreach ($siswa as $item)
                 <option value="{{ $item->nama }} | {{ $item->kelas }}">{{ $item->nama }} | {{ $item->kelas }}</option>
             @endforeach
@@ -30,7 +31,7 @@
                 $('.js-example-basic-single').select2();
             });
         </script>
-<br>
+        <br>
         <br>
         <label>Nama Teman </label>
         <select class="js-example-basic-single2" name="nama2">
@@ -62,6 +63,7 @@
 
     ?>
 
-
-    <img src="../../upload/{{ $file }}" class="img-rounded">
+    <!--
+        <img src="../../upload/{{ $file }}" class="img-rounded">
+    -->
 @endsection

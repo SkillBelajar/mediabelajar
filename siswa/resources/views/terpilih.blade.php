@@ -32,8 +32,9 @@
 
             <hr>
             <br>
-            <img src="../../upload/{{ $foto }}" class="img-rounded" width="300" height="300">
-
+            <!--
+                <img src="../../upload/{{ $foto }}" class="img-rounded" width="300" height="300">
+                -->
         </div>
 
     </div>

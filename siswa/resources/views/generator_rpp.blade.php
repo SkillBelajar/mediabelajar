@@ -7,6 +7,10 @@
 
 
 @section('isi')
+    <a href="{{ url('/editrpp') }}" class="btn btn-info">Edit RPP Live</a>
+
+    <br>
+
     <br><br>
     <h1>Generator Rencana Pembelajaran</h1>
     <hr>

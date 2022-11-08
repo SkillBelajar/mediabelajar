@@ -1133,6 +1133,10 @@ class MateriEdit extends Materi
 
         // Validate detail grid
         $detailTblVar = explode(",", $this->getCurrentDetailTable());
+        $detailPage = Container("EvaluasiGrid");
+        if (in_array("evaluasi", $detailTblVar) && $detailPage->DetailEdit) {
+            $detailPage->validateGridForm();
+        }
         $detailPage = Container("RencanaPembelajaranGrid");
         if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailEdit) {
             $detailPage->validateGridForm();
@@ -1213,6 +1217,12 @@ class MateriEdit extends Materi
 
                 // Update detail records
                 $detailTblVar = explode(",", $this->getCurrentDetailTable());
+                if ($editRow) {
+                    $detailPage = Container("EvaluasiGrid");
+                    if (in_array("evaluasi", $detailTblVar) && $detailPage->DetailEdit) {
+                        $editRow = $detailPage->gridUpdate();
+                    }
+                }
                 if ($editRow) {
                     $detailPage = Container("RencanaPembelajaranGrid");
                     if (in_array("rencana_pembelajaran", $detailTblVar) && $detailPage->DetailEdit) {
@@ -1352,6 +1362,20 @@ class MateriEdit extends Materi
         }
         if ($detailTblVar != "") {
             $detailTblVar = explode(",", $detailTblVar);
+            if (in_array("evaluasi", $detailTblVar)) {
+                $detailPageObj = Container("EvaluasiGrid");
+                if ($detailPageObj->DetailEdit) {
+                    $detailPageObj->CurrentMode = "edit";
+                    $detailPageObj->CurrentAction = "gridedit";
+
+                    // Save current master table to detail table
+                    $detailPageObj->setCurrentMasterTable($this->TableVar);
+                    $detailPageObj->setStartRecordNumber(1);
+                    $detailPageObj->id_materi->IsDetailKey = true;
+                    $detailPageObj->id_materi->CurrentValue = $this->id_materi->CurrentValue;
+                    $detailPageObj->id_materi->setSessionValue($detailPageObj->id_materi->CurrentValue);
+                }
+            }
             if (in_array("rencana_pembelajaran", $detailTblVar)) {
                 $detailPageObj = Container("RencanaPembelajaranGrid");
                 if ($detailPageObj->DetailEdit) {

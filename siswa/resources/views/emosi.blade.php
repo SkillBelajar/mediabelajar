@@ -7,7 +7,7 @@
 
 
 @section('isi')
-    <h1>Silahkan anda Pilih , Apa yang anda Pikirkan Sekarang ?</h1>
+    <h1>Menurut anda, Bagaimana Pelajaran Hari ini ? </h1>
     <hr>
     <div class="row">
         <div class="col-sm-4"><a href='{{ url('/simpanemosi/senyum') }}'><img src="{{ url('/emosi/1.png') }}"

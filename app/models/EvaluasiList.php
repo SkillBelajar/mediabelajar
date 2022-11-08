@@ -366,7 +366,7 @@ class EvaluasiList extends Evaluasi
         $this->ExportHtmlUrl = $pageUrl . "export=html";
         $this->ExportXmlUrl = $pageUrl . "export=xml";
         $this->ExportCsvUrl = $pageUrl . "export=csv";
-        $this->AddUrl = "EvaluasiAdd?" . Config("TABLE_SHOW_DETAIL") . "=";
+        $this->AddUrl = "EvaluasiAdd";
         $this->InlineAddUrl = $pageUrl . "action=add";
         $this->GridAddUrl = $pageUrl . "action=gridadd";
         $this->GridEditUrl = $pageUrl . "action=gridedit";
@@ -710,7 +710,6 @@ class EvaluasiList extends Evaluasi
     public $MultiSelectKey;
     public $Command;
     public $RestoreSearch = false;
-            public $peserta_Count;
     public $DetailPages;
     public $OldRecordset;
 
@@ -1401,27 +1400,6 @@ class EvaluasiList extends Evaluasi
         $item->Visible = $Security->canDelete();
         $item->OnLeft = false;
 
-        // "detail_peserta"
-        $item = &$this->ListOptions->add("detail_peserta");
-        $item->CssClass = "text-nowrap";
-        $item->Visible = $Security->allowList(CurrentProjectID() . 'peserta') && !$this->ShowMultipleDetails;
-        $item->OnLeft = false;
-        $item->ShowInButtonGroup = false;
-
-        // Multiple details
-        if ($this->ShowMultipleDetails) {
-            $item = &$this->ListOptions->add("details");
-            $item->CssClass = "text-nowrap";
-            $item->Visible = $this->ShowMultipleDetails;
-            $item->OnLeft = false;
-            $item->ShowInButtonGroup = false;
-        }
-
-        // Set up detail pages
-        $pages = new SubPages();
-        $pages->add("peserta");
-        $this->DetailPages = $pages;
-
         // List actions
         $item = &$this->ListOptions->add("listactions");
         $item->CssClass = "text-nowrap";
@@ -1531,76 +1509,6 @@ class EvaluasiList extends Evaluasi
                 $opt->Visible = true;
             }
         }
-        $detailViewTblVar = "";
-        $detailCopyTblVar = "";
-        $detailEditTblVar = "";
-
-        // "detail_peserta"
-        $opt = $this->ListOptions["detail_peserta"];
-        if ($Security->allowList(CurrentProjectID() . 'peserta')) {
-            $body = $Language->phrase("DetailLink") . $Language->TablePhrase("peserta", "TblCaption");
-            $body .= "&nbsp;" . str_replace("%c", $this->peserta_Count, $Language->phrase("DetailCount"));
-            $body = "<a class=\"btn btn-default ew-row-link ew-detail\" data-action=\"list\" href=\"" . HtmlEncode("PesertaList?" . Config("TABLE_SHOW_MASTER") . "=evaluasi&" . GetForeignKeyUrl("fk_id_evaluasi", $this->id_evaluasi->CurrentValue) . "") . "\">" . $body . "</a>";
-            $links = "";
-            $detailPage = Container("PesertaGrid");
-            if ($detailPage->DetailView && $Security->canView() && $Security->allowView(CurrentProjectID() . 'evaluasi')) {
-                $caption = $Language->phrase("MasterDetailViewLink");
-                $url = $this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=peserta");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailViewTblVar != "") {
-                    $detailViewTblVar .= ",";
-                }
-                $detailViewTblVar .= "peserta";
-            }
-            if ($detailPage->DetailEdit && $Security->canEdit() && $Security->allowEdit(CurrentProjectID() . 'evaluasi')) {
-                $caption = $Language->phrase("MasterDetailEditLink");
-                $url = $this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=peserta");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailEditTblVar != "") {
-                    $detailEditTblVar .= ",";
-                }
-                $detailEditTblVar .= "peserta";
-            }
-            if ($detailPage->DetailAdd && $Security->canAdd() && $Security->allowAdd(CurrentProjectID() . 'evaluasi')) {
-                $caption = $Language->phrase("MasterDetailCopyLink");
-                $url = $this->getCopyUrl(Config("TABLE_SHOW_DETAIL") . "=peserta");
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode($url) . "\">" . HtmlImageAndText($caption) . "</a></li>";
-                if ($detailCopyTblVar != "") {
-                    $detailCopyTblVar .= ",";
-                }
-                $detailCopyTblVar .= "peserta";
-            }
-            if ($links != "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default ew-detail\" data-toggle=\"dropdown\"></button>";
-                $body .= "<ul class=\"dropdown-menu\">" . $links . "</ul>";
-            }
-            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" . $body . "</div>";
-            $opt->Body = $body;
-            if ($this->ShowMultipleDetails) {
-                $opt->Visible = false;
-            }
-        }
-        if ($this->ShowMultipleDetails) {
-            $body = "<div class=\"btn-group btn-group-sm ew-btn-group\">";
-            $links = "";
-            if ($detailViewTblVar != "") {
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-view\" data-action=\"view\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailViewLink")) . "\" href=\"" . HtmlEncode($this->getViewUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailViewTblVar)) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailViewLink")) . "</a></li>";
-            }
-            if ($detailEditTblVar != "") {
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-edit\" data-action=\"edit\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailEditLink")) . "\" href=\"" . HtmlEncode($this->getEditUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailEditTblVar)) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailEditLink")) . "</a></li>";
-            }
-            if ($detailCopyTblVar != "") {
-                $links .= "<li><a class=\"dropdown-item ew-row-link ew-detail-copy\" data-action=\"add\" data-caption=\"" . HtmlTitle($Language->phrase("MasterDetailCopyLink")) . "\" href=\"" . HtmlEncode($this->GetCopyUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailCopyTblVar)) . "\">" . HtmlImageAndText($Language->phrase("MasterDetailCopyLink")) . "</a></li>";
-            }
-            if ($links != "") {
-                $body .= "<button class=\"dropdown-toggle btn btn-default ew-master-detail\" title=\"" . HtmlTitle($Language->phrase("MultipleMasterDetails")) . "\" data-toggle=\"dropdown\">" . $Language->phrase("MultipleMasterDetails") . "</button>";
-                $body .= "<ul class=\"dropdown-menu ew-menu\">" . $links . "</ul>";
-            }
-            $body .= "</div>";
-            // Multiple details
-            $opt = $this->ListOptions["details"];
-            $opt->Body = $body;
-        }
 
         // "checkbox"
         $opt = $this->ListOptions["checkbox"];
@@ -1623,37 +1531,6 @@ class EvaluasiList extends Evaluasi
         $addcaption = HtmlTitle($Language->phrase("AddLink"));
         $item->Body = "<a class=\"ew-add-edit ew-add\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . HtmlEncode(GetUrl($this->AddUrl)) . "\">" . $Language->phrase("AddLink") . "</a>";
         $item->Visible = $this->AddUrl != "" && $Security->canAdd();
-        $option = $options["detail"];
-        $detailTableLink = "";
-                $item = &$option->add("detailadd_peserta");
-                $url = $this->getAddUrl(Config("TABLE_SHOW_DETAIL") . "=peserta");
-                $detailPage = Container("PesertaGrid");
-                $caption = $Language->phrase("Add") . "&nbsp;" . $this->tableCaption() . "/" . $detailPage->tableCaption();
-                $item->Body = "<a class=\"ew-detail-add-group ew-detail-add\" title=\"" . HtmlTitle($caption) . "\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode(GetUrl($url)) . "\">" . $caption . "</a>";
-                $item->Visible = ($detailPage->DetailAdd && $Security->allowAdd(CurrentProjectID() . 'evaluasi') && $Security->canAdd());
-                if ($item->Visible) {
-                    if ($detailTableLink != "") {
-                        $detailTableLink .= ",";
-                    }
-                    $detailTableLink .= "peserta";
-                }
-
-        // Add multiple details
-        if ($this->ShowMultipleDetails) {
-            $item = &$option->add("detailsadd");
-            $url = $this->getAddUrl(Config("TABLE_SHOW_DETAIL") . "=" . $detailTableLink);
-            $caption = $Language->phrase("AddMasterDetailLink");
-            $item->Body = "<a class=\"ew-detail-add-group ew-detail-add\" title=\"" . HtmlTitle($caption) . "\" data-caption=\"" . HtmlTitle($caption) . "\" href=\"" . HtmlEncode(GetUrl($url)) . "\">" . $caption . "</a>";
-            $item->Visible = $detailTableLink != "" && $Security->canAdd();
-            // Hide single master/detail items
-            $ar = explode(",", $detailTableLink);
-            $cnt = count($ar);
-            for ($i = 0; $i < $cnt; $i++) {
-                if ($item = $option["detailadd_" . $ar[$i]]) {
-                    $item->Visible = false;
-                }
-            }
-        }
         $option = $options["action"];
 
         // Set up options default
@@ -1889,12 +1766,6 @@ class EvaluasiList extends Evaluasi
         $this->id_materi->setDbValue($row['id_materi']);
         $this->soal->setDbValue($row['soal']);
         $this->jawaban->setDbValue($row['jawaban']);
-        $detailTbl = Container("peserta");
-        $detailFilter = $detailTbl->sqlDetailFilter_evaluasi();
-        $detailFilter = str_replace("@id_evaluasi@", AdjustSql($this->id_evaluasi->DbValue, "DB"), $detailFilter);
-        $detailTbl->setCurrentMasterTable("evaluasi");
-        $detailFilter = $detailTbl->applyUserIDFilters($detailFilter);
-        $this->peserta_Count = $detailTbl->loadRecordCount($detailFilter);
     }
 
     // Return a row with default values

@@ -99,6 +99,14 @@ $Page->showMessage();
 <?php } ?>
 </table>
 <?php
+    if (in_array("evaluasi", explode(",", $Page->getCurrentDetailTable())) && $evaluasi->DetailView) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("evaluasi", "TblCaption") ?>&nbsp;<?= str_replace("%c", $Page->evaluasi_Count, $Language->phrase("DetailCount")) ?></h4>
+<?php } ?>
+<?php include_once "EvaluasiGrid.php" ?>
+<?php } ?>
+<?php
     if (in_array("rencana_pembelajaran", explode(",", $Page->getCurrentDetailTable())) && $rencana_pembelajaran->DetailView) {
 ?>
 <?php if ($Page->getCurrentDetailTable() != "") { ?>

@@ -7,6 +7,7 @@
 
 
 @section('isi')
+    @livewire('livex')
     <div class="jumbotron text-center">
         <p>Yang Terpilih ?</p>
         <div class="alert alert-info">
@@ -33,12 +34,13 @@
             <hr>
             <br>
             <!--
-                <img src="../../upload/{{ $foto }}" class="img-rounded" width="300" height="300">
-                -->
+                            <img src="../../upload/{{ $foto }}" class="img-rounded" width="300" height="300">
+                            -->
         </div>
 
     </div>
 
-
-    <a href="{{ url('/mediabelajar') }}" class="btn btn-info">Kembali Ke Materi</a>
+    <!--
+                <a href="{{ url('/mediabelajar') }}" class="btn btn-info">Kembali Ke Materi</a>
+            -->
 @endsection

@@ -22,9 +22,12 @@ class siswa2 extends Controller
     {
         $harapan = $request->harapan;
         $level = $request->level;
-        $kesiapan = $request->kesiapan;
-        $minat = $request->minat;
+        //$kesiapan = $request->kesiapan;
+        //$minat = $request->minat;
 
+        // $level = "1";
+        $kesiapan = "";
+        $minat = "";
         //dd($minat);
         $nama = \Session::get('nama');
 
@@ -38,6 +41,8 @@ class siswa2 extends Controller
             $harapan, $level, $kesiapan, $minat, $nama
         ]);
 
-        return redirect("/mediabelajar");
+        //echo "<script>alert('')</script>";
+
+        return redirect("/terimakasih");
     }
 }

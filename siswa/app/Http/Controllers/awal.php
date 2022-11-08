@@ -11,10 +11,16 @@ class awal extends Controller
     //
     public function awal()
     {
-        $siswa = DB::select("SELECT * FROM `siswa` ORDER BY `siswa`.`kelas` ASC");
-        return view("awal", [
-            'siswa' => $siswa
-        ]);
+        $nama = \Session::get('nama');
+        if (empty($nama)) {
+            $siswa = DB::select("SELECT * FROM `siswa` ORDER BY `siswa`.`kelas` ASC");
+            return view("awal", [
+                'siswa' => $siswa
+            ]);
+        } else {
+            // echo "ok";
+            return redirect("/mediabelajar");
+        }
     }
 
     public function simpanpeserta(Request $request)
@@ -51,7 +57,8 @@ class awal extends Controller
         //update foto
         DB::update("UPDATE `foto` SET `nama` = ? WHERE `foto`.`file_name` = ?;", [$nama, $id_baru]);
 
-        return redirect("/emosi30");
+        // return redirect("/emosi30");
+        return redirect("/mediabelajar");
     }
 
     public function mediabelajar()

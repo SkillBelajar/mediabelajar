@@ -41,4 +41,10 @@
             </tbody>
         </table>
     </div>
+    <hr>
+    <hr>
+    *Hapus materi yang kosong (-) Secara Massal <br>
+    <a href="{{ url('/hapusrppkosong') }}" class="btn btn-danger">Hapus Massal</a>
+    <br>
+    <br>
 @endsection

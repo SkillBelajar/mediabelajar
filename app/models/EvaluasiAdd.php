@@ -689,9 +689,6 @@ class EvaluasiAdd extends Evaluasi
             $this->loadFormValues(); // Load form values
         }
 
-        // Set up detail parameters
-        $this->setupDetailParms();
-
         // Validate form if post back
         if ($postBack) {
             if (!$this->validateForm()) {
@@ -716,9 +713,6 @@ class EvaluasiAdd extends Evaluasi
                     $this->terminate("EvaluasiList"); // No matching record, return to list
                     return;
                 }
-
-                // Set up detail parameters
-                $this->setupDetailParms();
                 break;
             case "insert": // Add new record
                 $this->SendEmail = true; // Send email on add success
@@ -726,11 +720,7 @@ class EvaluasiAdd extends Evaluasi
                     if ($this->getSuccessMessage() == "" && Post("addopt") != "1") { // Skip success message for addopt (done in JavaScript)
                         $this->setSuccessMessage($Language->phrase("AddSuccess")); // Set up success message
                     }
-                    if ($this->getCurrentDetailTable() != "") { // Master/detail add
-                        $returnUrl = $this->getDetailUrl();
-                    } else {
-                        $returnUrl = $this->getReturnUrl();
-                    }
+                    $returnUrl = $this->getReturnUrl();
                     if (GetPageName($returnUrl) == "EvaluasiList") {
                         $returnUrl = $this->addMasterUrl($returnUrl); // List page, return to List page with correct master key if necessary
                     } elseif (GetPageName($returnUrl) == "EvaluasiView") {
@@ -749,9 +739,6 @@ class EvaluasiAdd extends Evaluasi
                 } else {
                     $this->EventCancelled = true; // Event cancelled
                     $this->restoreFormValues(); // Add failed, restore form values
-
-                    // Set up detail parameters
-                    $this->setupDetailParms();
                 }
         }
 
@@ -1119,13 +1106,6 @@ class EvaluasiAdd extends Evaluasi
             }
         }
 
-        // Validate detail grid
-        $detailTblVar = explode(",", $this->getCurrentDetailTable());
-        $detailPage = Container("PesertaGrid");
-        if (in_array("peserta", $detailTblVar) && $detailPage->DetailAdd) {
-            $detailPage->validateGridForm();
-        }
-
         // Return validate result
         $validateForm = !$this->hasInvalidFields();
 
@@ -1143,11 +1123,6 @@ class EvaluasiAdd extends Evaluasi
     {
         global $Language, $Security;
         $conn = $this->getConnection();
-
-        // Begin transaction
-        if ($this->getCurrentDetailTable() != "") {
-            $conn->beginTransaction();
-        }
 
         // Load db values from rsold
         $this->loadDbValues($rsold);
@@ -1180,28 +1155,6 @@ class EvaluasiAdd extends Evaluasi
                 $this->setFailureMessage($Language->phrase("InsertCancelled"));
             }
             $addRow = false;
-        }
-
-        // Add detail records
-        if ($addRow) {
-            $detailTblVar = explode(",", $this->getCurrentDetailTable());
-            $detailPage = Container("PesertaGrid");
-            if (in_array("peserta", $detailTblVar) && $detailPage->DetailAdd) {
-                $detailPage->id_evaluasi->setSessionValue($this->id_evaluasi->CurrentValue); // Set master key
-                $addRow = $detailPage->gridInsert();
-                if (!$addRow) {
-                $detailPage->id_evaluasi->setSessionValue(""); // Clear master key if insert failed
-                }
-            }
-        }
-
-        // Commit/Rollback transaction
-        if ($this->getCurrentDetailTable() != "") {
-            if ($addRow) {
-                $conn->commit(); // Commit transaction
-            } else {
-                $conn->rollback(); // Rollback transaction
-            }
         }
         if ($addRow) {
             // Call Row Inserted event
@@ -1287,39 +1240,6 @@ class EvaluasiAdd extends Evaluasi
         }
         $this->DbMasterFilter = $this->getMasterFilter(); // Get master filter
         $this->DbDetailFilter = $this->getDetailFilter(); // Get detail filter
-    }
-
-    // Set up detail parms based on QueryString
-    protected function setupDetailParms()
-    {
-        // Get the keys for master table
-        $detailTblVar = Get(Config("TABLE_SHOW_DETAIL"));
-        if ($detailTblVar !== null) {
-            $this->setCurrentDetailTable($detailTblVar);
-        } else {
-            $detailTblVar = $this->getCurrentDetailTable();
-        }
-        if ($detailTblVar != "") {
-            $detailTblVar = explode(",", $detailTblVar);
-            if (in_array("peserta", $detailTblVar)) {
-                $detailPageObj = Container("PesertaGrid");
-                if ($detailPageObj->DetailAdd) {
-                    if ($this->CopyRecord) {
-                        $detailPageObj->CurrentMode = "copy";
-                    } else {
-                        $detailPageObj->CurrentMode = "add";
-                    }
-                    $detailPageObj->CurrentAction = "gridadd";
-
-                    // Save current master table to detail table
-                    $detailPageObj->setCurrentMasterTable($this->TableVar);
-                    $detailPageObj->setStartRecordNumber(1);
-                    $detailPageObj->id_evaluasi->IsDetailKey = true;
-                    $detailPageObj->id_evaluasi->CurrentValue = $this->id_evaluasi->CurrentValue;
-                    $detailPageObj->id_evaluasi->setSessionValue($detailPageObj->id_evaluasi->CurrentValue);
-                }
-            }
-        }
     }
 
     // Set up Breadcrumb

@@ -58,7 +58,8 @@ class rpp extends Controller
             'semua' => $semua,
             'kode' => $slide,
             'pdf_materi' => $pdf_materi,
-            'artikel' => $artikel
+            'artikel' => $artikel,
+            'nama_siswa' => $nama
         ]);
     }
 

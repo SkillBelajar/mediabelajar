@@ -7,6 +7,23 @@ use Slim\Routing\RouteCollectorProxy;
 
 // Handle Routes
 return function (App $app) {
+    // evaluasi
+    $app->any('/EvaluasiList[/{id_evaluasi}]', EvaluasiController::class . ':list')->add(PermissionMiddleware::class)->setName('EvaluasiList-evaluasi-list'); // list
+    $app->any('/EvaluasiAdd[/{id_evaluasi}]', EvaluasiController::class . ':add')->add(PermissionMiddleware::class)->setName('EvaluasiAdd-evaluasi-add'); // add
+    $app->any('/EvaluasiView[/{id_evaluasi}]', EvaluasiController::class . ':view')->add(PermissionMiddleware::class)->setName('EvaluasiView-evaluasi-view'); // view
+    $app->any('/EvaluasiEdit[/{id_evaluasi}]', EvaluasiController::class . ':edit')->add(PermissionMiddleware::class)->setName('EvaluasiEdit-evaluasi-edit'); // edit
+    $app->any('/EvaluasiDelete[/{id_evaluasi}]', EvaluasiController::class . ':delete')->add(PermissionMiddleware::class)->setName('EvaluasiDelete-evaluasi-delete'); // delete
+    $app->group(
+        '/evaluasi',
+        function (RouteCollectorProxy $group) {
+            $group->any('/list[/{id_evaluasi}]', EvaluasiController::class . ':list')->add(PermissionMiddleware::class)->setName('evaluasi/list-evaluasi-list-2'); // list
+            $group->any('/add[/{id_evaluasi}]', EvaluasiController::class . ':add')->add(PermissionMiddleware::class)->setName('evaluasi/add-evaluasi-add-2'); // add
+            $group->any('/view[/{id_evaluasi}]', EvaluasiController::class . ':view')->add(PermissionMiddleware::class)->setName('evaluasi/view-evaluasi-view-2'); // view
+            $group->any('/edit[/{id_evaluasi}]', EvaluasiController::class . ':edit')->add(PermissionMiddleware::class)->setName('evaluasi/edit-evaluasi-edit-2'); // edit
+            $group->any('/delete[/{id_evaluasi}]', EvaluasiController::class . ':delete')->add(PermissionMiddleware::class)->setName('evaluasi/delete-evaluasi-delete-2'); // delete
+        }
+    );
+
     // materi
     $app->any('/MateriList[/{id_materi}]', MateriController::class . ':list')->add(PermissionMiddleware::class)->setName('MateriList-materi-list'); // list
     $app->any('/MateriAdd[/{id_materi}]', MateriController::class . ':add')->add(PermissionMiddleware::class)->setName('MateriAdd-materi-add'); // add

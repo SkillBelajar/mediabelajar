@@ -162,6 +162,58 @@ class Peserta extends DbTable
         }
     }
 
+    // Current master table name
+    public function getCurrentMasterTable()
+    {
+        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")];
+    }
+
+    public function setCurrentMasterTable($v)
+    {
+        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")] = $v;
+    }
+
+    // Session master WHERE clause
+    public function getMasterFilter()
+    {
+        // Master filter
+        $masterFilter = "";
+        if ($this->getCurrentMasterTable() == "evaluasi") {
+            if ($this->id_evaluasi->getSessionValue() != "") {
+                $masterFilter .= "" . GetForeignKeySql("`id_evaluasi`", $this->id_evaluasi->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $masterFilter;
+    }
+
+    // Session detail WHERE clause
+    public function getDetailFilter()
+    {
+        // Detail filter
+        $detailFilter = "";
+        if ($this->getCurrentMasterTable() == "evaluasi") {
+            if ($this->id_evaluasi->getSessionValue() != "") {
+                $detailFilter .= "" . GetForeignKeySql("`id_evaluasi`", $this->id_evaluasi->getSessionValue(), DATATYPE_NUMBER, "DB");
+            } else {
+                return "";
+            }
+        }
+        return $detailFilter;
+    }
+
+    // Master filter
+    public function sqlMasterFilter_evaluasi()
+    {
+        return "`id_evaluasi`=@id_evaluasi@";
+    }
+    // Detail filter
+    public function sqlDetailFilter_evaluasi()
+    {
+        return "`id_evaluasi`=@id_evaluasi@";
+    }
+
     // Table level SQL
     public function getSqlFrom() // From
     {
@@ -674,6 +726,10 @@ class Peserta extends DbTable
     // Add master url
     public function addMasterUrl($url)
     {
+        if ($this->getCurrentMasterTable() == "evaluasi" && !ContainsString($url, Config("TABLE_SHOW_MASTER") . "=")) {
+            $url .= (ContainsString($url, "?") ? "&" : "?") . Config("TABLE_SHOW_MASTER") . "=" . $this->getCurrentMasterTable();
+            $url .= "&" . GetForeignKeyUrl("fk_id_evaluasi", $this->id_evaluasi->CurrentValue);
+        }
         return $url;
     }
 
@@ -954,8 +1010,15 @@ SORTHTML;
         // id_evaluasi
         $this->id_evaluasi->EditAttrs["class"] = "form-control";
         $this->id_evaluasi->EditCustomAttributes = "";
-        $this->id_evaluasi->EditValue = $this->id_evaluasi->CurrentValue;
-        $this->id_evaluasi->PlaceHolder = RemoveHtml($this->id_evaluasi->caption());
+        if ($this->id_evaluasi->getSessionValue() != "") {
+            $this->id_evaluasi->CurrentValue = GetForeignKeyValue($this->id_evaluasi->getSessionValue());
+            $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
+            $this->id_evaluasi->ViewValue = FormatNumber($this->id_evaluasi->ViewValue, 0, -2, -2, -2);
+            $this->id_evaluasi->ViewCustomAttributes = "";
+        } else {
+            $this->id_evaluasi->EditValue = $this->id_evaluasi->CurrentValue;
+            $this->id_evaluasi->PlaceHolder = RemoveHtml($this->id_evaluasi->caption());
+        }
 
         // benar
         $this->benar->EditAttrs["class"] = "form-control";

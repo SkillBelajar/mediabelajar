@@ -179,6 +179,14 @@ loadjs.ready("head", function() {
 <?php } ?>
 </div><!-- /page* -->
 <?php
+    if (in_array("evaluasi", explode(",", $Page->getCurrentDetailTable())) && $evaluasi->DetailEdit) {
+?>
+<?php if ($Page->getCurrentDetailTable() != "") { ?>
+<h4 class="ew-detail-caption"><?= $Language->tablePhrase("evaluasi", "TblCaption") ?></h4>
+<?php } ?>
+<?php include_once "EvaluasiGrid.php" ?>
+<?php } ?>
+<?php
     if (in_array("rencana_pembelajaran", explode(",", $Page->getCurrentDetailTable())) && $rencana_pembelajaran->DetailEdit) {
 ?>
 <?php if ($Page->getCurrentDetailTable() != "") { ?>

@@ -104,11 +104,9 @@ class guru extends Controller
     {
         error_reporting(0);
 
-
-
         $pesertax = DB::select("SELECT * FROM `data_peserta` ORDER BY rand() limit 1;");
         $nama_peserta = $pesertax[0]->nama;
-        // dd($nama_peserta);
+        //dd($nama_peserta);
         DB::update("UPDATE `terpilih` SET `nama` = ?  WHERE `terpilih`.`id_terpilih` = 1;", [$nama_peserta]);
         //
 

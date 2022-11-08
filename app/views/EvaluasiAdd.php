@@ -206,14 +206,6 @@ loadjs.ready("head", function() {
     </div>
 <?php } ?>
 </div><!-- /page* -->
-<?php
-    if (in_array("peserta", explode(",", $Page->getCurrentDetailTable())) && $peserta->DetailAdd) {
-?>
-<?php if ($Page->getCurrentDetailTable() != "") { ?>
-<h4 class="ew-detail-caption"><?= $Language->tablePhrase("peserta", "TblCaption") ?></h4>
-<?php } ?>
-<?php include_once "PesertaGrid.php" ?>
-<?php } ?>
 <?php if (!$Page->IsModal) { ?>
 <div class="form-group row"><!-- buttons .form-group -->
     <div class="<?= $Page->OffsetColumnClass ?>"><!-- buttons offset -->

@@ -83,6 +83,14 @@ class generator_rencana extends Controller
             $kegiatan, $judul, $id
         ]);
 
+        // dd("ok");
+        //return redirect("editrpp`");
+        echo "<script>window.location='" . url('/editrpp') . "'</script>";
+    }
+
+    public function hapusrppkosong()
+    {
+        DB::delete("DELETE FROM `rencana_pembelajaran` WHERE `kegiatan` LIKE '-'");
         return redirect("/editrpp");
     }
 }

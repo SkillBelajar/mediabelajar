@@ -10,12 +10,12 @@
     <h2>Silahkan Pilih Nama Anda, Untuk Memulai Media Belajar</h2>
     <form method="POST">
         <!--
-                                                                                                                                            <label>Nama Anda</label>
+                                                                                                                                                <label>Nama Anda</label>
 
-                                                                                                                            <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
+                                                                                                                                <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
 
-                                                                                                                <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
-                                                                                                                -->
+                                                                                                                    <input type="text" class="form-control" placeholder="Nama Anda" name="nama">
+                                                                                                                    -->
 
         <label>Nama Anda </label>
         <select class="js-example-basic-single" name="nama1" required>
@@ -64,6 +64,11 @@
     ?>
 
     <!--
-        <img src="../../upload/{{ $file }}" class="img-rounded">
-    -->
+            <img src="../../upload/{{ $file }}" class="img-rounded">
+        -->
+
+
+    <br><br>
+    Aplikasi Media Belajar Interktif <br>
+    App Version : 0.89
 @endsection

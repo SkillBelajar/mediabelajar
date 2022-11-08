@@ -53,7 +53,7 @@
 
                 <h4>{{ $judul_materi }}</h4>
                 <ul class="nav nav-pills nav-stacked">
-                    @if ($nama_siswa == 'Test | Test -')
+                    @if ($nama_siswa != 'Test | Test - ')
                         Login : {{ $nama_siswa }}
                     @endif
                     @foreach ($semua as $item)

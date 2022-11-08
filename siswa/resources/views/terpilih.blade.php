@@ -28,19 +28,21 @@
                 $g = 1;
             }
             ?>
-            <img src="{{ url('/emosi/' . $g . '.png') }}" class="img-rounded" width="90" height="90">
+            <!--
+                <img src="{{ url('/emosi/' . $g . '.png') }}" class="img-rounded" width="90" height="90">
+                -->
             <h1>{{ $nama }}</h1>
 
             <hr>
             <br>
             <!--
-                            <img src="../../upload/{{ $foto }}" class="img-rounded" width="300" height="300">
-                            -->
+                                <img src="../../upload/{{ $foto }}" class="img-rounded" width="300" height="300">
+                                -->
         </div>
 
     </div>
 
     <!--
-                <a href="{{ url('/mediabelajar') }}" class="btn btn-info">Kembali Ke Materi</a>
-            -->
+                    <a href="{{ url('/mediabelajar') }}" class="btn btn-info">Kembali Ke Materi</a>
+                -->
 @endsection

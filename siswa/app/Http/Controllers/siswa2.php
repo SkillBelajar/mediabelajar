@@ -45,4 +45,16 @@ class siswa2 extends Controller
 
         return redirect("/terimakasih");
     }
+
+    public function terimakasih()
+    {
+        $nama = \Session::get('nama');
+
+        $kata_mutiara = DB::select("SELECT * FROM `katamutiara` ORDER BY rand() limit 1;");
+        $text = $kata_mutiara[0]->kata;
+        return view("terimakasih", [
+            'nama' => $nama,
+            'kata' => $text
+        ]);
+    }
 }

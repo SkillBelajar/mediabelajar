@@ -94,3 +94,5 @@ Route::get('/editrpp/{id}', [generator_rencana::class, 'editrpp_id']);
 Route::post('/editrpp/{id}', [generator_rencana::class, 'simpan_editrpp_id']);
 
 Route::get('/hapusrppkosong', [generator_rencana::class, 'hapusrppkosong']);
+
+Route::get('/terimakasih', [siswa2::class, 'terimakasih']);

@@ -5,9 +5,9 @@ namespace PHPMaker2021\project1;
 use Doctrine\DBAL\ParameterType;
 
 /**
- * Table class for evaluasi
+ * Table class for katamutiara
  */
-class Evaluasi extends DbTable
+class Katamutiara extends DbTable
 {
     protected $SqlFrom = "";
     protected $SqlSelect = null;
@@ -29,10 +29,8 @@ class Evaluasi extends DbTable
     public $ExportDoc;
 
     // Fields
-    public $id_evaluasi;
-    public $id_materi;
-    public $soal;
-    public $jawaban;
+    public $id;
+    public $kata;
 
     // Page ID
     public $PageID = ""; // To be overridden by subclass
@@ -45,12 +43,12 @@ class Evaluasi extends DbTable
 
         // Language object
         $Language = Container("language");
-        $this->TableVar = 'evaluasi';
-        $this->TableName = 'evaluasi';
+        $this->TableVar = 'katamutiara';
+        $this->TableName = 'katamutiara';
         $this->TableType = 'TABLE';
 
         // Update Table
-        $this->UpdateTable = "`evaluasi`";
+        $this->UpdateTable = "`katamutiara`";
         $this->Dbid = 'DB';
         $this->ExportAll = true;
         $this->ExportPageBreakCount = 0; // Page break per every n record (PDF only)
@@ -69,44 +67,20 @@ class Evaluasi extends DbTable
         $this->UserIDAllowSecurity = Config("DEFAULT_USER_ID_ALLOW_SECURITY"); // Default User ID allowed permissions
         $this->BasicSearch = new BasicSearch($this->TableVar);
 
-        // id_evaluasi
-        $this->id_evaluasi = new DbField('evaluasi', 'evaluasi', 'x_id_evaluasi', 'id_evaluasi', '`id_evaluasi`', '`id_evaluasi`', 3, 100, -1, false, '`id_evaluasi`', false, false, false, 'FORMATTED TEXT', 'NO');
-        $this->id_evaluasi->IsAutoIncrement = true; // Autoincrement field
-        $this->id_evaluasi->IsPrimaryKey = true; // Primary key field
-        $this->id_evaluasi->IsForeignKey = true; // Foreign key field
-        $this->id_evaluasi->Sortable = true; // Allow sort
-        $this->id_evaluasi->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->Fields['id_evaluasi'] = &$this->id_evaluasi;
+        // id
+        $this->id = new DbField('katamutiara', 'katamutiara', 'x_id', 'id', '`id`', '`id`', 3, 100, -1, false, '`id`', false, false, false, 'FORMATTED TEXT', 'NO');
+        $this->id->IsAutoIncrement = true; // Autoincrement field
+        $this->id->IsPrimaryKey = true; // Primary key field
+        $this->id->Sortable = true; // Allow sort
+        $this->id->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
+        $this->Fields['id'] = &$this->id;
 
-        // id_materi
-        $this->id_materi = new DbField('evaluasi', 'evaluasi', 'x_id_materi', 'id_materi', '`id_materi`', '`id_materi`', 3, 100, -1, false, '`id_materi`', false, false, false, 'FORMATTED TEXT', 'SELECT');
-        $this->id_materi->IsForeignKey = true; // Foreign key field
-        $this->id_materi->Nullable = false; // NOT NULL field
-        $this->id_materi->Required = true; // Required field
-        $this->id_materi->Sortable = true; // Allow sort
-        $this->id_materi->UsePleaseSelect = true; // Use PleaseSelect by default
-        $this->id_materi->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->id_materi->Lookup = new Lookup('id_materi', 'materi', false, 'id_materi', ["judul","","",""], [], [], [], [], [], [], '`id_materi` DESC', '');
-        $this->id_materi->DefaultErrorMessage = $Language->phrase("IncorrectInteger");
-        $this->Fields['id_materi'] = &$this->id_materi;
-
-        // soal
-        $this->soal = new DbField('evaluasi', 'evaluasi', 'x_soal', 'soal', '`soal`', '`soal`', 201, 65535, -1, false, '`soal`', false, false, false, 'FORMATTED TEXT', 'TEXTAREA');
-        $this->soal->Nullable = false; // NOT NULL field
-        $this->soal->Required = true; // Required field
-        $this->soal->Sortable = true; // Allow sort
-        $this->Fields['soal'] = &$this->soal;
-
-        // jawaban
-        $this->jawaban = new DbField('evaluasi', 'evaluasi', 'x_jawaban', 'jawaban', '`jawaban`', '`jawaban`', 200, 100, -1, false, '`jawaban`', false, false, false, 'FORMATTED TEXT', 'SELECT');
-        $this->jawaban->Nullable = false; // NOT NULL field
-        $this->jawaban->Required = true; // Required field
-        $this->jawaban->Sortable = true; // Allow sort
-        $this->jawaban->UsePleaseSelect = true; // Use PleaseSelect by default
-        $this->jawaban->PleaseSelectText = $Language->phrase("PleaseSelect"); // "PleaseSelect" text
-        $this->jawaban->Lookup = new Lookup('jawaban', 'evaluasi', false, '', ["","","",""], [], [], [], [], [], [], '', '');
-        $this->jawaban->OptionCount = 8;
-        $this->Fields['jawaban'] = &$this->jawaban;
+        // kata
+        $this->kata = new DbField('katamutiara', 'katamutiara', 'x_kata', 'kata', '`kata`', '`kata`', 201, 65535, -1, false, '`kata`', false, false, false, 'FORMATTED TEXT', 'TEXTAREA');
+        $this->kata->Nullable = false; // NOT NULL field
+        $this->kata->Required = true; // Required field
+        $this->kata->Sortable = true; // Allow sort
+        $this->Fields['kata'] = &$this->kata;
     }
 
     // Field Visibility
@@ -146,62 +120,10 @@ class Evaluasi extends DbTable
         }
     }
 
-    // Current master table name
-    public function getCurrentMasterTable()
-    {
-        return @$_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")];
-    }
-
-    public function setCurrentMasterTable($v)
-    {
-        $_SESSION[PROJECT_NAME . "_" . $this->TableVar . "_" . Config("TABLE_MASTER_TABLE")] = $v;
-    }
-
-    // Session master WHERE clause
-    public function getMasterFilter()
-    {
-        // Master filter
-        $masterFilter = "";
-        if ($this->getCurrentMasterTable() == "materi") {
-            if ($this->id_materi->getSessionValue() != "") {
-                $masterFilter .= "" . GetForeignKeySql("`id_materi`", $this->id_materi->getSessionValue(), DATATYPE_NUMBER, "DB");
-            } else {
-                return "";
-            }
-        }
-        return $masterFilter;
-    }
-
-    // Session detail WHERE clause
-    public function getDetailFilter()
-    {
-        // Detail filter
-        $detailFilter = "";
-        if ($this->getCurrentMasterTable() == "materi") {
-            if ($this->id_materi->getSessionValue() != "") {
-                $detailFilter .= "" . GetForeignKeySql("`id_materi`", $this->id_materi->getSessionValue(), DATATYPE_NUMBER, "DB");
-            } else {
-                return "";
-            }
-        }
-        return $detailFilter;
-    }
-
-    // Master filter
-    public function sqlMasterFilter_materi()
-    {
-        return "`id_materi`=@id_materi@";
-    }
-    // Detail filter
-    public function sqlDetailFilter_materi()
-    {
-        return "`id_materi`=@id_materi@";
-    }
-
     // Table level SQL
     public function getSqlFrom() // From
     {
-        return ($this->SqlFrom != "") ? $this->SqlFrom : "`evaluasi`";
+        return ($this->SqlFrom != "") ? $this->SqlFrom : "`katamutiara`";
     }
 
     public function sqlFrom() // For backward compatibility
@@ -483,8 +405,8 @@ class Evaluasi extends DbTable
         $success = $this->insertSql($rs)->execute();
         if ($success) {
             // Get insert id if necessary
-            $this->id_evaluasi->setDbValue($conn->lastInsertId());
-            $rs['id_evaluasi'] = $this->id_evaluasi->DbValue;
+            $this->id->setDbValue($conn->lastInsertId());
+            $rs['id'] = $this->id->DbValue;
         }
         return $success;
     }
@@ -544,8 +466,8 @@ class Evaluasi extends DbTable
             $where = $this->arrayToFilter($where);
         }
         if ($rs) {
-            if (array_key_exists('id_evaluasi', $rs)) {
-                AddFilter($where, QuotedName('id_evaluasi', $this->Dbid) . '=' . QuotedValue($rs['id_evaluasi'], $this->id_evaluasi->DataType, $this->Dbid));
+            if (array_key_exists('id', $rs)) {
+                AddFilter($where, QuotedName('id', $this->Dbid) . '=' . QuotedValue($rs['id'], $this->id->DataType, $this->Dbid));
             }
         }
         $filter = ($curfilter) ? $this->CurrentFilter : "";
@@ -569,10 +491,8 @@ class Evaluasi extends DbTable
         if (!is_array($row)) {
             return;
         }
-        $this->id_evaluasi->DbValue = $row['id_evaluasi'];
-        $this->id_materi->DbValue = $row['id_materi'];
-        $this->soal->DbValue = $row['soal'];
-        $this->jawaban->DbValue = $row['jawaban'];
+        $this->id->DbValue = $row['id'];
+        $this->kata->DbValue = $row['kata'];
     }
 
     // Delete uploaded files
@@ -584,7 +504,7 @@ class Evaluasi extends DbTable
     // Record filter WHERE clause
     protected function sqlKeyFilter()
     {
-        return "`id_evaluasi` = @id_evaluasi@";
+        return "`id` = @id@";
     }
 
     // Get record filter
@@ -592,9 +512,9 @@ class Evaluasi extends DbTable
     {
         $keyFilter = $this->sqlKeyFilter();
         if (is_array($row)) {
-            $val = array_key_exists('id_evaluasi', $row) ? $row['id_evaluasi'] : null;
+            $val = array_key_exists('id', $row) ? $row['id'] : null;
         } else {
-            $val = $this->id_evaluasi->OldValue !== null ? $this->id_evaluasi->OldValue : $this->id_evaluasi->CurrentValue;
+            $val = $this->id->OldValue !== null ? $this->id->OldValue : $this->id->CurrentValue;
         }
         if (!is_numeric($val)) {
             return "0=1"; // Invalid key
@@ -602,7 +522,7 @@ class Evaluasi extends DbTable
         if ($val === null) {
             return "0=1"; // Invalid key
         } else {
-            $keyFilter = str_replace("@id_evaluasi@", AdjustSql($val, $this->Dbid), $keyFilter); // Replace key value
+            $keyFilter = str_replace("@id@", AdjustSql($val, $this->Dbid), $keyFilter); // Replace key value
         }
         return $keyFilter;
     }
@@ -618,7 +538,7 @@ class Evaluasi extends DbTable
         if (@$_SESSION[$name] != "") {
             return $_SESSION[$name];
         } else {
-            return GetUrl("EvaluasiList");
+            return GetUrl("KatamutiaraList");
         }
     }
 
@@ -631,11 +551,11 @@ class Evaluasi extends DbTable
     public function getModalCaption($pageName)
     {
         global $Language;
-        if ($pageName == "EvaluasiView") {
+        if ($pageName == "KatamutiaraView") {
             return $Language->phrase("View");
-        } elseif ($pageName == "EvaluasiEdit") {
+        } elseif ($pageName == "KatamutiaraEdit") {
             return $Language->phrase("Edit");
-        } elseif ($pageName == "EvaluasiAdd") {
+        } elseif ($pageName == "KatamutiaraAdd") {
             return $Language->phrase("Add");
         } else {
             return "";
@@ -645,16 +565,16 @@ class Evaluasi extends DbTable
     // List URL
     public function getListUrl()
     {
-        return "EvaluasiList";
+        return "KatamutiaraList";
     }
 
     // View URL
     public function getViewUrl($parm = "")
     {
         if ($parm != "") {
-            $url = $this->keyUrl("EvaluasiView", $this->getUrlParm($parm));
+            $url = $this->keyUrl("KatamutiaraView", $this->getUrlParm($parm));
         } else {
-            $url = $this->keyUrl("EvaluasiView", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
+            $url = $this->keyUrl("KatamutiaraView", $this->getUrlParm(Config("TABLE_SHOW_DETAIL") . "="));
         }
         return $this->addMasterUrl($url);
     }
@@ -663,9 +583,9 @@ class Evaluasi extends DbTable
     public function getAddUrl($parm = "")
     {
         if ($parm != "") {
-            $url = "EvaluasiAdd?" . $this->getUrlParm($parm);
+            $url = "KatamutiaraAdd?" . $this->getUrlParm($parm);
         } else {
-            $url = "EvaluasiAdd";
+            $url = "KatamutiaraAdd";
         }
         return $this->addMasterUrl($url);
     }
@@ -673,7 +593,7 @@ class Evaluasi extends DbTable
     // Edit URL
     public function getEditUrl($parm = "")
     {
-        $url = $this->keyUrl("EvaluasiEdit", $this->getUrlParm($parm));
+        $url = $this->keyUrl("KatamutiaraEdit", $this->getUrlParm($parm));
         return $this->addMasterUrl($url);
     }
 
@@ -687,7 +607,7 @@ class Evaluasi extends DbTable
     // Copy URL
     public function getCopyUrl($parm = "")
     {
-        $url = $this->keyUrl("EvaluasiAdd", $this->getUrlParm($parm));
+        $url = $this->keyUrl("KatamutiaraAdd", $this->getUrlParm($parm));
         return $this->addMasterUrl($url);
     }
 
@@ -701,23 +621,19 @@ class Evaluasi extends DbTable
     // Delete URL
     public function getDeleteUrl()
     {
-        return $this->keyUrl("EvaluasiDelete", $this->getUrlParm());
+        return $this->keyUrl("KatamutiaraDelete", $this->getUrlParm());
     }
 
     // Add master url
     public function addMasterUrl($url)
     {
-        if ($this->getCurrentMasterTable() == "materi" && !ContainsString($url, Config("TABLE_SHOW_MASTER") . "=")) {
-            $url .= (ContainsString($url, "?") ? "&" : "?") . Config("TABLE_SHOW_MASTER") . "=" . $this->getCurrentMasterTable();
-            $url .= "&" . GetForeignKeyUrl("fk_id_materi", $this->id_materi->CurrentValue);
-        }
         return $url;
     }
 
     public function keyToJson($htmlEncode = false)
     {
         $json = "";
-        $json .= "id_evaluasi:" . JsonEncode($this->id_evaluasi->CurrentValue, "number");
+        $json .= "id:" . JsonEncode($this->id->CurrentValue, "number");
         $json = "{" . $json . "}";
         if ($htmlEncode) {
             $json = HtmlEncode($json);
@@ -728,8 +644,8 @@ class Evaluasi extends DbTable
     // Add key value to URL
     public function keyUrl($url, $parm = "")
     {
-        if ($this->id_evaluasi->CurrentValue !== null) {
-            $url .= "/" . rawurlencode($this->id_evaluasi->CurrentValue);
+        if ($this->id->CurrentValue !== null) {
+            $url .= "/" . rawurlencode($this->id->CurrentValue);
         } else {
             return "javascript:ew.alert(ew.language.phrase('InvalidRecord'));";
         }
@@ -791,7 +707,7 @@ SORTHTML;
             $arKeys = Param("key_m");
             $cnt = count($arKeys);
         } else {
-            if (($keyValue = Param("id_evaluasi") ?? Route("id_evaluasi")) !== null) {
+            if (($keyValue = Param("id") ?? Route("id")) !== null) {
                 $arKeys[] = $keyValue;
             } elseif (IsApi() && (($keyValue = Key(0) ?? Route(2)) !== null)) {
                 $arKeys[] = $keyValue;
@@ -824,9 +740,9 @@ SORTHTML;
                 $keyFilter .= " OR ";
             }
             if ($setCurrent) {
-                $this->id_evaluasi->CurrentValue = $key;
+                $this->id->CurrentValue = $key;
             } else {
-                $this->id_evaluasi->OldValue = $key;
+                $this->id->OldValue = $key;
             }
             $keyFilter .= "(" . $this->getRecordFilter() . ")";
         }
@@ -852,10 +768,8 @@ SORTHTML;
         } else {
             return;
         }
-        $this->id_evaluasi->setDbValue($row['id_evaluasi']);
-        $this->id_materi->setDbValue($row['id_materi']);
-        $this->soal->setDbValue($row['soal']);
-        $this->jawaban->setDbValue($row['jawaban']);
+        $this->id->setDbValue($row['id']);
+        $this->kata->setDbValue($row['kata']);
     }
 
     // Render list row values
@@ -868,70 +782,27 @@ SORTHTML;
 
         // Common render codes
 
-        // id_evaluasi
+        // id
 
-        // id_materi
+        // kata
 
-        // soal
+        // id
+        $this->id->ViewValue = $this->id->CurrentValue;
+        $this->id->ViewCustomAttributes = "";
 
-        // jawaban
+        // kata
+        $this->kata->ViewValue = $this->kata->CurrentValue;
+        $this->kata->ViewCustomAttributes = "";
 
-        // id_evaluasi
-        $this->id_evaluasi->ViewValue = $this->id_evaluasi->CurrentValue;
-        $this->id_evaluasi->ViewCustomAttributes = "";
+        // id
+        $this->id->LinkCustomAttributes = "";
+        $this->id->HrefValue = "";
+        $this->id->TooltipValue = "";
 
-        // id_materi
-        $curVal = strval($this->id_materi->CurrentValue);
-        if ($curVal != "") {
-            $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
-            if ($this->id_materi->ViewValue === null) { // Lookup from database
-                $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
-                $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                $ari = count($rswrk);
-                if ($ari > 0) { // Lookup values found
-                    $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
-                    $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
-                } else {
-                    $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-                }
-            }
-        } else {
-            $this->id_materi->ViewValue = null;
-        }
-        $this->id_materi->ViewCustomAttributes = "";
-
-        // soal
-        $this->soal->ViewValue = $this->soal->CurrentValue;
-        $this->soal->ViewCustomAttributes = "";
-
-        // jawaban
-        if (strval($this->jawaban->CurrentValue) != "") {
-            $this->jawaban->ViewValue = $this->jawaban->optionCaption($this->jawaban->CurrentValue);
-        } else {
-            $this->jawaban->ViewValue = null;
-        }
-        $this->jawaban->ViewCustomAttributes = "";
-
-        // id_evaluasi
-        $this->id_evaluasi->LinkCustomAttributes = "";
-        $this->id_evaluasi->HrefValue = "";
-        $this->id_evaluasi->TooltipValue = "";
-
-        // id_materi
-        $this->id_materi->LinkCustomAttributes = "";
-        $this->id_materi->HrefValue = "";
-        $this->id_materi->TooltipValue = "";
-
-        // soal
-        $this->soal->LinkCustomAttributes = "";
-        $this->soal->HrefValue = "";
-        $this->soal->TooltipValue = "";
-
-        // jawaban
-        $this->jawaban->LinkCustomAttributes = "";
-        $this->jawaban->HrefValue = "";
-        $this->jawaban->TooltipValue = "";
+        // kata
+        $this->kata->LinkCustomAttributes = "";
+        $this->kata->HrefValue = "";
+        $this->kata->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -948,51 +819,17 @@ SORTHTML;
         // Call Row Rendering event
         $this->rowRendering();
 
-        // id_evaluasi
-        $this->id_evaluasi->EditAttrs["class"] = "form-control";
-        $this->id_evaluasi->EditCustomAttributes = "";
-        $this->id_evaluasi->EditValue = $this->id_evaluasi->CurrentValue;
-        $this->id_evaluasi->ViewCustomAttributes = "";
+        // id
+        $this->id->EditAttrs["class"] = "form-control";
+        $this->id->EditCustomAttributes = "";
+        $this->id->EditValue = $this->id->CurrentValue;
+        $this->id->ViewCustomAttributes = "";
 
-        // id_materi
-        $this->id_materi->EditAttrs["class"] = "form-control";
-        $this->id_materi->EditCustomAttributes = "";
-        if ($this->id_materi->getSessionValue() != "") {
-            $this->id_materi->CurrentValue = GetForeignKeyValue($this->id_materi->getSessionValue());
-            $curVal = strval($this->id_materi->CurrentValue);
-            if ($curVal != "") {
-                $this->id_materi->ViewValue = $this->id_materi->lookupCacheOption($curVal);
-                if ($this->id_materi->ViewValue === null) { // Lookup from database
-                    $filterWrk = "`id_materi`" . SearchString("=", $curVal, DATATYPE_NUMBER, "");
-                    $sqlWrk = $this->id_materi->Lookup->getSql(false, $filterWrk, '', $this, true);
-                    $rswrk = Conn()->executeQuery($sqlWrk)->fetchAll(\PDO::FETCH_BOTH);
-                    $ari = count($rswrk);
-                    if ($ari > 0) { // Lookup values found
-                        $arwrk = $this->id_materi->Lookup->renderViewRow($rswrk[0]);
-                        $this->id_materi->ViewValue = $this->id_materi->displayValue($arwrk);
-                    } else {
-                        $this->id_materi->ViewValue = $this->id_materi->CurrentValue;
-                    }
-                }
-            } else {
-                $this->id_materi->ViewValue = null;
-            }
-            $this->id_materi->ViewCustomAttributes = "";
-        } else {
-            $this->id_materi->PlaceHolder = RemoveHtml($this->id_materi->caption());
-        }
-
-        // soal
-        $this->soal->EditAttrs["class"] = "form-control";
-        $this->soal->EditCustomAttributes = "";
-        $this->soal->EditValue = $this->soal->CurrentValue;
-        $this->soal->PlaceHolder = RemoveHtml($this->soal->caption());
-
-        // jawaban
-        $this->jawaban->EditAttrs["class"] = "form-control";
-        $this->jawaban->EditCustomAttributes = "";
-        $this->jawaban->EditValue = $this->jawaban->options(true);
-        $this->jawaban->PlaceHolder = RemoveHtml($this->jawaban->caption());
+        // kata
+        $this->kata->EditAttrs["class"] = "form-control";
+        $this->kata->EditCustomAttributes = "";
+        $this->kata->EditValue = $this->kata->CurrentValue;
+        $this->kata->PlaceHolder = RemoveHtml($this->kata->caption());
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1022,14 +859,10 @@ SORTHTML;
             if ($doc->Horizontal) { // Horizontal format, write header
                 $doc->beginExportRow();
                 if ($exportPageType == "view") {
-                    $doc->exportCaption($this->id_evaluasi);
-                    $doc->exportCaption($this->id_materi);
-                    $doc->exportCaption($this->soal);
-                    $doc->exportCaption($this->jawaban);
+                    $doc->exportCaption($this->id);
+                    $doc->exportCaption($this->kata);
                 } else {
-                    $doc->exportCaption($this->id_materi);
-                    $doc->exportCaption($this->soal);
-                    $doc->exportCaption($this->jawaban);
+                    $doc->exportCaption($this->id);
                 }
                 $doc->endExportRow();
             }
@@ -1059,14 +892,10 @@ SORTHTML;
                 if (!$doc->ExportCustom) {
                     $doc->beginExportRow($rowCnt); // Allow CSS styles if enabled
                     if ($exportPageType == "view") {
-                        $doc->exportField($this->id_evaluasi);
-                        $doc->exportField($this->id_materi);
-                        $doc->exportField($this->soal);
-                        $doc->exportField($this->jawaban);
+                        $doc->exportField($this->id);
+                        $doc->exportField($this->kata);
                     } else {
-                        $doc->exportField($this->id_materi);
-                        $doc->exportField($this->soal);
-                        $doc->exportField($this->jawaban);
+                        $doc->exportField($this->id);
                     }
                     $doc->endExportRow($rowCnt);
                 }

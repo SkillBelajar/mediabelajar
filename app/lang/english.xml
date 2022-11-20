@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2022/11/7" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
+<ew-language date="2022/11/20" version="17.0.0" id="en" name="English" desc="English" author="e.World Technology Limited">
   <!--
     *** Important Notes:
     1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -917,6 +917,9 @@
   <project>
     <phrase id="bodytitle" value="Media Belajar" />
     <phrase id="footertext" value="Dibuat Oleh Muhammad Ullil Fahri" />
+    <menu id="54">
+      <phrase id="menutext" value="katamutiara" />
+    </menu>
     <menu id="28">
       <phrase id="menutext" value="live rencana" />
     </menu>
@@ -1020,6 +1023,10 @@
         <phrase id="fldtagcaption5" value="E" />
         <phrase id="fldtagvalue6" value="Essai" />
         <phrase id="fldtagcaption6" value="Essai" />
+        <phrase id="fldtagvalue7" value="Ganda_Komplek" />
+        <phrase id="fldtagcaption7" value="Ganda_Komplek" />
+        <phrase id="fldtagvalue8" value="Menjodohkan" />
+        <phrase id="fldtagcaption8" value="Menjodohkan" />
       </field>
     </table>
     <table id="materi">
@@ -1464,6 +1471,15 @@
       </field>
       <field id="slide">
         <phrase id="fldcaption" value="slide" />
+      </field>
+    </table>
+    <table id="katamutiara">
+      <phrase id="tblcaption" value="katamutiara" />
+      <field id="id">
+        <phrase id="fldcaption" value="id" />
+      </field>
+      <field id="kata">
+        <phrase id="fldcaption" value="kata" />
       </field>
     </table>
   </project>

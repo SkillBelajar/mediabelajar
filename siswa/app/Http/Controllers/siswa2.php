@@ -57,4 +57,11 @@ class siswa2 extends Controller
             'kata' => $text
         ]);
     }
+
+    public function reset(Request $request)
+    {
+        // echo "ok";
+        $request->session()->forget('nama');
+        return redirect("/");
+    }
 }

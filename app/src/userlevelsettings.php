@@ -30,7 +30,8 @@ $USER_LEVEL_PRIVS = [["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}evaluasi","-2","0"]
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}pdf_materi","-2","0"],
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}generator_rencana","-2","0"],
     ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}live_rencana","-2","0"],
-    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}open_slide","-2","0"]];
+    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}open_slide","-2","0"],
+    ["{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}katamutiara","-2","0"]];
 // User level table info
 $USER_LEVEL_TABLES = [["evaluasi","evaluasi","evaluasi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["materi","materi","materi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
@@ -55,4 +56,5 @@ $USER_LEVEL_TABLES = [["evaluasi","evaluasi","evaluasi",true,"{08AC9454-AE1D-4A1
     ["pdf_materi","pdf_materi","pdf materi",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["generator_rencana","generator_rencana","generator rencana",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
     ["live_rencana","live_rencana","live rencana",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
-    ["open_slide","open_slide","open slide",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"]];
+    ["open_slide","open_slide","open slide",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"],
+    ["katamutiara","katamutiara","katamutiara",true,"{08AC9454-AE1D-4A18-8373-5038E0E6ECD3}"]];

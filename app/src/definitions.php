@@ -73,6 +73,7 @@ return [
     "generator_rencana" => \DI\create(GeneratorRencana::class),
     "live_rencana" => \DI\create(LiveRencana::class),
     "open_slide" => \DI\create(OpenSlide::class),
+    "katamutiara" => \DI\create(Katamutiara::class),
 
     // Detail table pages
     "MateriGrid" => \DI\create(MateriGrid::class),

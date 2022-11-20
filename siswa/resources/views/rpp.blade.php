@@ -17,39 +17,71 @@
         </div>
     </div>
     <hr>
-    @foreach ($rpp as $item)
-        <small>
+
+    <h3>Langkah - Langkah Kegiatan Pembelajaran</h3>
+
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Jenis Kegiatan</th>
+
+                <th>Kegiatan</th>
+
+            </tr>
+        </thead>
+        <tbody>
             <?php
-            $id_indikator = $item->id_indikator;
-            $idk = \DB::select('SELECT * FROM `indikator_rencana_belajar` WHERE `id_indikator` = ?', [$id_indikator]);
-            $kategori = $idk[0]->kategori;
-            $nama_ind = $idk[0]->indikator;
+            $no = 1;
             ?>
-            {{ $kategori }} | {{ $nama_ind }}
+            @foreach ($rpp as $item)
+                <?php
+                $id_indikator = $item->id_indikator;
+                $idk = \DB::select('SELECT * FROM `indikator_rencana_belajar` WHERE `id_indikator` = ?', [$id_indikator]);
+                $kategori = $idk[0]->kategori;
+                $nama_ind = $idk[0]->indikator;
+                ?>
+                <tr>
+                    <td>{{ $no++ }}</td>
+                    <td><i>{{ $kategori }}</i>
+                        <hr>
+                        {{ $nama_ind }}
+                    </td>
 
-        </small>
-        <h3 class="text-uppercase">{{ $item->judul }}</h3>
+                    <td><i>{{ $item->judul }}</i>
+                        <hr>
+                        {!! $item->kegiatan !!}
 
-        <p>
 
-            {!! $item->kegiatan !!}
+                    </td>
 
-        </p>
-        <hr>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <!--
+                                                                                        @foreach ($rpp as $item)
+    <small>
+                                                                                                <?php
+                                                                                                $id_indikator = $item->id_indikator;
+                                                                                                $idk = \DB::select('SELECT * FROM `indikator_rencana_belajar` WHERE `id_indikator` = ?', [$id_indikator]);
+                                                                                                $kategori = $idk[0]->kategori;
+                                                                                                $nama_ind = $idk[0]->indikator;
+                                                                                                ?>
+                                                                                                {{ $kategori }} | {{ $nama_ind }}
+
+                                                                                            </small>
+                                                                                            <h3 class="text-uppercase">{{ $item->judul }}</h3>
+
+                                                                                            <p>
+
+                                                                                                {!! $item->kegiatan !!}
+
+                                                                                            </p>
+                                                                                            <hr>
     @endforeach
 
-    <hr>
-    <hr>
-    <h3>Bahan Materi</h3>
-    <h4>Terlampir PDF File</h4>
-    @foreach ($pdf_filex as $item)
-        - {{ $item->judul }} <br>
-    @endforeach
-    <hr>
-    <h4>Artikel Terkait</h4>
-    @foreach ($at as $item)
-        <b>{{ $item->judul }}</b>
-        {!! $item->isi !!}
-        <hr>
-    @endforeach
+                                                                                        -->
 @endsection

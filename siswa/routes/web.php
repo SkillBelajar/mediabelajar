@@ -5,6 +5,7 @@ use App\Http\Controllers\awal;
 use App\Http\Controllers\generator_rencana;
 use App\Http\Controllers\guru;
 use App\Http\Controllers\gurulive2;
+use App\Http\Controllers\jawabansoal2;
 use App\Http\Controllers\randomx;
 use App\Http\Controllers\rpp;
 use App\Http\Controllers\siswa2;
@@ -98,3 +99,5 @@ Route::get('/hapusrppkosong', [generator_rencana::class, 'hapusrppkosong']);
 Route::get('/terimakasih', [siswa2::class, 'terimakasih']);
 
 Route::get('/reset', [siswa2::class, 'reset']);
+
+Route::post('/gandakomplek', [jawabansoal2::class, 'gandakomplek']);

@@ -34,13 +34,13 @@
 
         <?php
         /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //lakukan cek refresh halaman
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $ref = \DB::select('SELECT * FROM `slide` WHERE `id_slide` = 1');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $status_ref = $ref[0]->refresh;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        //lakukan cek refresh halaman
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $ref = \DB::select('SELECT * FROM `slide` WHERE `id_slide` = 1');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $status_ref = $ref[0]->refresh;
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //ambil halaman slide
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $slide_ke = $ref[0]->slide;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        //ambil halaman slide
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $slide_ke = $ref[0]->slide;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        */
         $status_ref = 0;
         ?>
         @if ($status_ref == 1)
@@ -175,6 +175,40 @@
                             </a>
                         @endforeach
                     </div>
+                </div>
+            @elseif($jenis_soal == 'Ganda_Komplek')
+                Berikut adalah Soal Ganda Komplek, jawabanya bisa lebih dari Satu <br>
+                <form method="POST" action="{{ url('/gandakomplek') }}">
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="A" name="jb[]">A</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="B" name="jb[]">B</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="C" name="jb[]">C</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="D" name="jb[]">D</label>
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" value="E" name="jb[]">E</label>
+                    </div>
+                    @csrf
+                    <input type="hidden" value="{{ $id_evaluasi }}" name="id_evaluasi">
+                    <input type="submit" class="btn btn-info" value="Simpan Jawaban">
+                </form>
+                <hr>
+                <h4>Yang Sudah Menjawab</h4>
+                <?php
+                $jb = \DB::select('SELECT * FROM `peserta` WHERE `id_evaluasi` = ? ORDER BY `peserta`.`id_peserta` ASC', [$id_evaluasi]);
+                // dd($jb);
+                ?>
+                <div class="list-group">
+                    @foreach ($jb as $item)
+                        <a href="#" class="list-group-item"> {{ $item->nama_peserta }}
+                        </a>
+                    @endforeach
                 </div>
             @else
                 <form method="post" action="simpanabc">

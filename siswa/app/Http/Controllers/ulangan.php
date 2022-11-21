@@ -37,6 +37,7 @@ class ulangan extends Controller
         $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai';", [$id_media]);
 
         $total = count($qj);
+        //dd($total);
 
         //tambahkan ke skor
         //cek sudah ada apa belum
@@ -49,7 +50,8 @@ class ulangan extends Controller
             'soal' => $soal,
             'total' => $total,
             'nomor' => $no,
-            'nama' => $nama
+            'nama' => $nama,
+            'total_soal' => $total
         ]);
     }
 

@@ -23,6 +23,7 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Siswa</th>
+                    <th>Benar</th>
                     <th>Nilai</th>
                 </tr>
             </thead>
@@ -34,6 +35,7 @@
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $item->nama }}</td>
+                        <td>{{ $item->skor }}</td>
                         <td>{{ number_format(($item->skor * 100) / $total, 2) }}</td>
                     </tr>
                     <?php

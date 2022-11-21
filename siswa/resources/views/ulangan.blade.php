@@ -123,8 +123,21 @@
                         <h1 class="text-center">{{ $no++ }}</h1>
                     </td>
 
+
                     <td>
-                        <h3>{{ $item->nama }}</h3>
+                        <h3>{{ $item->nama }}
+
+                            <?php
+
+                            $qbnar = \DB::select('SELECT *  FROM `skor_ulangan` WHERE `skor` > ?', [$total_soal / 2]);
+                            $adab = count($qbnar);
+
+                            ?>
+                            @if ($adab > 0)
+                                --
+                                (Nilai :{{ number_format(($item->skor * 100) / $total_soal, 2) }})
+                            @endif
+                        </h3>
                     </td>
                 </tr>
             @endforeach
@@ -135,25 +148,25 @@
     <br>
 
     <!--
-                                                                                                    <table class="table table-bordered">
-                                                                                                        <thead>
-                                                                                                            <tr>
-                                                                                                                <th>3 Terendah</th>
-                                                                                                            </tr>
-                                                                                                        </thead>
-                                                                                                        <tbody>
-                                                                                                            <?php
-                                                                                                            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
+                                                                                                                                                                    <table class="table table-bordered">
+                                                                                                                                                                        <thead>
+                                                                                                                                                                            <tr>
+                                                                                                                                                                                <th>3 Terendah</th>
+                                                                                                                                                                            </tr>
+                                                                                                                                                                        </thead>
+                                                                                                                                                                        <tbody>
+                                                                                                                                                                            <?php
+                                                                                                                                                                            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
 
-                                                                                                            ?>
-                                                                                                            @foreach ($tertinggi as $item)
+                                                                                                                                                                            ?>
+                                                                                                                                                                            @foreach ($tertinggi as $item)
     <tr>
-                                                                                                                    <td>{{ $item->nama }}</td>
-                                                                                                                </tr>
+                                                                                                                                                                                    <td>{{ $item->nama }}</td>
+                                                                                                                                                                                </tr>
     @endforeach
 
-                                                                                                        </tbody>
-                                                                                                    </table>
+                                                                                                                                                                        </tbody>
+                                                                                                                                                                    </table>
 
-                                                                                                -->
+                                                                                                                                                                -->
 @endsection

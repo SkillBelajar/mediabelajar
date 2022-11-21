@@ -101,3 +101,4 @@ Route::get('/terimakasih', [siswa2::class, 'terimakasih']);
 Route::get('/reset', [siswa2::class, 'reset']);
 
 Route::post('/gandakomplek', [jawabansoal2::class, 'gandakomplek']);
+Route::post('/menjodohkan', [jawabansoal2::class, 'menjodohkan']);

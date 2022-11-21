@@ -11,7 +11,7 @@
         $media = DB::select('SELECT * FROM `materi` WHERE `id_materi` = ?;', [$id_materi]);
         $id_media = $media[0]->id_media;
 
-        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai';", [$id_media]);
+        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai' and evaluasi.jawaban != 'Ganda_Komplek' and evaluasi.jawaban != 'Menjodohkan'", [$id_media]);
 
         $total = count($qj);
         $live = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` DESC');

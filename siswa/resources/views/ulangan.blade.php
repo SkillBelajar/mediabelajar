@@ -129,13 +129,18 @@
 
                             <?php
 
-                            $qbnar = \DB::select('SELECT *  FROM `skor_ulangan` WHERE `skor` > ?', [$total_soal / 2]);
+                            $qbnar = \DB::select('SELECT *  FROM `skor_ulangan` WHERE `skor` > ?', [$total_soal / 3]);
                             $adab = count($qbnar);
-
+                            $rand = rand(0, 3);
                             ?>
                             @if ($adab > 0)
                                 --
-                                (Nilai :{{ number_format(($item->skor * 100) / $total_soal, 2) }})
+                                @if ($rand == 1)
+                                    <br>
+                                    (Benar : {{ $item->skor }} | Salah : {{ $total - $item->skor }})
+                                    <br>
+                                    (Nilai :{{ number_format(($item->skor * 100) / $total_soal, 2) }})
+                                @endif
                             @endif
                         </h3>
                     </td>
@@ -148,25 +153,25 @@
     <br>
 
     <!--
-                                                                                                                                                                    <table class="table table-bordered">
-                                                                                                                                                                        <thead>
-                                                                                                                                                                            <tr>
-                                                                                                                                                                                <th>3 Terendah</th>
-                                                                                                                                                                            </tr>
-                                                                                                                                                                        </thead>
-                                                                                                                                                                        <tbody>
-                                                                                                                                                                            <?php
-                                                                                                                                                                            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
+                                                                                                                                                                                                                                    <table class="table table-bordered">
+                                                                                                                                                                                                                                        <thead>
+                                                                                                                                                                                                                                            <tr>
+                                                                                                                                                                                                                                                <th>3 Terendah</th>
+                                                                                                                                                                                                                                            </tr>
+                                                                                                                                                                                                                                        </thead>
+                                                                                                                                                                                                                                        <tbody>
+                                                                                                                                                                                                                                            <?php
+                                                                                                                                                                                                                                            $tertinggi = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` ASC LIMIT 0,3;');
 
-                                                                                                                                                                            ?>
-                                                                                                                                                                            @foreach ($tertinggi as $item)
+                                                                                                                                                                                                                                            ?>
+                                                                                                                                                                                                                                            @foreach ($tertinggi as $item)
     <tr>
-                                                                                                                                                                                    <td>{{ $item->nama }}</td>
-                                                                                                                                                                                </tr>
+                                                                                                                                                                                                                                                    <td>{{ $item->nama }}</td>
+                                                                                                                                                                                                                                                </tr>
     @endforeach
 
-                                                                                                                                                                        </tbody>
-                                                                                                                                                                    </table>
+                                                                                                                                                                                                                                        </tbody>
+                                                                                                                                                                                                                                    </table>
 
-                                                                                                                                                                -->
+                                                                                                                                                                                                                                -->
 @endsection

@@ -34,7 +34,7 @@ class ulangan extends Controller
         $soal = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai' and evaluasi.jawaban != 'Ganda_Komplek' and evaluasi.jawaban != 'Menjodohkan' ORDER BY `evaluasi`.`id_evaluasi` ASC limit ?,1;", [$id_media, $nomor]);
         // dd($soal);
 
-        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai'  and evaluasi.jawaban != 'Ganda_Komplek' and evaluasi.jawaban != 'Menjodohkan'", [$id_media]);
+        $qj = DB::select("SELECT * FROM `evaluasi` INNER JOIN materi on evaluasi.id_materi = materi.id_materi WHERE materi.id_media = ? and evaluasi.jawaban != 'Essai';", [$id_media]);
 
         $total = count($qj);
         //dd($total);

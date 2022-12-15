@@ -18,10 +18,10 @@
             </tr>
         </thead>
         <tbody>
-
+            <b>Silahkan Copy Paste Pada Link</b>
             @foreach ($gambar as $item)
                 <tr>
-                    <td>http://{{ $ip }}/mediabelajar/app/files/{{ $item->nama_gambar }}
+                    <td>/mediabelajar/app/files/{{ $item->nama_gambar }}
                         <!-- The text field -->
 
 

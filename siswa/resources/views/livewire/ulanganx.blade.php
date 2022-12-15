@@ -1,6 +1,7 @@
 <div>
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
     <div wire:poll.30s>
+
         <h1>Live Score Nilai Siswa</h1>
         <hr>
         <?php
@@ -15,6 +16,9 @@
 
         $total = count($qj);
         $live = \DB::select('SELECT * FROM `skor_ulangan` ORDER BY `skor_ulangan`.`skor` DESC');
+
+        //delete peserta TEST
+        \DB::delete("DELETE FROM `skor_ulangan` WHERE `nama` LIKE 'Test | Test - '");
 
         ?>
 
